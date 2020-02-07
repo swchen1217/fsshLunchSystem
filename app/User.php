@@ -11,13 +11,15 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    //public $primaryKey="sid";
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'sid', 'password','permission'
+        'name', 'id', 'password', 'permission','class','number'
     ];
 
     /**
