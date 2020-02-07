@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 });*/
 
 Route::get('/', function () {
-    return 'true';
+    return response()->json(['success' => true]);
 });
 
 Route::group([
