@@ -17,15 +17,12 @@ use Illuminate\Http\Request;
     return $request->user();
 });*/
 
-Route::get('/hw', function () {
-    return 'Test';
+Route::get('/', function () {
+    return 'true';
 });
 
 Route::group([
-
-   // 'middleware' => 'api',
     'prefix' => 'auth'
-
 ], function ($router) {
 
     Route::post('login', 'AuthController@login');
