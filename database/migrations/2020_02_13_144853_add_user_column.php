@@ -13,7 +13,7 @@ class AddUserColumn extends Migration
      */
     public function up()
     {
-        Schema::table('Users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->integer('balance')->after('email');
         });
     }
@@ -25,7 +25,7 @@ class AddUserColumn extends Migration
      */
     public function down()
     {
-        Schema::table('Users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //can't be negative number
             $table->dropColumn('balance');
         });
