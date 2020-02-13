@@ -14,7 +14,7 @@ class AddDishColumn extends Migration
     public function up()
     {
         Schema::table('dishes', function (Blueprint $table) {
-            $table->string('factory');
+            $table->string('factory')->after('saleDate');
         });
     }
 
