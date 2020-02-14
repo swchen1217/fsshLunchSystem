@@ -25,3 +25,10 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 });
+
+Route::group([
+    'prefix' => 'dish'
+], function ($router) {
+    Route::get('/', 'DishController@getDish');
+    Route::get('/id/{id}', 'DishController@getDishById');
+});

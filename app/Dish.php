@@ -15,6 +15,15 @@ class Dish extends Model
         return $this->hasMany('App\DishContent');
     }
 
+    public static function getDish()
+    {
+        $dish = Dish::all()->toArray();
+        foreach ($dish as $key => $value){
+            $dish[$key]=array_merge($value,array('contents'=>Dish::find($value['id'])->contents->toArray()));
+        }
+        return $dish;
+    }
+
     public static function getDishById($id)
     {
         $dish = Dish::find($id)->toArray();
