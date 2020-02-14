@@ -15,7 +15,7 @@ class DishController extends Controller
 
     public function getDish()
     {
-        return response()->json(Dish::getDish(),200);
+        return response()->json(['success'=>true,'data'=>Dish::getDish()],200);
     }
 
     public function getDishById(Request $request, $id)
