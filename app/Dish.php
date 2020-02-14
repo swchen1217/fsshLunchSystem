@@ -12,6 +12,13 @@ class Dish extends Model
 
     public function contents()
     {
-        return $this->hasMany('App\DishContent','dish_id');
+        return $this->hasMany('App\DishContent');
+    }
+
+    public static function getDishById($id)
+    {
+        $dish = Dish::find($id)->toArray();
+        $tmp=array_merge($dish,array('contents'=>Dish::find($id)->contents->toArray()));
+        return $tmp;
     }
 }
