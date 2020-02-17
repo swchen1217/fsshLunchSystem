@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Dish;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Exception;
 
 class DishController extends Controller
 {
@@ -20,6 +22,10 @@ class DishController extends Controller
 
     public function getDishById(Request $request, $id)
     {
-        return response()->json(Dish::getDishById($id),200);
+        try{
+            return response()->json(['success'=>true,'data'=>Dish::getDishById($id)],200);
+        }catch (ModelNotFoundException $e){
+            return response()->json(['success'=>false,'error'=>'The Dish Not Found'],404);
+        }
     }
 }

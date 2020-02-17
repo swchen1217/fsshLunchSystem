@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Exception;
 
 class Dish extends Model
 {
@@ -26,8 +27,12 @@ class Dish extends Model
 
     public static function getDishById($id)
     {
-        $dish = Dish::find($id)->toArray();
-        $tmp=array_merge($dish,array('contents'=>Dish::find($id)->contents->toArray()));
-        return $tmp;
+        try{
+            $dish = Dish::findOrFail($id);
+            $tmp=array_merge($dish->toArray(),array('contents'=>Dish::find($id)->contents->toArray()));
+            return $tmp;
+        }catch (Exception $e){
+            throw $e;
+        }
     }
 }
