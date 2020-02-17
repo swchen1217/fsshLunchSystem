@@ -14,10 +14,11 @@ class CreateDishContentsTable extends Migration
     public function up()
     {
         Schema::create('dish_contents', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('dish_id')->unsigned();
-            $table->foreign('dish_id')->references('id')->on('dishes');
-            $table->string('content');
+            $table->increments('id');
+            $table->unsignedInteger('dish_id');
+            $table->string('name');
+
+            $table->foreign('dish_id')->references('id')->on('dishes')->onDelete('CASCADE');
         });
     }
 
