@@ -14,20 +14,16 @@ class CreateDishesTable extends Migration
     public function up()
     {
         Schema::create('dishes', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->date('saleDate');
-            $table->text('name');
-            $table->integer('price');
-            $table->string('factory');
-            $table->string('status');
-            $table->double('calories');
-            $table->double('protein');
-            $table->double('fat');
-            $table->double('carbohydrate');
-            $table->double('stars');
-            $table->text('note')->default('');
+            $table->increments('id');
+            $table->string('name');
+            $table->unsignedInteger('manufacturer_id');
+            $table->unsignedInteger('nutrition_id');
+            $table->unsignedTinyInteger('price');
             $table->string('photo');
             $table->timestamps();
+
+            $table->foreign('manufacturer_id')->references('id')->on('manufacturers')->onDelete('CASCADE');
+            $table->foreign('nutrition_id')->references('id')->on('nutrition')->onDelete('RESTRICT');
         });
     }
 
