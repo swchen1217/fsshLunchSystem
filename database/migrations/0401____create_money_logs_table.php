@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateMoneyLogsTable extends Migration
@@ -14,8 +15,13 @@ class CreateMoneyLogsTable extends Migration
     public function up()
     {
         Schema::create('money_logs', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->increments('id');
+            $table->unsignedInteger('user_id');
+            $table->string('event');
+            $table->unsignedInteger('money');
+            $table->text('note');
+            $table->timestamp('created_at')
+                ->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 
