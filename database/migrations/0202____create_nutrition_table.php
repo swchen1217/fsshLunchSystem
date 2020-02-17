@@ -14,8 +14,11 @@ class CreateNutritionTable extends Migration
     public function up()
     {
         Schema::create('nutrition', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->increments('id');
+            $table->float('calories');
+            $table->float('protein');
+            $table->float('fat');
+            $table->float('carbohydrate');
         });
     }
 
