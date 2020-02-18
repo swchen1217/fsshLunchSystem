@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Entity;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,16 +14,14 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
     use HasRoles;
 
-    //public $primaryKey="sid";
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
+    /*protected $fillable = [
         'name', 'id', 'password', 'permission', 'class', 'number', 'email'
-    ];
+    ];*/
 
     /**
      * The attributes that should be hidden for arrays.
@@ -31,7 +29,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
     ];
 
     /**
