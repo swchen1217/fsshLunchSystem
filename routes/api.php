@@ -93,8 +93,6 @@ Route::group([
     Route::get('/', '');
     Route::get('/{dish_id}', '');
     Route::post('/', '');
-    /*Route::put('/{_id}', '');
-    Route::delete('/{_id}', '');*/
 });
 
 /*
