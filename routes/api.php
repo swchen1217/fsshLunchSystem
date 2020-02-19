@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,8 +50,14 @@ Route::group([
     Route::delete('/{sale_id}', '');
 });
 
-Route::post('/top-up', '');
-Route::post('/refund', '');
+Route::group([
+    'prefix' => 'balance'
+], function ($router) {
+    Route::get('/{account}', '');
+    Route::get('/log/{account}', '');
+    Route::post('/top-up', '');
+    Route::post('/refund', '');
+});
 
 Route::group([
     'prefix' => 'user'
