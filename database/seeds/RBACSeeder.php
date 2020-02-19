@@ -19,12 +19,5 @@ class RBACSeeder extends Seeder
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Role::create(['name' => 'student']);
-        Role::create(['name' => 'student_financial']);
-        Role::create(['name' => '']);
-        Role::create(['name' => '']);
-        Role::create(['name' => '']);
-        Role::create(['name' => '']);
-
     }
 }
