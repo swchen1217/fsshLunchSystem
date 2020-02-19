@@ -32,13 +32,13 @@ Route::group([
     Route::get('/', 'DishController@getDish');
     Route::get('/{dish_id}', 'DishController@getDishById');
     // TODO
-    Route::post('/', '');
-    Route::put('/{dish_id}', '');
-    Route::delete('/{dish_id}', '');
+    //Route::post('/', '');
+    //Route::put('/{dish_id}', '');
+    //Route::delete('/{dish_id}', '');
 });
 
 // TODO
-Route::group([
+/*Route::group([
     'prefix' => 'sale'
 ], function ($router) {
     Route::get('/', '');
@@ -94,6 +94,7 @@ Route::group([
     Route::get('/{dish_id}', '');
     Route::post('/', '');
 });
+*/
 
 /*
 
