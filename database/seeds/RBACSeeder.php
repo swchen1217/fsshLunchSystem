@@ -13,10 +13,18 @@ class RBACSeeder extends Seeder
      */
     public function run()
     {
+        //Role::create(['name' => '']);
+        //Permission::create(['name' => '']);
+        //階層 Role::findByName(<父>)->syncPermissions(Role::findByName(<子>)->getAllPermissions());
+
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        //Role::create(['name' => 'writer']);
-        //Permission::create(['name' => 'edit articles']);
+        Role::create(['name' => 'student']);
+        Role::create(['name' => 'student_financial']);
+        Role::create(['name' => '']);
+        Role::create(['name' => '']);
+        Role::create(['name' => '']);
+        Role::create(['name' => '']);
 
     }
 }
