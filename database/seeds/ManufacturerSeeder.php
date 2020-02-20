@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Entity\Manufacturer;
 
 class ManufacturerSeeder extends Seeder
 {
@@ -11,6 +12,7 @@ class ManufacturerSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $manufacturers=[['name'=>'正園'],['name'=>'御饌坊'],['name'=>'彩鶴']];
+        Manufacturer::created($manufacturers);
     }
 }
