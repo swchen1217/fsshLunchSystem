@@ -167,6 +167,7 @@ return [
          */
         'Tymon\JWTAuth\Providers\LaravelServiceProvider',
         Spatie\Permission\PermissionServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
 
         /*
          * Application Service Providers...
