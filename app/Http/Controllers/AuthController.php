@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Client;
 
 class AuthController extends Controller
 {
@@ -16,8 +14,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('jwt.auth', ['except' => ['login']]);
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('jwt.auth', ['except' => ['login']]);
     }
 
     /**
@@ -25,24 +22,15 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login()
     {
         $credentials = request(['account', 'password']);
 
-        if (auth()->check($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = $request->user();
-
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->token;
-        $token->save();
-
-        return response()->json([
-            'success' => true,
-            'token' => $tokenResult->accessToken,
-        ]);
+        return $this->respondWithToken($token);
     }
 
     /**
@@ -50,7 +38,6 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-
     public function me()
     {
         return response()->json(auth()->user());
@@ -75,11 +62,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    /*protected function respondWithToken($token)
+    protected function respondWithToken($token)
     {
         return response()->json([
             'success' => true,
             'token' => $token,
         ]);
-    }*/
+    }
 }
