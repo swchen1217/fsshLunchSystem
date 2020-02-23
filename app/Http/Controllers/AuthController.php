@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -15,14 +17,17 @@ use Laravel\Passport\TokenRepository;
 
 class AuthController extends Controller
 {
+    private $UserRepository;
+
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserRepository $userRepository)
     {
         $this->middleware('auth:api', ['except' => ['createToken']]);
+        $this->UserRepository=$userRepository;
     }
 
     public function createToken(Request $request)
@@ -41,11 +46,22 @@ class AuthController extends Controller
         $mResultStatusCode=$mResponse->getStatusCode();
 
         if($req['grant_type']=="password"){
-            if(!empty($mResult['access_token'])){
+            $access_token=$mResultContent['access_token']??null;
+            $refresh_token=$mResultContent['refresh_token']??null;
+            if(!empty($access_token)){
                 Log::info('pass');
                 //是否需要驗證
-                //SendEmail 存refresh_token 驗證後refresh (200)
+                //SendEmail 刪access_token存refresh_token 驗證後refresh (200)
                 //OK 發token (200)
+
+                $path = storage_path('oauth-public.key');
+                $file=fopen($path, "r");
+                $publicKey = fread($file, filesize($path));
+                fclose($file);
+                $access_token_payload=(array)JWT::decode($access_token,$publicKey,array('RS256'));
+
+                //$token=Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $this->UserRepository->findByAccount()->getkey())->first();
+
             }else{
                 Log::info('not-pass');
                 //client是否錯誤 "error": "invalid_client"
