@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Nutrition extends Model
 {
     public $timestamps = false;
+
+    protected $fillable = ['calories','protein','fat','carbohydrate'];
 }
