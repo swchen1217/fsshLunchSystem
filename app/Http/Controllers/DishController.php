@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dish;
+use App\Repository\DishRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -10,9 +11,15 @@ use Exception;
 
 class DishController extends Controller
 {
-    public function __construct()
+    /**
+     * @var DishRepository
+     */
+    private $dishRepository;
+
+    public function __construct(DishRepository $dishRepository)
     {
         $this->middleware('jwt.auth', ['except' => ['getDishById','getDish']]);
+        $this->dishRepository=$dishRepository;
     }
 
     public function getDish()
