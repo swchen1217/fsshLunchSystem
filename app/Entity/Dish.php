@@ -9,7 +9,7 @@ class Dish extends Model
 {
     //id,saleDate,factory,name,price,status,contents,calories,protein,fat,carbohydrate,stars,note,photo
 
-    protected $guarded = ['id', 'photo'];
+    protected $guarded = ['id'];
 
     public function contents()
     {
