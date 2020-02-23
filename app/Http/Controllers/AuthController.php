@@ -19,11 +19,6 @@ class AuthController extends Controller
 {
     private $UserRepository;
 
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
     public function __construct(UserRepository $userRepository)
     {
         $this->middleware('auth:api', ['except' => ['createToken']]);
@@ -59,9 +54,9 @@ class AuthController extends Controller
                 $publicKey = fread($file, filesize($path));
                 fclose($file);
                 $access_token_payload=(array)JWT::decode($access_token,$publicKey,array('RS256'));
-
                 //$token=Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $this->UserRepository->findByAccount()->getkey())->first();
 
+                //return response()->json($this->UserRepository->findByAccount($req['account']));
             }else{
                 Log::info('not-pass');
                 //client是否錯誤 "error": "invalid_client"
