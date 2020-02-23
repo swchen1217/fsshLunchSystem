@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,12 @@ use Illuminate\Foundation\Inspiring;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
+
+Artisan::command('log:clear', function () {
+    $path=storage_path('logs\laravel.log');
+    if(is_file($path)){
+        unlink($path);
+        fclose(fopen($path, "w"));
+    }
+    $this->info('ok');
+});
