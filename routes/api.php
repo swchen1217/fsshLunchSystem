@@ -20,11 +20,11 @@ Route::get('/', function () {
 });
 
 Route::group([
-    'prefix' => 'auth'
+    'prefix' => 'oauth'
 ], function ($router) {
-    Route::post('login', 'AuthController@login')->name('test');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('me', 'AuthController@me');
+    Route::post('token', 'AuthController@createToken');
+    Route::delete('token/{tokenId}', 'AuthController@revokeToken');
+    Route::post('user', 'AuthController@user');
 });
 
 Route::group([
