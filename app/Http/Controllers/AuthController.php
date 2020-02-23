@@ -44,7 +44,7 @@ class AuthController extends Controller
             if(!empty($mResult['access_token'])){
                 Log::info('pass');
                 //是否需要驗證
-                //SendEmail 存token 驗證後發回 (200)
+                //SendEmail 存refresh_token 驗證後refresh (200)
                 //OK 發token (200)
             }else{
                 Log::info('not-pass');
