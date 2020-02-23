@@ -26,3 +26,7 @@ Artisan::command('log:clear', function () {
     }
     $this->info('ok');
 });
+
+Artisan::command('my:test', function () {
+    $this->info('ok');
+});
