@@ -24,6 +24,7 @@ Route::group([
 ], function ($router) {
     Route::post('token', 'AuthController@createToken');
     Route::delete('token/{tokenId}', 'AuthController@revokeToken');
+    Route::post('verify', 'AuthController@verify');
     Route::post('user', 'AuthController@user');
 });
 
