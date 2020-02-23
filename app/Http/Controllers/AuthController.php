@@ -17,12 +17,10 @@ use Laravel\Passport\TokenRepository;
 
 class AuthController extends Controller
 {
-    private $UserRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['createToken']]);
-        $this->UserRepository=$userRepository;
     }
 
     public function createToken(Request $request)
