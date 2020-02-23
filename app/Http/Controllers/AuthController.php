@@ -27,13 +27,41 @@ class AuthController extends Controller
 
     public function createToken(Request $request)
     {
-        Log::debug('passwd');
+        $req=$request->all();
 
-        $request = app('request')->create('/oauth/token', 'POST', $request->all());
-        $response = app('router')->prepareResponse($request, app()->handle($request));
-        $result=json_decode($response->content(),true);
+        //查看ip id 是否有fail紀錄
+        //  <5 pass >=5 看最後一次是否超過10分鐘
+        //                  刪除->pass
+        //                  return (403)
+        //  pass
 
-        return response()->json($result);
+        $mRequest = app('request')->create('/oauth/token', 'POST', $req);
+        $mResponse = app('router')->prepareResponse($mRequest, app()->handle($mRequest));
+        $mResultContent=json_decode($mResponse->getContent(),true);
+        $mResultStatusCode=$mResponse->getStatusCode();
+
+        if($req['grant_type']=="password"){
+            if(!empty($mResult['access_token'])){
+                Log::info('pass');
+                //是否需要驗證
+                //SendEmail 存token 驗證後發回 (200)
+                //OK 發token (200)
+            }else{
+                Log::info('not-pass');
+                //client是否錯誤 "error": "invalid_client"
+                //  (401)
+                //  username是否存在
+                //      (401)->紀錄fail
+                //      (401)
+            }
+        }
+
+        return response()->json($mResultContent,$mResultStatusCode);
+    }
+
+    public function verify(Request $request)
+    {
+
     }
 
     public function user(Request $request)
