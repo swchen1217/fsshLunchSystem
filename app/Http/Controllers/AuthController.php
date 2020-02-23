@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Entity\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Request;
+use Laravel\Passport\Passport;
+use Laravel\Passport\RefreshTokenRepository;
+use Laravel\Passport\TokenRepository;
 
 class AuthController extends Controller
 {
@@ -14,59 +22,37 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['createToken']]);
     }
 
-    /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function login()
+    public function createToken(Request $request)
     {
-        $credentials = request(['account', 'password']);
+        Log::debug('passwd');
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        $request = app('request')->create('/oauth/token', 'POST', $request->all());
+        $response = app('router')->prepareResponse($request, app()->handle($request));
+        $result=json_decode($response->content(),true);
 
-        return $this->respondWithToken($token);
+        return response()->json($result);
     }
 
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
+    public function user(Request $request)
     {
         return response()->json(auth()->user());
     }
 
-    /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logout()
+    public function revokeToken(Request $request, $tokenId)
     {
-        auth()->logout();
+        $token=Passport::token()->where('id', $tokenId)->where('user_id', $request->user()->getKey())->first();
+
+        if (is_null($token)) {
+            return response()->json([],404);
+        }
+
+        $token->revoke();
+
+        Passport::refreshToken()->where('access_token_id', $tokenId)->update(['revoked' => true]);
 
         return response()->json(['success' => true]);
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'success' => true,
-            'token' => $token,
-        ]);
     }
 }
