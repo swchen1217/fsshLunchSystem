@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
         //$this->call(RBACSeeder::class);
 
         //$this->call(ManufacturerSeeder::class);
-        //$this->call(DishTableSeeder::class);
+        $this->call(DishTableSeeder::class);
     }
 }
