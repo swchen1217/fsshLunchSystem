@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entity\User;
 use App\Repositories\UserRepository;
+use App\Service\AuthService;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,9 +19,15 @@ use Laravel\Passport\TokenRepository;
 class AuthController extends Controller
 {
 
-    public function __construct()
+    /**
+     * @var AuthService
+     */
+    private $authService;
+
+    public function __construct(AuthService $authService)
     {
         $this->middleware('auth:api', ['except' => ['createToken']]);
+        $this->authService=$authService;
     }
 
     public function createToken(Request $request)
