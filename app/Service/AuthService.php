@@ -2,14 +2,11 @@
 
 namespace App\Service;
 
-use App\Repositories\UserRepository;
+use Laravel\Passport\Bridge\UserRepository;
 
 class AuthService
 {
 
-    /**
-     * @var UserRepository
-     */
     private $userRepository;
 
     public function __construct(UserRepository $userRepository)
