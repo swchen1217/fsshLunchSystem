@@ -26,12 +26,12 @@ class UserRepository
 
     public function findByAccount($account)
     {
-        return $this->user->where('account', $account)->get();
+        return $this->user->where('account', $account)->first();
     }
 
     public function findByEmail($email)
     {
-        return $this->user->where('email', $email)->get();
+        return $this->user->where('email', $email)->first();
     }
 
     public function caeate($data)
