@@ -2,37 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Dish;
-use App\Repository\DishRepository;
+use App\Repositories\DishInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Exception;
+use App\Service\DishService;
 
 class DishController extends Controller
 {
-    /**
-     * @var DishRepository
-     */
-    private $dishRepository;
 
-    public function __construct(DishRepository $dishRepository)
+    /**
+     * @var DishService
+     */
+    private $dishServiced;
+
+    public function __construct(DishService $dishServiced)
     {
-        $this->middleware('jwt.auth', ['except' => ['getDishById','getDish']]);
-        $this->dishRepository=$dishRepository;
+        //$this->middleware('auth:api', ['except' => ['getDishById','getDish']]);
+        $this->dishServiced = $dishServiced;
     }
 
     public function getDish()
     {
-        return response()->json(['success'=>true,'data'=>Dish::getDish()],200);
+        return response()->json(['isOk' => $this->dishServiced->test()], 200);
+        //return response()->json(['success'=>true,'data'=>Dish::getDish()],200);
     }
 
     public function getDishById(Request $request, $id)
     {
-        try{
-            return response()->json(['success'=>true,'data'=>Dish::getDishById($id)],200);
-        }catch (ModelNotFoundException $e){
-            return response()->json(['success'=>false,'error'=>'The Dish Not Found'],404);
+        try {
+            return response()->json(['success' => true, 'data' => Dish::getDishById($id)], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'error' => 'The Dish Not Found'], 404);
         }
     }
 }
