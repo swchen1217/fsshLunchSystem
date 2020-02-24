@@ -19,19 +19,19 @@ class Dish extends Model
     public static function getDish()
     {
         $dish = Dish::all()->toArray();
-        foreach ($dish as $key => $value){
-            $dish[$key]=array_merge($value,array('contents'=>Dish::find($value['id'])->contents->toArray()));
+        foreach ($dish as $key => $value) {
+            $dish[$key] = array_merge($value, array('contents' => Dish::find($value['id'])->contents->toArray()));
         }
         return $dish;
     }
 
     public static function getDishById($id)
     {
-        try{
+        try {
             $dish = Dish::findOrFail($id);
-            $tmp=array_merge($dish->toArray(),array('contents'=>Dish::find($id)->contents->toArray()));
+            $tmp = array_merge($dish->toArray(), array('contents' => Dish::find($id)->contents->toArray()));
             return $tmp;
-        }catch (Exception $e){
+        } catch (Exception $e) {
             throw $e;
         }
     }
