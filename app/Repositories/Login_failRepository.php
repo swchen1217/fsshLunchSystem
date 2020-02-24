@@ -33,7 +33,7 @@ class Login_failRepository
 
     public function changeToUsedByUserIdAndIp($user_id,$ip)
     {
-        return $this->login_fail->where('user_id',$user_id)->where('ip',$ip)->where('used',false)->update(['used',true]);
+        return $this->login_fail->where('user_id',$user_id)->where('ip',$ip)->where('used',false)->update(['used'=>true]);
     }
 
     public function deleteByUserId($user_id)
