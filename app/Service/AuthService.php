@@ -2,18 +2,19 @@
 
 namespace App\Service;
 
-use App\Repository\UserRepository;
+use App\Repositories\UserRepository;
 
-class AuthService{
+class AuthService
+{
 
-    public function __construct(UserRepository $user)
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository)
     {
-        $this->user = $user ;
+        $this->userRepository = $userRepository;
     }
-
-    /*public function read($id)
-    {
-        return $this->post->find($id);
-    }*/
 
 }
