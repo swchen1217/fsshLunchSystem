@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repositories\UserRepository;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
