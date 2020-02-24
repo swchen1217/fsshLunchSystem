@@ -28,7 +28,7 @@ class DishRepository
 
     public function findByManufacturer_id($manufacturer_id)
     {
-        return $this->dish->where('manufacturer_id', $manufacturer_id);
+        return $this->dish->where('manufacturer_id', $manufacturer_id)->get();
     }
 
     public function caeate($data)
