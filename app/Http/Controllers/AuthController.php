@@ -26,8 +26,7 @@ class AuthController extends Controller
 
     public function createToken(Request $request)
     {
-        $mRequest=$request->all();
-        $mResult=$this->authService->createToken($mRequest);
+        $mResult=$this->authService->createToken($request);
         return response()->json($mResult[0],$mResult[1]);
     }
 
