@@ -35,4 +35,5 @@ class Login_failRepository
     {
         return $this->login_fail->where('user_id',$user_id)->delete();
     }
+
 }
