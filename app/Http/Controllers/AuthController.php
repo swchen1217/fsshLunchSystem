@@ -2,19 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Entity\User;
-use App\Repositories\UserRepository;
 use App\Service\AuthService;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
-//use Illuminate\Support\Facades\Request;
 use Laravel\Passport\Passport;
-use Laravel\Passport\RefreshTokenRepository;
-use Laravel\Passport\TokenRepository;
 
 class AuthController extends Controller
 {
@@ -59,9 +51,9 @@ class AuthController extends Controller
                 $publicKey = fread($file, filesize($path));
                 fclose($file);
                 $access_token_payload=(array)JWT::decode($access_token,$publicKey,array('RS256'));
-                //$token=Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $this->UserRepository->findByAccount()->getkey())->first();
+                //$token=Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $this->UserRepository.php->findByAccount()->getkey())->first();
 
-                //return response()->json($this->UserRepository->findByAccount($req['account']));
+                //return response()->json($this->UserRepository.php->findByAccount($req['account']));
             }else{
                 Log::info('not-pass');
                 //client是否錯誤 "error": "invalid_client"
