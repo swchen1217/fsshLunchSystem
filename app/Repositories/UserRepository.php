@@ -48,4 +48,14 @@ class UserRepository
     {
         return $this->user->find($id)->delete();
     }
+
+    public function getAllPermissiosNamesById($id)
+    {
+        $permissions=array();
+        $uu=$this->findById($id);
+        foreach ($uu->getAllPermissions() as $item){
+            $permissions[]=$item['name'];
+        }
+        return $permissions;
+    }
 }
