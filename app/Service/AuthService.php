@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\Login_fail;
+use App\Repositories\Login_failRepository;
 use App\Repositories\UserRepository;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
@@ -14,19 +16,28 @@ class AuthService
 
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository,Login_failRepository $login_failRepository)
     {
         $this->userRepository = $userRepository;
+        $this->login_failRepository = $login_failRepository;
     }
 
-    public function createToken($req)
+    public function createToken(Request $request)
     {
-
-        //查看ip id 是否有fail紀錄
+        //查看 ip id 是否有fail紀錄
         //  <5 pass >=5 看最後一次是否超過10分鐘
         //                  刪除->pass
         //                  return (403)
         //  pass
+
+        $req=$request->all();
+        if ($req['grant_type'] == "password"){
+            $user_id=$this->userRepository->findByAccount($req['username'])->id;
+            //$fail=$this->login_failRepository->findByUserIdAndIp($user_id,);
+            //if()
+
+
+        }
 
         $mRequest = app('request')->create('/oauth/token', 'POST', $req);
         $mResponse = app('router')->prepareResponse($mRequest, app()->handle($mRequest));
