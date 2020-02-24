@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Service\AuthService;
 use Firebase\JWT\JWT;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Passport;
 
@@ -24,47 +26,16 @@ class AuthController extends Controller
 
     public function createToken(Request $request)
     {
-        $req=$request->all();
-
-        //查看ip id 是否有fail紀錄
-        //  <5 pass >=5 看最後一次是否超過10分鐘
-        //                  刪除->pass
-        //                  return (403)
-        //  pass
-
-        $mRequest = app('request')->create('/oauth/token', 'POST', $req);
-        $mResponse = app('router')->prepareResponse($mRequest, app()->handle($mRequest));
-        $mResultContent=json_decode($mResponse->getContent(),true);
-        $mResultStatusCode=$mResponse->getStatusCode();
-
-        if($req['grant_type']=="password"){
-            $access_token=$mResultContent['access_token']??null;
-            $refresh_token=$mResultContent['refresh_token']??null;
-            if(!empty($access_token)){
-                Log::info('pass');
-                //是否需要驗證
-                //SendEmail 刪access_token存refresh_token 驗證後refresh (200)
-                //OK 發token (200)
-
-                $path = storage_path('oauth-public.key');
-                $file=fopen($path, "r");
-                $publicKey = fread($file, filesize($path));
-                fclose($file);
-                $access_token_payload=(array)JWT::decode($access_token,$publicKey,array('RS256'));
-                //$token=Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $this->UserRepository.php->findByAccount()->getkey())->first();
-
-                //return response()->json($this->UserRepository.php->findByAccount($req['account']));
-            }else{
-                Log::info('not-pass');
-                //client是否錯誤 "error": "invalid_client"
-                //  (401)
-                //  username是否存在
-                //      (401)->紀錄fail
-                //      (401)
-            }
+        try {
+            //DB::beginTransaction();
+            $mRequest=$request->all();
+            $mResult=$this->authService->createToken($mRequest);
+            return response()->json($mResult);
+            //DB::commit();
+        } catch (Exception $exception) {
+            //DB::rollBack();
+            throw $exception;
         }
-
-        return response()->json($mResultContent,$mResultStatusCode);
     }
 
     public function verify(Request $request)
@@ -72,9 +43,14 @@ class AuthController extends Controller
 
     }
 
-    public function user(Request $request)
+    public function user()
     {
-        return response()->json(auth()->user());
+        try {
+            $mResult=$this->authService->getUser();
+            return response()->json($mResult);
+        } catch (Exception $exception) {
+            throw $exception;
+        }
     }
 
     public function revokeToken(Request $request, $tokenId)
