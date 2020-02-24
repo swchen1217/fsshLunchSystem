@@ -26,45 +26,25 @@ class AuthController extends Controller
 
     public function createToken(Request $request)
     {
-        try {
-            //DB::beginTransaction();
-            $mRequest=$request->all();
-            $mResult=$this->authService->createToken($mRequest);
-            return response()->json($mResult);
-            //DB::commit();
-        } catch (Exception $exception) {
-            //DB::rollBack();
-            throw $exception;
-        }
+        $mRequest=$request->all();
+        $mResult=$this->authService->createToken($mRequest);
+        return response()->json($mResult[0],$mResult[1]);
     }
 
-    public function verify(Request $request)
+    public function verifyCommit(Request $request)
     {
-
+        //TODO
     }
 
-    public function user()
+    public function user(Request $request)
     {
-        try {
-            $mResult=$this->authService->getUser();
-            return response()->json($mResult);
-        } catch (Exception $exception) {
-            throw $exception;
-        }
+        $mResult=$this->authService->getUser($request);
+        return response()->json($mResult[0],$mResult[1]);
     }
 
     public function revokeToken(Request $request, $tokenId)
     {
-        $token=Passport::token()->where('id', $tokenId)->where('user_id', $request->user()->getKey())->first();
-
-        if (is_null($token)) {
-            return response()->json([],404);
-        }
-
-        $token->revoke();
-
-        Passport::refreshToken()->where('access_token_id', $tokenId)->update(['revoked' => true]);
-
-        return response()->json(['success' => true]);
+        $mResult=$this->authService->revokeToken($request,$tokenId);
+        return response()->json($mResult[0],$mResult[1]);
     }
 }
