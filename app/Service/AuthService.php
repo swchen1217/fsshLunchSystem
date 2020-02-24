@@ -24,19 +24,30 @@ class AuthService
 
     public function createToken(Request $request)
     {
-        //查看 ip id 是否有fail紀錄
-        //  <5 pass >=5 看最後一次是否超過10分鐘
-        //                  刪除->pass
-        //                  return (403)
-        //  pass
-
         $req=$request->all();
         if ($req['grant_type'] == "password"){
-            $user_id=$this->userRepository->findByAccount($req['username'])->id;
-            //$fail=$this->login_failRepository->findByUserIdAndIp($user_id,);
-            //if()
-
-
+            $user=$this->userRepository->findByAccount($req['username']);
+            if($user!=null){
+                $user_id=$user->id;
+            }else{
+                return [['error'=>'Username or Password Error'],Response::HTTP_UNAUTHORIZED];
+            }
+            $ip=$request->ip();
+            $fail=$this->login_failRepository->findByUserIdAndIp($user_id,$ip)->sortByDesc('created_at');
+            if(count($fail->where('used',false))>=5){
+                $tmp=$fail->first();
+                $timeLast=strtotime($tmp->created_at);
+                $timeNow=time();
+                if($timeNow-$timeLast>600){
+                    $this->login_failRepository->changeToUsedByUserIdAndIp($user_id,$ip);
+                }else{
+                    return [
+                        ["message"=>"You try and fail many times".
+                            ",Please try again later".
+                            ",Or replace the IP address"]
+                        , Response::HTTP_FORBIDDEN];
+                }
+            }
         }
 
         $mRequest = app('request')->create('/oauth/token', 'POST', $req);
@@ -49,25 +60,36 @@ class AuthService
             $refresh_token = $mResultContent['refresh_token'] ?? null;
             if (!empty($access_token)) {
                 Log::info('pass');
-                //是否需要驗證
-                //SendEmail 刪access_token存refresh_token 驗證後refresh (200)
-                //OK 發token (200)
+                $user_id=$this->userRepository->findByAccount($req['username'])->id;
+                $ip=$request->ip();
+                $fail=$this->login_failRepository->findByUserIdAndIp($user_id,$ip);
+                if(count($fail)>5){
+                    $path = storage_path('oauth-public.key');
+                    $file = fopen($path, "r");
+                    $publicKey = fread($file, filesize($path));
+                    fclose($file);
+                    $access_token_payload = (array)JWT::decode($access_token, $publicKey, array('RS256'));
+                    Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $user_id)->first()->revoke();
 
-                $path = storage_path('oauth-public.key');
-                $file = fopen($path, "r");
-                $publicKey = fread($file, filesize($path));
-                fclose($file);
-                $access_token_payload = (array)JWT::decode($access_token, $publicKey, array('RS256'));
-                //$token=Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $this->UserRepository.php->findByAccount()->getkey())->first();
 
-                //return response()->json($this->UserRepository.php->findByAccount($req['account']));
+
+                    //TODO SendEmail 刪access_token存refresh_token 驗證後refresh (200)
+                }
             } else {
                 Log::info('not-pass');
-                //client是否錯誤 "error": "invalid_client"
-                //  (401)
-                //  username是否存在
-                //      (401)->紀錄fail
-                //      (401)
+                $user_id=$this->userRepository->findByAccount($req['username'])->id;
+                $ip=$request->ip();
+                if($mResultContent['error']=="invalid_client"){
+                    //todo Log or Notify
+                    return [$mResultContent, Response::HTTP_UNAUTHORIZED];
+                }elseif ($mResultContent['error']=="invalid_grant"){
+                    if($user_id!=null){
+                        $this->login_failRepository->caeate(['user_id'=>$user_id,'ip'=>$ip,'used'=>false]);
+                    }
+                    return [['error'=>'Username or Password Error'],Response::HTTP_UNAUTHORIZED];
+                }else{
+                    //todo Log or Notify
+                }
             }
         }
         return [$mResultContent, $mResultStatusCode];
