@@ -18,6 +18,7 @@ class CreateLoginFailsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->string('ip');
+            $table->boolean('used');
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
 
