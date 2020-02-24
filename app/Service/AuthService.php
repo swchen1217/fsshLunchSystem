@@ -75,6 +75,7 @@ class AuthService
 
                     //TODO SendEmail 刪access_token存refresh_token 驗證後refresh (200)
                 }
+                // todo 刪login_fail
             } else {
                 Log::info('not-pass');
                 $user_id=$this->userRepository->findByAccount($req['username'])->id;
