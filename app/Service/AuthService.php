@@ -84,7 +84,13 @@ class AuthService
                         'Receive email and get verification code to request `/ oauth / verify` API.']
                         , Response::HTTP_OK];
                 }else{
-                    $this->login_failRepository->deleteByUserId($user_id);
+                    if($mResultStatusCode==200){
+                        $this->login_failRepository->deleteByUserId($user_id);
+                        return [$mResultContent,Response::HTTP_OK];
+                    }else{
+                        //todo Log or Notify
+                        return [['error'=>'Server Error ,Please contact the admin'],Response::HTTP_INTERNAL_SERVER_ERROR];
+                    }
                 }
             } else {
                 Log::info('not-pass');
@@ -114,9 +120,47 @@ class AuthService
         return $mResult;
     }
 
-    public function verifyCommit()
+    public function verifyCommit(Request $request)
     {
-        //todo
+        $req=$request->all();
+        $user=$this->userRepository->findByAccount($req['account']);
+        if($user!=null){
+            $user_id=$user->id;
+            $verify=$this->verifyRepository->findByUserId($user_id)->sortByDesc('created_at')->first();
+            if($verify!=null){
+                if($req['verify_code']==$verify->code){
+                    $timeLast=strtotime($verify->created_at);
+                    $timeNow=time();
+                    if($timeNow-$timeLast>1800){
+                        $req2=[
+                            'grant_type' => 'refresh_token',
+                            'refresh_token' => $verify->refresh_token,
+                            'client_id' => $verify->client_id,
+                            'client_secret' => $verify->client_secret];
+                        $m2Request = app('request')->create('/oauth/token', 'POST', $req2);
+                        $m2Response = app('router')->prepareResponse($m2Request, app()->handle($m2Request));
+                        $m2ResultContent = json_decode($m2Response->getContent(), true);
+                        $m2ResultStatusCode = $m2Response->getStatusCode();
+                        if($m2ResultStatusCode==200){
+                            //todo delete V_C
+                            $this->verifyRepository->deleteByUserId($user_id);
+                            return [$m2ResultContent,Response::HTTP_OK];
+                        }else{
+                            //todo Log or Notify
+                            return [['error'=>'Server Error ,Please contact the admin'],Response::HTTP_INTERNAL_SERVER_ERROR];
+                        }
+                    }else{
+                        return [['error'=>'Verify code expired'],Response::HTTP_FORBIDDEN];
+                    }
+                }else{
+                    return [['error'=>'Verify code error'],Response::HTTP_FORBIDDEN];
+                }
+            }else{
+                return [['error'=>'You don`t need to verify'],Response::HTTP_FORBIDDEN];
+            }
+        }else{
+            return [['error'=>'Username Not Fount'],Response::HTTP_NOT_FOUND];
+        }
     }
 
     public function revokeToken(Request $request, $tokenId)
