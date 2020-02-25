@@ -32,7 +32,8 @@ class AuthController extends Controller
 
     public function verifyCommit(Request $request)
     {
-        //TODO
+        $mResult=$this->authService->verifyCommit($request);
+        return response()->json($mResult[0],$mResult[1]);
     }
 
     public function user(Request $request)
