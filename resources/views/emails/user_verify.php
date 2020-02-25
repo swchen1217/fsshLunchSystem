@@ -106,7 +106,7 @@
                                                             <div><span
                                                                     style="font-size:14px;color:rgb(0,0,0)">注意事項</span>
                                                             </div>
-                                                            <div><span style="font-size:14px;color:rgb(0,0,0)">※若您每次登入時皆收到本郵件，請<wbr>先處理您身邊的屁孩<wbr>，或選擇回報客服</span>
+                                                            <div><span style="font-size:14px;color:rgb(0,0,0)">※若您每次登入時皆收到本郵件，請<wbr>先處理您身邊的"朋友"<wbr>，或選擇回報客服</span>
                                                             </div>
                                                             <div><span style="font-size:14px;color:rgb(0,0,0)">※如果您的帳號未要求您輸入驗證碼，您可以忽略此電子郵件</span>
                                                             </div>
