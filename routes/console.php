@@ -1,7 +1,9 @@
 <?php
 
+use App\Mail\Verify;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +30,10 @@ Artisan::command('log:clear', function () {
 });
 
 Artisan::command('my:test', function () {
+    /*Mail::queue('emails.user_verify', ['verify_code'=>'12345678'], function ($message) {
+        $message->to('swchen1217@gmail.com', 'SWC')->subject('帳號活動異常-使用者驗證');
+    });*/
+    $user=App\Entity\User::find(1);
+    Mail::to($user)->queue(new Verify(['verify_code'=>'12345678']));
     $this->info('ok');
 });
