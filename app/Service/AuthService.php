@@ -2,12 +2,14 @@
 
 namespace App\Service;
 
-use App\Entity\Login_fail;
+use App\Mail\Verify;
 use App\Repositories\Login_failRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\VerifyRepository;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Passport\Passport;
 use Illuminate\Http\Response;
 
@@ -15,11 +17,14 @@ class AuthService
 {
 
     private $userRepository;
+    private $login_failRepository;
+    private $verifyRepository;
 
-    public function __construct(UserRepository $userRepository,Login_failRepository $login_failRepository)
+    public function __construct(UserRepository $userRepository,Login_failRepository $login_failRepository,VerifyRepository $verifyRepository)
     {
         $this->userRepository = $userRepository;
         $this->login_failRepository = $login_failRepository;
+        $this->verifyRepository = $verifyRepository;
     }
 
     public function createToken(Request $request)
@@ -60,7 +65,8 @@ class AuthService
             $refresh_token = $mResultContent['refresh_token'] ?? null;
             if (!empty($access_token)) {
                 Log::info('pass');
-                $user_id=$this->userRepository->findByAccount($req['username'])->id;
+                $user=$this->userRepository->findByAccount($req['username']);
+                $user_id=$user->id;
                 $ip=$request->ip();
                 $fail=$this->login_failRepository->findByUserIdAndIp($user_id,$ip);
                 if(count($fail)>5){
@@ -70,12 +76,16 @@ class AuthService
                     fclose($file);
                     $access_token_payload = (array)JWT::decode($access_token, $publicKey, array('RS256'));
                     Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $user_id)->first()->revoke();
-
-
-
-                    //TODO SendEmail 刪access_token存refresh_token 驗證後refresh (200)
+                    $code=strtoupper(substr(md5(time()),0,8));
+                    $this->verifyRepository->caeate(['user_id'=>$user_id,'code'=>$code,'client_id'=>$req['client_id'],'client_secret'=>$req['client_secret'],'refresh_token'=>$refresh_token]);
+                    Mail::to($user)->queue(new Verify(['verify_code'=>$code]));
+                    return [['message'=>'You failed to log in too many times,'.
+                        'Please verify your identity before you can log in.'.
+                        'Receive email and get verification code to request `/ oauth / verify` API.']
+                        , Response::HTTP_OK];
+                }else{
+                    $this->login_failRepository->deleteByUserId($user_id);
                 }
-                // todo 刪login_fail
             } else {
                 Log::info('not-pass');
                 $user_id=$this->userRepository->findByAccount($req['username'])->id;
