@@ -76,7 +76,7 @@ class AuthService
                     fclose($file);
                     $access_token_payload = (array)JWT::decode($access_token, $publicKey, array('RS256'));
                     Passport::token()->where('id', $access_token_payload['jti'])->where('user_id', $user_id)->first()->revoke();
-                    $code=strtoupper(substr(md5(time()),0,8));
+                    $code=strtoupper(substr(md5(time()),0,10));
                     $this->verifyRepository->caeate(['user_id'=>$user_id,'code'=>$code,'client_id'=>$req['client_id'],'client_secret'=>$req['client_secret'],'refresh_token'=>$refresh_token]);
                     Mail::to($user)->queue(new Verify(['verify_code'=>$code]));
                     return [['message'=>'You failed to log in too many times,'.
