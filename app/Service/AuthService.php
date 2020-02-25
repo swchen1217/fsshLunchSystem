@@ -123,7 +123,7 @@ class AuthService
     public function verifyCommit(Request $request)
     {
         $req=$request->all();
-        $user=$this->userRepository->findByAccount($req['account']);
+        $user=$this->userRepository->findByAccount($req['username']);
         if($user!=null){
             $user_id=$user->id;
             $verify=$this->verifyRepository->findByUserId($user_id)->sortByDesc('created_at')->first();
@@ -131,7 +131,7 @@ class AuthService
                 if($req['verify_code']==$verify->code){
                     $timeLast=strtotime($verify->created_at);
                     $timeNow=time();
-                    if($timeNow-$timeLast>1800){
+                    if($timeNow-$timeLast<=1800){
                         $req2=[
                             'grant_type' => 'refresh_token',
                             'refresh_token' => $verify->refresh_token,
