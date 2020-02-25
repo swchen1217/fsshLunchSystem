@@ -18,6 +18,8 @@ class User extends Authenticatable
 
     protected $guard_name = 'api';
 
+    protected $guarded=['id'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
