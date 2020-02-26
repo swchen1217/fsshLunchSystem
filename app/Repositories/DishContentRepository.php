@@ -23,7 +23,7 @@ class DishContentRepository
 
     public function findByDishId($dish_id)
     {
-        return $this->dishContent->where('dish_id',$dish_id);
+        return $this->dishContent->where('dish_id',$dish_id)->get();
     }
 
     public function caeate($data)
