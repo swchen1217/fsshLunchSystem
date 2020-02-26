@@ -16,23 +16,13 @@ class Dish extends Model
         return $this->hasMany('App\DishContent');
     }
 
-    public static function getDish()
+    /*public function manufacturer()
     {
-        $dish = Dish::all()->toArray();
-        foreach ($dish as $key => $value) {
-            $dish[$key] = array_merge($value, array('contents' => Dish::find($value['id'])->contents->toArray()));
-        }
-        return $dish;
+        return $this->hasOne('App\Entity\Manufacturer','id');
     }
 
-    public static function getDishById($id)
+    public function nutrition()
     {
-        try {
-            $dish = Dish::findOrFail($id);
-            $tmp = array_merge($dish->toArray(), array('contents' => Dish::find($id)->contents->toArray()));
-            return $tmp;
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
+        return $this->hasOne('App\Entity\Nutrition','id');
+    }*/
 }
