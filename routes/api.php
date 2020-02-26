@@ -46,10 +46,9 @@ Route::group([
 ], function ($router) {
     Route::get('/', 'DishController@getDish');
     Route::get('/{dish_id}', 'DishController@getDishById');
-    // TODO
-    //Route::post('/', '');
-    //Route::put('/{dish_id}', '');
-    //Route::delete('/{dish_id}', '');
+    Route::post('/', 'DishController@newDish');
+    Route::put('/{dish_id}', 'DishController@editDish');
+    Route::delete('/{dish_id}', 'DishController@removeDish');
 });
 
 // TODO
