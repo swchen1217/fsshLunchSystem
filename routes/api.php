@@ -44,7 +44,7 @@ Route::group([
 Route::group([
     'prefix' => 'dish'
 ], function ($router) {
-    Route::get('/', 'DishController@getDish');
+    Route::get('/', 'DishController@getDish')->middleware(['permission2:dish.read']);
     Route::get('/{dish_id}', 'DishController@getDishById');
     Route::post('/', 'DishController@newDish');
     Route::put('/{dish_id}', 'DishController@editDish');
