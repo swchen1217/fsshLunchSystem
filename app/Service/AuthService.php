@@ -8,6 +8,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\VerifyRepository;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Passport\Passport;
@@ -114,7 +115,8 @@ class AuthService
 
     public function getUser(Request $request)
     {
-        $user = $request->user();
+        //$user = $request->user();
+        $user = Auth::user();
         $mResult[0]=array_merge($user->toArray(), array('permissions' => $this->userRepository->getAllPermissiosNamesById(auth()->user()->id)));
         $mResult[1]=Response::HTTP_OK;
         return $mResult;
@@ -143,6 +145,7 @@ class AuthService
                         $m2ResultStatusCode = $m2Response->getStatusCode();
                         if($m2ResultStatusCode==200){
                             //todo delete V_C
+                            $this->login_failRepository->deleteByUserId($user_id);
                             $this->verifyRepository->deleteByUserId($user_id);
                             return [$m2ResultContent,Response::HTTP_OK];
                         }else{
