@@ -26,18 +26,24 @@ class DishController extends Controller
 
     public function getDish()
     {
-        $mResult=$this->dishService->getDish();
-        return response()->json($mResult[0],$mResult[1]);
+        $mResult = $this->dishService->getDish();
+        return response()->json($mResult[0], $mResult[1]);
     }
 
     public function getDishById(Request $request, $id)
     {
-        $mResult=$this->dishService->getDish($id);
-        return response()->json($mResult[0],$mResult[1]);
+        $mResult = $this->dishService->getDish($id);
+        return response()->json($mResult[0], $mResult[1]);
 
     }
 
-    public function newDish()
+    public function newDish(Request $request)
+    {
+        $mResult = $this->dishService->newDish($request);
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
+    public function newImage()
     {
 
     }
