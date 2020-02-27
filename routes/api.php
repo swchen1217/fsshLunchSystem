@@ -47,6 +47,7 @@ Route::group([
     Route::get('/', 'DishController@getDish')->middleware(['permission2:dish.read']);
     Route::get('/{dish_id}', 'DishController@getDishById');
     Route::post('/', 'DishController@newDish');
+    Route::post('/image', 'DishController@newImage');
     Route::put('/{dish_id}', 'DishController@editDish');
     Route::delete('/{dish_id}', 'DishController@removeDish');
 });
