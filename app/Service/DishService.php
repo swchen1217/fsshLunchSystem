@@ -34,14 +34,15 @@ class DishService
             $dish = $this->dishRepository->findById($id);
             if ($dish != null) {
                 $manufacturer=$this->manufacturerRepository->findById($dish->manufacturer_id);
-                $nutrition=$this->nutritionRepository->findById($dish->nutrition_id);
+                $nutrition=$this->nutritionRepository->findById($dish->nutrition_id)->toArray();
+                array_splice($nutrition,0,1);
                 $dishContent = $this->dishContentRepository->findByDishId($id)->toArray();
                 $dish=$dish->toArray();
                 array_splice($dish,3,1);
                 $dishContents=array();
                 foreach ($dishContent as $item)
                     $dishContents[]=$item['name'];
-                $result = array_merge($dish,array('manufacturer_name'=>$manufacturer->name),$nutrition->toArray(), array('contents' => $dishContents));
+                $result = array_merge($dish,array('manufacturer_name'=>$manufacturer->name),$nutrition, array('contents' => $dishContents));
                 return [$result, Response::HTTP_OK];
             } else {
                 //'error' => 'The Dish Not Found' (404)
@@ -52,14 +53,15 @@ class DishService
             $result=array();
             foreach ($dish as $item){
                 $manufacturer=$this->manufacturerRepository->findById($item->manufacturer_id);
-                $nutrition=$this->nutritionRepository->findById($item->nutrition_id);
+                $nutrition=$this->nutritionRepository->findById($item->nutrition_id)->toArray();
+                array_splice($nutrition,0,1);
                 $dishContent = $this->dishContentRepository->findByDishId($item->id)->toArray();
                 $item=$item->toArray();
                 array_splice($item,3,1);
                 $dishContents=array();
                 foreach ($dishContent as $ii)
                     $dishContents[]=$ii['name'];
-                $result[] = array_merge($item,array('manufacturer_name'=>$manufacturer->name),$nutrition->toArray(), array('contents' => $dishContents));
+                $result[] = array_merge($item,array('manufacturer_name'=>$manufacturer->name),$nutrition, array('contents' => $dishContents));
             }
             return [$result, Response::HTTP_OK];
         }
