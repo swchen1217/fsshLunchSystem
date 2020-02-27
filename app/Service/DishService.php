@@ -6,6 +6,7 @@ use App\Repositories\DishContentRepository;
 use App\Repositories\DishRepository;
 use App\Repositories\ManufacturerRepository;
 use App\Repositories\NutritionRepository;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class DishService
@@ -32,16 +33,16 @@ class DishService
         if ($id != null) {
             $dish = $this->dishRepository->findById($id);
             if ($dish != null) {
-                $manufacturer=$this->manufacturerRepository->findById($dish->manufacturer_id);
-                $nutrition=$this->nutritionRepository->findById($dish->nutrition_id)->toArray();
-                array_splice($nutrition,0,1);
+                $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
+                $nutrition = $this->nutritionRepository->findById($dish->nutrition_id)->toArray();
+                array_splice($nutrition, 0, 1);
                 $dishContent = $this->dishContentRepository->findByDishId($id)->toArray();
-                $dish=$dish->toArray();
-                array_splice($dish,3,1);
-                $dishContents=array();
+                $dish = $dish->toArray();
+                array_splice($dish, 3, 1);
+                $dishContents = array();
                 foreach ($dishContent as $item)
-                    $dishContents[]=$item['name'];
-                $result = array_merge($dish,array('manufacturer_name'=>$manufacturer->name),$nutrition, array('contents' => $dishContents));
+                    $dishContents[] = $item['name'];
+                $result = array_merge($dish, array('manufacturer_name' => $manufacturer->name), $nutrition, array('contents' => $dishContents));
                 return [$result, Response::HTTP_OK];
             } else {
                 //'error' => 'The Dish Not Found' (404)
@@ -49,21 +50,35 @@ class DishService
             }
         } else {
             $dish = $this->dishRepository->all();
-            $result=array();
-            foreach ($dish as $item){
-                $manufacturer=$this->manufacturerRepository->findById($item->manufacturer_id);
-                $nutrition=$this->nutritionRepository->findById($item->nutrition_id)->toArray();
-                array_splice($nutrition,0,1);
+            $result = array();
+            foreach ($dish as $item) {
+                $manufacturer = $this->manufacturerRepository->findById($item->manufacturer_id);
+                $nutrition = $this->nutritionRepository->findById($item->nutrition_id)->toArray();
+                array_splice($nutrition, 0, 1);
                 $dishContent = $this->dishContentRepository->findByDishId($item->id)->toArray();
-                $item=$item->toArray();
-                array_splice($item,3,1);
-                $dishContents=array();
+                $item = $item->toArray();
+                array_splice($item, 3, 1);
+                $dishContents = array();
                 foreach ($dishContent as $ii)
-                    $dishContents[]=$ii['name'];
-                $result[] = array_merge($item,array('manufacturer_name'=>$manufacturer->name),$nutrition, array('contents' => $dishContents));
+                    $dishContents[] = $ii['name'];
+                $result[] = array_merge($item, array('manufacturer_name' => $manufacturer->name), $nutrition, array('contents' => $dishContents));
             }
             return [$result, Response::HTTP_OK];
         }
+    }
+
+    public function newDish(Request $request)
+    {
+        if(!$request->has('name') || !$request->has('manufacturer_id') || !$request->has('price') || !$request->has('calories') || !$request->has('protein') || !$request->has('fat') || !$request->has('carbohydrate')){
+            return [['error' => 'The request is incomplete'], Response::HTTP_BAD_REQUEST];
+        }
+        if($this->manufacturerRepository->findById($request->manufacturer_id)==null){
+            return [['error' => 'The manufacturer_id error'], Response::HTTP_BAD_REQUEST];
+        }
+        $nutrition_data=$request->only(['calories','protein','fat','carbohydrate']);
+        $nutrition_id=$this->nutritionRepository->caeate($nutrition_data);
+        $dish_data=$request->input(['naem','manufacturer_id','price']);
+        //$dish_id=$this->dishRepository->caeate($dish_data);
     }
 
 }
