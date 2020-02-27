@@ -29,7 +29,6 @@ class DishService
 
     public function getDish($id = null)
     {
-        // TODO id+5??
         if ($id != null) {
             $dish = $this->dishRepository->findById($id);
             if ($dish != null) {
