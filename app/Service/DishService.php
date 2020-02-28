@@ -110,9 +110,9 @@ class DishService
                 ]);
                 $photo_url=json_decode($response->getBody()->getContents(),true)['data']['link'];
             }else
-                return [['error' => 'Image Not Found'],Response::HTTP_BAD_REQUEST0];
+                return [['error' => 'Image Not Found'],Response::HTTP_BAD_REQUEST];
         }else{
-            return [['error' => 'The type is empty or not supported'],Response::HTTP_BAD_REQUEST0];
+            return [['error' => 'The type is empty or not supported'],Response::HTTP_BAD_REQUEST];
         }
         $this->dishRepository->update($dish_id,['photo'=>$photo_url]);
         return [[],Response::HTTP_NO_CONTENT];
