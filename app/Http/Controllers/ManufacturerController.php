@@ -18,9 +18,27 @@ class ManufacturerController extends Controller
         $this->manufacturerService = $manufacturerService;
     }
 
-    public function getDish()
+    public function get()
     {
-        $mResult = $this->dishService->getDish();
+        $mResult = $this->manufacturerService->get();
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
+    public function create(Request $request)
+    {
+        $mResult = $this->manufacturerService->create($request);
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
+    public function edit(Request $request, $manufacturer_id)
+    {
+        $mResult = $this->manufacturerService->edit($request,$manufacturer_id);
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
+    public function remove(Request $request, $manufacturer_id)
+    {
+        $mResult = $this->manufacturerService->remove($request,$manufacturer_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 }
