@@ -137,6 +137,8 @@ class DishService
         DB::beginTransaction();
         try {
             $dish=$this->dishRepository->findById($dish_id);
+            if($dish==null)
+                return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
             foreach ($request->all() as $key=>$value){
                 $data=[$key=>$value];
                 if($key=="name" || $key=="manufacturer_id" || $key=="price" || $key=="photo"){
@@ -163,7 +165,9 @@ class DishService
 
     public function removeDish(Request $request, $dish_id)
     {
-        $this->dishRepository->delete($dish_id);
-        return [[],Response::HTTP_NO_CONTENT];
+        if($this->dishRepository->delete($dish_id)!=-1)
+            return [[],Response::HTTP_NO_CONTENT];
+        else
+            return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
     }
 }
