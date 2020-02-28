@@ -6,6 +6,7 @@ use App\Repositories\DishContentRepository;
 use App\Repositories\DishRepository;
 use App\Repositories\ManufacturerRepository;
 use App\Repositories\NutritionRepository;
+use App\Repositories\RatingRepositiry;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,19 +19,22 @@ class DishService
     private $manufacturerRepository;
     private $nutritionRepository;
     private $guzzleHttpClient;
+    private $ratingRepositiry;
 
     public function __construct(
         DishRepository $dishRepository,
         DishContentRepository $dishContentRepository,
         ManufacturerRepository $manufacturerRepository,
         NutritionRepository $nutritionRepository,
-        Client $client)
+        Client $client,
+        RatingRepositiry $ratingRepositiry)
     {
         $this->dishRepository = $dishRepository;
         $this->dishContentRepository = $dishContentRepository;
         $this->manufacturerRepository = $manufacturerRepository;
         $this->nutritionRepository = $nutritionRepository;
         $this->guzzleHttpClient = $client;
+        $this->ratingRepositiry = $ratingRepositiry;
     }
 
     public function getDish($id = null)
@@ -47,7 +51,7 @@ class DishService
                 $dishContents = array();
                 foreach ($dishContent as $item)
                     $dishContents[] = $item['name'];
-                $result = array_merge($dish, array('manufacturer_name' => $manufacturer->name), $nutrition, array('contents' => $dishContents));
+                $result = array_merge($dish, array('manufacturer_name' => $manufacturer->name), $nutrition, array('contents' => $dishContents, 'rating' => $this->ratingRepositiry->getAverageByDishId($id)));
                 return [$result, Response::HTTP_OK];
             } else {
                 //'error' => 'The Dish Not Found' (404)
@@ -57,16 +61,17 @@ class DishService
             $dish = $this->dishRepository->all();
             $result = array();
             foreach ($dish as $item) {
+                $id=$item->id;
                 $manufacturer = $this->manufacturerRepository->findById($item->manufacturer_id);
                 $nutrition = $this->nutritionRepository->findById($item->nutrition_id)->toArray();
                 array_splice($nutrition, 0, 1);
-                $dishContent = $this->dishContentRepository->findByDishId($item->id)->toArray();
+                $dishContent = $this->dishContentRepository->findByDishId($id)->toArray();
                 $item = $item->toArray();
                 array_splice($item, 3, 1);
                 $dishContents = array();
                 foreach ($dishContent as $ii)
                     $dishContents[] = $ii['name'];
-                $result[] = array_merge($item, array('manufacturer_name' => $manufacturer->name), $nutrition, array('contents' => $dishContents));
+                $result[] = array_merge($item, array('manufacturer_name' => $manufacturer->name), $nutrition, array('contents' => $dishContents, 'rating' => $this->ratingRepositiry->getAverageByDishId($id)));
             }
             return [$result, Response::HTTP_OK];
         }
@@ -87,17 +92,18 @@ class DishService
         $contents_data = $request->input('contents');
         foreach ($contents_data as $item)
             $this->dishContentRepository->caeate(['dish_id' => $dish->id, 'name' => $item]);
-        return $this->getDish($dish->id);
+        return [$this->getDish($dish->id)[0],Response::HTTP_CREATED];
     }
 
-    public function image(Request $request){
-        if(!$request->has('dish_id') || $this->dishRepository->findById($request->input('dish_id'))==null)
-            return [['error' => '`dish_id` Not Found'],Response::HTTP_NOT_FOUND];
-        $dish_id=$request->input('dish_id');
-        if($request->input('type')=='url'){
-            $photo_url=$request->input('url');
-        }elseif ($request->input('type')=='image'){
-            if($request->hasFile('image')){
+    public function image(Request $request)
+    {
+        if (!$request->has('dish_id') || $this->dishRepository->findById($request->input('dish_id')) == null)
+            return [['error' => '`dish_id` Not Found'], Response::HTTP_NOT_FOUND];
+        $dish_id = $request->input('dish_id');
+        if ($request->input('type') == 'url') {
+            $photo_url = $request->input('url');
+        } elseif ($request->input('type') == 'image') {
+            if ($request->hasFile('image')) {
                 $response = $this->guzzleHttpClient->request('POST', 'https://api.imgur.com/3/image', [
                     'headers' => [
                         'authorization' => 'Bearer ' . env('IMGUR_ACCESS_TOKEN'),
@@ -105,24 +111,26 @@ class DishService
                     ],
                     'form_params' => [
                         'image' => base64_encode(file_get_contents($request->file('image')->path())),
-                        'title'=>'dish_'.$dish_id
+                        'title' => 'dish_' . $dish_id
                     ],
                 ]);
-                $photo_url=json_decode($response->getBody()->getContents(),true)['data']['link'];
-            }else
-                return [['error' => 'Image Not Found'],Response::HTTP_BAD_REQUEST];
-        }else{
-            return [['error' => 'The type is empty or not supported'],Response::HTTP_BAD_REQUEST];
+                $photo_url = json_decode($response->getBody()->getContents(), true)['data']['link'];
+            } else
+                return [['error' => 'Image Not Found'], Response::HTTP_BAD_REQUEST];
+        } else {
+            return [['error' => 'The type is empty or not supported'], Response::HTTP_BAD_REQUEST];
         }
-        $this->dishRepository->update($dish_id,['photo'=>$photo_url]);
-        return [[],Response::HTTP_NO_CONTENT];
+        $this->dishRepository->update($dish_id, ['photo' => $photo_url]);
+        return [[], Response::HTTP_NO_CONTENT];
     }
 
-    public function editDish(Request $request){
+    public function editDish(Request $request)
+    {
 
     }
 
-    public function removeDish(Request $request){
+    public function removeDish(Request $request)
+    {
 
     }
 }
