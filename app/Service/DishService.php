@@ -136,20 +136,20 @@ class DishService
     {
         DB::beginTransaction();
         try {
-            $dish=$this->dishRepository->findById($dish_id);
-            if($dish==null)
-                return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
-            foreach ($request->all() as $key=>$value){
-                $data=[$key=>$value];
-                if($key=="name" || $key=="manufacturer_id" || $key=="price" || $key=="photo"){
-                    $this->dishRepository->update($dish_id,$data);
-                }elseif($key=="calories" || $key=="protein" || $key=="fat" || $key=="carbohydrate"){
-                    $this->nutritionRepository->update($dish->nutrition_id,$data);
-                }elseif ($key=="contents"){
+            $dish = $this->dishRepository->findById($dish_id);
+            if ($dish == null)
+                throw new MyException(serialize(['error' => 'The Dish Not Found']), Response::HTTP_NOT_FOUND);
+            foreach ($request->all() as $key => $value) {
+                $data = [$key => $value];
+                if ($key == "name" || $key == "manufacturer_id" || $key == "price" || $key == "photo") {
+                    $this->dishRepository->update($dish_id, $data);
+                } elseif ($key == "calories" || $key == "protein" || $key == "fat" || $key == "carbohydrate") {
+                    $this->nutritionRepository->update($dish->nutrition_id, $data);
+                } elseif ($key == "contents") {
                     $this->dishContentRepository->deleteByDishId($dish_id);
                     foreach ($value as $item)
                         $this->dishContentRepository->caeate(['dish_id' => $dish_id, 'name' => $item]);
-                }else{
+                } else {
                     throw new MyException(serialize(['error' => 'The attribute cannot be modified']), Response::HTTP_BAD_REQUEST);
                 }
             }
@@ -165,8 +165,8 @@ class DishService
 
     public function removeDish(Request $request, $dish_id)
     {
-        if($this->dishRepository->delete($dish_id)!=-1)
-            return [[],Response::HTTP_NO_CONTENT];
+        if ($this->dishRepository->delete($dish_id) != -1)
+            return [[], Response::HTTP_NO_CONTENT];
         else
             return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
     }
