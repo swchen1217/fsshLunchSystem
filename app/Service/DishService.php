@@ -84,10 +84,10 @@ class DishService
         DB::beginTransaction();
         try {
             if (!$request->has('name') || !$request->has('manufacturer_id') || !$request->has('price') || !$request->has('calories') || !$request->has('protein') || !$request->has('fat') || !$request->has('carbohydrate')) {
-                throw new MyException(serialize(['error' => 'The request is incomplete']),Response::HTTP_BAD_REQUEST);
+                throw new MyException(serialize(['error' => 'The request is incomplete']), Response::HTTP_BAD_REQUEST);
             }
             if ($this->manufacturerRepository->findById($request->input('manufacturer_id')) == null) {
-                throw new MyException(serialize(['error' => 'The manufacturer_id error']),Response::HTTP_BAD_REQUEST);
+                throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);
             }
             $nutrition_data = $request->only(['calories', 'protein', 'fat', 'carbohydrate']);
             $nutrition = $this->nutritionRepository->caeate($nutrition_data);
@@ -102,7 +102,7 @@ class DishService
             return [unserialize($e->getMessage()), $e->getCode()];
         } catch (\Exception $e) {
             DB::rollback();
-            return [['error'=>$e->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR];
+            return [['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR];
         }
     }
 
