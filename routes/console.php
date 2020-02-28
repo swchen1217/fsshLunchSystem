@@ -4,6 +4,7 @@ use App\Mail\Verify;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,5 +36,11 @@ Artisan::command('my:test', function () {
     });*/
     $user=App\Entity\User::find(1);
     Mail::to($user)->queue(new Verify(['verify_code'=>'12345678']));
+    $this->info('ok');
+});
+
+Artisan::command('my:getImage', function () {
+    $url = Storage::disk('public')->url('image/dish/default.png');
+    $this->line($url);
     $this->info('ok');
 });
