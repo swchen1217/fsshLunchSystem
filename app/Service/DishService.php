@@ -106,11 +106,8 @@ class DishService
         }
     }
 
-    public function image(Request $request)
+    public function image(Request $request, $dish_id)
     {
-        if (!$request->has('dish_id') || $this->dishRepository->findById($request->input('dish_id')) == null)
-            return [['error' => '`dish_id` Not Found'], Response::HTTP_NOT_FOUND];
-        $dish_id = $request->input('dish_id');
         if ($request->input('type') == 'url') {
             $photo_url = $request->input('url');
         } elseif ($request->input('type') == 'image') {
@@ -135,13 +132,38 @@ class DishService
         return [[], Response::HTTP_NO_CONTENT];
     }
 
-    public function editDish(Request $request)
+    public function editDish(Request $request, $dish_id)
     {
-
+        DB::beginTransaction();
+        try {
+            $dish=$this->dishRepository->findById($dish_id);
+            foreach ($request->all() as $key=>$value){
+                $data=[$key=>$value];
+                if($key=="name" || $key=="manufacturer_id" || $key=="price" || $key=="photo"){
+                    $this->dishRepository->update($dish_id,$data);
+                }elseif($key=="calories" || $key=="protein" || $key=="fat" || $key=="carbohydrate"){
+                    $this->nutritionRepository->update($dish->nutrition_id,$data);
+                }elseif ($key=="contents"){
+                    $this->dishContentRepository->deleteByDishId($dish_id);
+                    foreach ($value as $item)
+                        $this->dishContentRepository->caeate(['dish_id' => $dish_id, 'name' => $item]);
+                }else{
+                    throw new MyException(serialize(['error' => 'The attribute cannot be modified']), Response::HTTP_BAD_REQUEST);
+                }
+            }
+            DB::commit();
+            return $this->getDish($dish_id);
+        } catch (MyException $e) {
+            return [unserialize($e->getMessage()), $e->getCode()];
+        } catch (\Exception $e) {
+            DB::rollback();
+            return [['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR];
+        }
     }
 
-    public function removeDish(Request $request)
+    public function removeDish(Request $request, $dish_id)
     {
-
+        $this->dishRepository->delete($dish_id);
+        return [[],Response::HTTP_NO_CONTENT];
     }
 }
