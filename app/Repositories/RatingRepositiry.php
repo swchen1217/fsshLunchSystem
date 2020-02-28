@@ -25,11 +25,11 @@ class RatingRepositiry
 
     public function getAverageByDishId($dish_id)
     {
-        return Cache::tags('rating')->remember($dish_id, Carbon::now()->addHours(3), function($dish_id) {
+        return Cache::tags('rating')->remember($dish_id, Carbon::now()->addHours(3), function() use ($dish_id) {
             $rating=$this->rating->where('dish_id', $dish_id)->get();
             if($rating==null || $rating->count()<10)
                 return -1;
-            return $rating->avg('rating');
+            return round($rating->avg('rating'),1);
         });
     }
 
