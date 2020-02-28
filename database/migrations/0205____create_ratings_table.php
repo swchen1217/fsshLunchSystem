@@ -22,6 +22,8 @@ class CreateRatingsTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
             $table->foreign('dish_id')->references('id')->on('dishes')->onDelete('CASCADE');
+
+            $table->unique(['user_id','dish_id','created_at']);
         });
     }
 
