@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exceptions\MyException;
 use App\Repositories\DishContentRepository;
 use App\Repositories\DishRepository;
 use App\Repositories\ManufacturerRepository;
@@ -10,6 +11,7 @@ use App\Repositories\RatingRepositiry;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DishService
@@ -61,7 +63,7 @@ class DishService
             $dish = $this->dishRepository->all();
             $result = array();
             foreach ($dish as $item) {
-                $id=$item->id;
+                $id = $item->id;
                 $manufacturer = $this->manufacturerRepository->findById($item->manufacturer_id);
                 $nutrition = $this->nutritionRepository->findById($item->nutrition_id)->toArray();
                 array_splice($nutrition, 0, 1);
@@ -79,20 +81,29 @@ class DishService
 
     public function newDish(Request $request)
     {
-        if (!$request->has('name') || !$request->has('manufacturer_id') || !$request->has('price') || !$request->has('calories') || !$request->has('protein') || !$request->has('fat') || !$request->has('carbohydrate')) {
-            return [['error' => 'The request is incomplete'], Response::HTTP_BAD_REQUEST];
+        DB::beginTransaction();
+        try {
+            if (!$request->has('name') || !$request->has('manufacturer_id') || !$request->has('price') || !$request->has('calories') || !$request->has('protein') || !$request->has('fat') || !$request->has('carbohydrate')) {
+                throw new MyException(serialize(['error' => 'The request is incomplete']),Response::HTTP_BAD_REQUEST);
+            }
+            if ($this->manufacturerRepository->findById($request->input('manufacturer_id')) == null) {
+                throw new MyException(serialize(['error' => 'The manufacturer_id error']),Response::HTTP_BAD_REQUEST);
+            }
+            $nutrition_data = $request->only(['calories', 'protein', 'fat', 'carbohydrate']);
+            $nutrition = $this->nutritionRepository->caeate($nutrition_data);
+            $dish_data = array_merge($request->only(['name', 'manufacturer_id', 'price']), ['nutrition_id' => $nutrition->id, 'photo' => Storage::disk('public')->url('image/dish/default.png')]);
+            $dish = $this->dishRepository->caeate($dish_data);
+            $contents_data = $request->input('contents');
+            foreach ($contents_data as $item)
+                $this->dishContentRepository->caeate(['dish_id' => $dish->id, 'name' => $item]);
+            DB::commit();
+            return [$this->getDish($dish->id)[0], Response::HTTP_CREATED];
+        } catch (MyException $e) {
+            return [unserialize($e->getMessage()), $e->getCode()];
+        } catch (\Exception $e) {
+            DB::rollback();
+            return [['error'=>$e->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR];
         }
-        if ($this->manufacturerRepository->findById($request->input('manufacturer_id')) == null) {
-            return [['error' => 'The manufacturer_id error'], Response::HTTP_BAD_REQUEST];
-        }
-        $nutrition_data = $request->only(['calories', 'protein', 'fat', 'carbohydrate']);
-        $nutrition = $this->nutritionRepository->caeate($nutrition_data);
-        $dish_data = array_merge($request->only(['name', 'manufacturer_id', 'price']), ['nutrition_id' => $nutrition->id, 'photo' => Storage::disk('public')->url('image/dish/default.png')]);
-        $dish = $this->dishRepository->caeate($dish_data);
-        $contents_data = $request->input('contents');
-        foreach ($contents_data as $item)
-            $this->dishContentRepository->caeate(['dish_id' => $dish->id, 'name' => $item]);
-        return [$this->getDish($dish->id)[0],Response::HTTP_CREATED];
     }
 
     public function image(Request $request)
