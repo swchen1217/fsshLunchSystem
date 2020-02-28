@@ -49,9 +49,10 @@ class DishController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function editDish()
+    public function editDish(Request $request)
     {
-
+        $mResult = $this->dishService->image($request);
+        return response()->json($mResult[0], $mResult[1]);
     }
 
     public function removeDish()
