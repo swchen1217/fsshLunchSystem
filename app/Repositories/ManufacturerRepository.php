@@ -16,6 +16,11 @@ class ManufacturerRepository
         $this->manufacturer = $manufacturer;
     }
 
+    public function all()
+    {
+        return $this->manufacturer->all();
+    }
+
     public function findById($id)
     {
         return $this->manufacturer->find($id);
