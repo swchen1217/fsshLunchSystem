@@ -43,6 +43,10 @@ class DishRepository
 
     public function delete($id)
     {
-        return $this->dish->find($id)->delete();
+        $dish=$this->dish->find($id);
+        if($dish!=null)
+            return $dish->delete();
+        else
+            return -1;
     }
 }
