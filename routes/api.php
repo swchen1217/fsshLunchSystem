@@ -97,18 +97,18 @@ Route::group([
     Route::post('/', '');
     Route::put('/{order_id}', '');
     Route::delete('/{order_id}', '');
-});
+});*/
 
 Route::group([
     'prefix' => 'manufacturer'
 ], function ($router) {
-    Route::get('/', '');
-    Route::post('/', '');
-    Route::put('/{manufacturer_id}', '');
-    Route::delete('/{manufacturer_id}', '');
+    Route::get('/', 'ManufacturerController@get');
+    Route::post('/', 'ManufacturerController@create')->middleware(['permission2:manufacturer.modify.create']);
+    Route::patch('/{manufacturer_id}', 'ManufacturerController@edit')->middleware(['permission2:manufacturer.modify.update']);
+    Route::delete('/{manufacturer_id}', 'ManufacturerController@remove')->middleware(['permission2:manufacturer.modify.delete']);
 });
 
-Route::group([
+/*Route::group([
     'prefix' => 'rating'
 ], function ($router) {
     Route::get('/', '');
