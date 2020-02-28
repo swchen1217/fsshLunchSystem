@@ -35,4 +35,9 @@ class DishContentRepository
     {
         return $this->dishContent->find($id)->delete();
     }
+
+    public function deleteByDishId($dish_id)
+    {
+        return $this->dishContent->where('dish_id', $dish_id)->delete();
+    }
 }
