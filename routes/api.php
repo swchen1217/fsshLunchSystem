@@ -45,11 +45,11 @@ Route::group([
     'prefix' => 'dish'
 ], function ($router) {
     Route::get('/', 'DishController@getDish')->middleware(['permission2:dish.read']);
-    Route::get('/{dish_id}', 'DishController@getDishById');
-    Route::post('/', 'DishController@newDish');
-    Route::post('/image', 'DishController@newImage');
-    Route::put('/{dish_id}', 'DishController@editDish');
-    Route::delete('/{dish_id}', 'DishController@removeDish');
+    Route::get('/{dish_id}', 'DishController@getDishById')->middleware(['permission2:dish.read']);
+    Route::post('/', 'DishController@newDish')->middleware(['permission2:dish.modify.create']);
+    Route::post('/image', 'DishController@image')->middleware(['permission2:dish.modify.create|dish.modify.update']);
+    Route::put('/{dish_id}', 'DishController@editDish')->middleware(['permission2:dish.modify.update']);
+    Route::delete('/{dish_id}', 'DishController@removeDish')->middleware(['permission2:dish.modify.delete']);
 });
 
 // TODO
