@@ -18,6 +18,8 @@ class CreateSalesTable extends Migration
             $table->date('sale_at');
             $table->unsignedInteger('dish_id');
             $table->unsignedInteger('status');
+            $table->timestamp('created_at')
+                ->default(DB::raw('CURRENT_TIMESTAMP'));
 
             $table->foreign('dish_id')->references('id')->on('dishes')->onDelete('CASCADE');
         });
