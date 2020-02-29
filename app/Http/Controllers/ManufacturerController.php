@@ -14,7 +14,7 @@ class ManufacturerController extends Controller
 
     public function __construct(ManufacturerService $manufacturerService)
     {
-        $this->middleware('auth:api',['except' => ['get']]);
+        $this->middleware('auth:api', ['except' => ['get']]);
         $this->manufacturerService = $manufacturerService;
     }
 
@@ -32,13 +32,13 @@ class ManufacturerController extends Controller
 
     public function edit(Request $request, $manufacturer_id)
     {
-        $mResult = $this->manufacturerService->edit($request,$manufacturer_id);
+        $mResult = $this->manufacturerService->edit($request, $manufacturer_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 
     public function remove(Request $request, $manufacturer_id)
     {
-        $mResult = $this->manufacturerService->remove($request,$manufacturer_id);
+        $mResult = $this->manufacturerService->remove($request, $manufacturer_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 }
