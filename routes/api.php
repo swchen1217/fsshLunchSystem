@@ -52,19 +52,18 @@ Route::group([
     Route::delete('/{dish_id}', 'DishController@removeDish')->middleware(['permission2:dish.modify.delete']);
 });
 
-// TODO
-/*Route::group([
+Route::group([
     'prefix' => 'sale'
 ], function ($router) {
     Route::get('/', '');
     Route::get('/id/{sale_id}', '');
     Route::get('/date/{date}', '');
-    Route::post('/', '');
-    Route::put('/{sale_id}', '');
-    Route::delete('/{sale_id}', '');
+    Route::post('/', '')->middleware(['permission2:sale.modify.create']);
+    Route::put('/{sale_id}', '')->middleware(['permission2:sale.modify.update']);
+    Route::delete('/{sale_id}', '')->middleware(['permission2:sale.modify.delete']);
 });
 
-Route::group([
+/*Route::group([
     'prefix' => 'balance'
 ], function ($router) {
     Route::get('/{account}', '');
