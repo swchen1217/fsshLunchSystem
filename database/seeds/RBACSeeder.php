@@ -29,6 +29,7 @@ class RBACSeeder extends Seeder
             Role::findByName($role)->syncPermissions([]);
 
         //student
+        Role::findByName("student")->givePermissionTo("dish.read");
         Role::findByName("student")->givePermissionTo("balance.read.self");
         Role::findByName("student")->givePermissionTo("order.read.self");
         Role::findByName("student")->givePermissionTo("order.read.class.today");
