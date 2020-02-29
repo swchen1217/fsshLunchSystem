@@ -14,7 +14,7 @@ class ManufacturerController extends Controller
 
     public function __construct(ManufacturerService $manufacturerService)
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api',['except' => ['get']]);
         $this->manufacturerService = $manufacturerService;
     }
 
