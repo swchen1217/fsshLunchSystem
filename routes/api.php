@@ -55,12 +55,12 @@ Route::group([
 Route::group([
     'prefix' => 'sale'
 ], function ($router) {
-    Route::get('/', '');
-    Route::get('/id/{sale_id}', '');
-    Route::get('/date/{date}', '');
-    Route::post('/', '')->middleware(['permission2:sale.modify.create']);
-    Route::put('/{sale_id}', '')->middleware(['permission2:sale.modify.update']);
-    Route::delete('/{sale_id}', '')->middleware(['permission2:sale.modify.delete']);
+    Route::get('/', 'SaleController@getAll');
+    Route::get('/id/{sale_id}', 'SaleController@getById');
+    Route::get('/date/{date}', 'SaleController@getBySaleDate');
+    Route::post('/', 'SaleController@create')->middleware(['permission2:sale.modify.create']);
+    Route::put('/{sale_id}', 'SaleController@edit')->middleware(['permission2:sale.modify.update']);
+    Route::delete('/{sale_id}', 'SaleController@remove')->middleware(['permission2:sale.modify.delete']);
 });
 
 /*Route::group([
