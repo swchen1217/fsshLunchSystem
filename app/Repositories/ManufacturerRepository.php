@@ -38,6 +38,6 @@ class ManufacturerRepository
 
     public function delete($id)
     {
-        return $this->manufacturer->find($id)->delete();
+        return $this->manufacturer->where('id', $id)->delete();
     }
 }
