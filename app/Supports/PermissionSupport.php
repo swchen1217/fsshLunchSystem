@@ -3,12 +3,15 @@
 namespace App\Supports;
 
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class PermissionSupport
 {
-    public static function can($permission, $user = null)
+    public static function check($permission, $user = null, $throw = false)
     {
-        if (Auth::guest() && $user==null) {
+        if (Auth::guest() && $user == null) {
+            if ($throw)
+                throw UnauthorizedException::notLoggedIn();
             return false;
         }
         if ($user == null)
@@ -21,6 +24,8 @@ class PermissionSupport
                 return true;
             }
         }
+        if ($throw)
+            throw UnauthorizedException::forPermissions($permission);
         return false;
     }
 }
