@@ -56,9 +56,11 @@ class OrderService
             foreach ($order as $item) {
                 $user = $this->userRepository->findById($item->user_id)->only(['id', 'account', 'class', 'number']);
                 $sale = $this->saleRepository->findById($item->sale_id)->only(['id', 'sale_at', 'dish_id']);
-                $dish = $this->dishRepository->findById($sale->dish_id)->only(['id', 'name', 'manufacturer_id', 'price']);
-                $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
-                $result[] = array_merge(['order_id' => $item->id, 'user' => $user->toArray(), 'dish' => array_merge($dish->toArray(),['manufacturer_name'=>$manufacturer->name])]);
+                $dish_id=$sale['dish_id'];
+                array_splice($sale, 2, 1);
+                $dish = $this->dishRepository->findById($dish_id)->only(['id', 'name', 'manufacturer_id', 'price']);
+                $manufacturer = $this->manufacturerRepository->findById($dish['manufacturer_id']);
+                    $result[] = array_merge(['order_id' => $item->id, 'user' => $user, 'sale'=>array_merge($sale,['dish'=>array_merge($dish,['manufacturer_name'=>$manufacturer->name])])]);
             }
             return [$result,Response::HTTP_OK];
         }
