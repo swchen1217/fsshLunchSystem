@@ -87,15 +87,23 @@ class SaleService
         return [$sale, Response::HTTP_CREATED];
     }
 
-    public function edit(Request $request, $manufacturer_id)
+    public function edit(Request $request, $sale_id)
     {
         Cache::tags('sale')->flush();
-        return [['test' => Auth::guest()], 200];
+        $edit = $this->saleRepository->update($sale_id, $request->all());
+        if ($edit != 0)
+            return [$this->saleRepository->findById($sale_id), Response::HTTP_OK];
+        else
+            return [['error' => 'The Sale Not Found'], Response::HTTP_NOT_FOUND];
 
     }
 
-    public function remove(Request $request, $manufacturer_id)
+    public function remove(Request $request, $sale_id)
     {
         Cache::tags('sale')->flush();
+        if ($this->saleRepository->findById($sale_id) != null)
+            return [[], Response::HTTP_NO_CONTENT];
+        else
+            return [['error' => 'The Sale Not Found'], Response::HTTP_NOT_FOUND];
     }
 }
