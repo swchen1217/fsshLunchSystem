@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Entity\Order;
+
+class OrderRepository
+{
+    /**
+     * @var Order
+     */
+    private $order;
+
+    public function __construct(Order $order)
+    {
+        $this->order = $order;
+    }
+
+    public function all()
+    {
+        return $this->order->all();
+    }
+
+    public function findById($id)
+    {
+        return $this->order->find($id);
+    }
+
+    public function caeate($data)
+    {
+        return $this->order->create($data);
+    }
+
+    public function update($id, $data)
+    {
+        return $this->order->where('id', $id)->update($data);
+    }
+
+    public function delete($id)
+    {
+        return $this->order->where('id', $id)->delete();
+    }
+}
