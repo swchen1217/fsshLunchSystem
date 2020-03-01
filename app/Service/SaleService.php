@@ -101,9 +101,10 @@ class SaleService
     public function remove(Request $request, $sale_id)
     {
         Cache::tags('sale')->flush();
-        if ($this->saleRepository->findById($sale_id) != null)
+        $remove = $this->saleRepository->delete($sale_id);
+        if ($remove != 0)
             return [[], Response::HTTP_NO_CONTENT];
         else
-            return [['error' => 'The Sale Not Found'], Response::HTTP_NOT_FOUND];
+            return [['error' => 'The Manufacturer Not Found'], Response::HTTP_NOT_FOUND];
     }
 }
