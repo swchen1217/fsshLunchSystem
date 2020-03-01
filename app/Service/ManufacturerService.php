@@ -20,26 +20,26 @@ class ManufacturerService
 
     public function get()
     {
-        return [$this->manufacturerRepository->all(),Response::HTTP_OK];
+        return [$this->manufacturerRepository->all(), Response::HTTP_OK];
     }
 
     public function create(Request $request)
     {
-        return [$this->manufacturerRepository->caeate($request->only(['name'])),Response::HTTP_CREATED];
+        return [$this->manufacturerRepository->caeate($request->only(['name'])), Response::HTTP_CREATED];
     }
 
     public function edit(Request $request, $manufacturer_id)
     {
-        $edit=$this->manufacturerRepository->update($manufacturer_id,$request->only(['name']));
-        if($edit!=0)
-            return [$this->manufacturerRepository->findById($manufacturer_id),Response::HTTP_OK];
+        $edit = $this->manufacturerRepository->update($manufacturer_id, $request->only(['name']));
+        if ($edit != 0)
+            return [$this->manufacturerRepository->findById($manufacturer_id), Response::HTTP_OK];
         else
             return [['error' => 'The Manufacturer Not Found'], Response::HTTP_NOT_FOUND];
     }
 
     public function remove(Request $request, $manufacturer_id)
     {
-        if($this->manufacturerRepository->findById($manufacturer_id)!=null)
+        if ($this->manufacturerRepository->findById($manufacturer_id) != null)
             return [[], Response::HTTP_NO_CONTENT];
 
         else
