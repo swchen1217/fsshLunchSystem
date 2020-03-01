@@ -34,9 +34,7 @@ class SaleController extends Controller
 
     public function getBySaleDate(Request $request, $saleDate)
     {
-        $validator = Validator::make([$saleDate], ['required|date_format:Y-m-d']);
-        if ($validator->fails())
-            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
+        $this->dateValidator($saleDate);
         $mResult = $this->saleService->getSaleData('saleDate', $saleDate);
         return response()->json($mResult[0], $mResult[1]);
     }
@@ -57,5 +55,11 @@ class SaleController extends Controller
     {
         $mResult = $this->saleService->remove($request, $sale_id);
         return response()->json($mResult[0], $mResult[1]);
+    }
+
+    private function dateValidator($input){
+        $validator = Validator::make([$input], ['required|date_format:Y-m-d']);
+        if ($validator->fails())
+            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
     }
 }
