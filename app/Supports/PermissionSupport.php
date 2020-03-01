@@ -6,17 +6,18 @@ use Illuminate\Support\Facades\Auth;
 
 class PermissionSupport
 {
-    public static function can($permission)
+    public static function can($permission, $user = null)
     {
-        //TODO $user=Auth::user()
-        if (Auth::guest()) {
+        if (Auth::guest() && $user==null) {
             return false;
         }
+        if ($user == null)
+            $user = Auth::user();
         $parts = explode('.', $permission);
         $ability = '';
         foreach ($parts as $part) {
             $ability .= $ability ? '.' . $part : $part;
-            if (Auth::user()->can($ability)) {
+            if ($user->can($ability)) {
                 return true;
             }
         }
