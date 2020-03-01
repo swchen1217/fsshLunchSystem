@@ -43,6 +43,6 @@ class SaleRepository
 
     public function delete($id)
     {
-        return $this->sale->find($id)->delete();
+        return $this->sale->where('id', $id)->delete();
     }
 }
