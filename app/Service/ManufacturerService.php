@@ -41,7 +41,6 @@ class ManufacturerService
     {
         if ($this->manufacturerRepository->findById($manufacturer_id) != null)
             return [[], Response::HTTP_NO_CONTENT];
-
         else
             return [['error' => 'The Manufacturer Not Found'], Response::HTTP_NOT_FOUND];
     }
