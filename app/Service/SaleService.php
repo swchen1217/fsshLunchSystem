@@ -64,6 +64,8 @@ class SaleService
     public function create(Request $request)
     {
         Cache::tags('sale')->flush();
+
+
     }
 
     public function edit(Request $request, $manufacturer_id)
