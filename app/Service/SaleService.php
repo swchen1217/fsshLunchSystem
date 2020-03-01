@@ -80,17 +80,17 @@ class SaleService
             if (Carbon::now()->gt(Carbon::createFromTimeString(env('ORDER_DEADLINE', '10:00'))))
                 return [['error' => 'Sales time has passed'], Response::HTTP_BAD_REQUEST];
         }
-        if($this>$this->dishRepository->findById($dish_id)==null)
+        if ($this > $this->dishRepository->findById($dish_id) == null)
             return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
 
-        $sale=$this->saleRepository->caeate(['sale_at'=>$sale_at,'dish_id'=>$dish_id,'status'=>$status]);
-        return [$sale,Response::HTTP_CREATED];
+        $sale = $this->saleRepository->caeate(['sale_at' => $sale_at, 'dish_id' => $dish_id, 'status' => $status]);
+        return [$sale, Response::HTTP_CREATED];
     }
 
     public function edit(Request $request, $manufacturer_id)
     {
         Cache::tags('sale')->flush();
-        return [['test'=>Auth::guest()],200];
+        return [['test' => Auth::guest()], 200];
 
     }
 
