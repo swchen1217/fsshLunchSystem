@@ -36,6 +36,7 @@ class RatingRepositiry
     public function create($user_id, $dish_id, $rating)
     {
         Cache::tags('rating')->forget($dish_id);
+        Cache::tags('sale')->flush();
         return $this->rating->create(['user_id' => $user_id, 'dish_id' => $dish_id, 'rating' => $rating,'created_at'=>date('Y-m-d')]);
     }
 }
