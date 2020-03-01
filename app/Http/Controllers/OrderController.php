@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Service\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -21,49 +22,52 @@ class OrderController extends Controller
 
     public function getAll()
     {
-        $mResult = $this->orderService->getSaleData();
+        $mResult = $this->orderService->get();
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getById()
+    public function getById(Request $request, $order_id)
     {
-        $mResult = $this->orderService->getSaleData();
+        $mResult = $this->orderService->get('order_id', $order_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getByUser()
+    public function getByUser(Request $request, $user_id)
     {
-        $mResult = $this->orderService->getSaleData();
+        $mResult = $this->orderService->get('user_id', $user_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getByDish()
+    public function getByDish(Request $request, $dish_id)
     {
-        $mResult = $this->orderService->getSaleData();
+        $mResult = $this->orderService->get('dish_id', $dish_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getByDate()
+    public function getByDate(Request $request, $saleDate)
     {
-        $mResult = $this->saleService->getSaleData();
+        $validator = Validator::make([$saleDate], ['required|date_format:Y-m-d']);
+        if ($validator->fails())
+            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
+        $mResult = $this->orderService->get('saleDate', $saleDate);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getByManufacturer()
+    public function getByManufacturer(Request $request, $manufacturer_id)
     {
-        $mResult = $this->saleService->getSaleData();
+        $mResult = $this->orderService->get('manufacturer_id', $manufacturer_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getByClass()
+    public function getByClass(Request $request, $class)
     {
-        $mResult = $this->orderService->getSaleData();
+        $mResult = $this->orderService->get('class', $class);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getTodayByClass()
+    public function getTodayByClass(Request $request, $class)
     {
-        $mResult = $this->orderService->getSaleData();
+        $mResult = $this->orderService->get('classToday', $class);
         return response()->json($mResult[0], $mResult[1]);
     }
 
