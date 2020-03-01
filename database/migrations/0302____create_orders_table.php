@@ -17,12 +17,12 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('dish_id');
+            $table->unsignedInteger('sale_id');
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
-            $table->foreign('dish_id')->references('id')->on('dishes')->onDelete('CASCADE');
+            $table->foreign('sale_id')->references('id')->on('sales')->onDelete('CASCADE');
         });
     }
 
