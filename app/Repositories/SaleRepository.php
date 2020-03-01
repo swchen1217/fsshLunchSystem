@@ -28,7 +28,7 @@ class SaleRepository
 
     public function findBySaleDate($date)
     {
-        return $this->sale->where('sale_at',$date)->get();
+        return $this->sale->where('sale_at', $date)->get();
     }
 
     public function caeate($data)
