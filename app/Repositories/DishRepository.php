@@ -43,8 +43,8 @@ class DishRepository
 
     public function delete($id)
     {
-        $dish=$this->dish->find($id);
-        if($dish!=null)
+        $dish = $this->dish->find($id);
+        if ($dish != null)
             return $dish->delete();
         else
             return -1;
