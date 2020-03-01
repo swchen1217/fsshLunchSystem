@@ -71,16 +71,16 @@ class SaleService
     public function create(Request $request)
     {
         Cache::tags('sale')->flush();
-        $sale_at = $request->input('salt_at');
+        $sale_at = $request->input('sale_at');
         $dish_id = $request->input('dish_id');
         $status = $request->input('status');
         if (Carbon::today()->gt(Carbon::parse($sale_at)))
             return [['error' => 'Sales time has passed'], Response::HTTP_BAD_REQUEST];
         elseif (Carbon::today()->eq(Carbon::parse($sale_at))) {
-            if (Carbon::now()->gt(Carbon::createFromTimeString(env('ORDER_DEADLINE', '10:00'))))
+            if (Carbon::now()->gt(Carbon::createFromTimeString(env('ORDER_DEADLINE', '08:00'))))
                 return [['error' => 'Sales time has passed'], Response::HTTP_BAD_REQUEST];
         }
-        if ($this > $this->dishRepository->findById($dish_id) == null)
+        if ($this->dishRepository->findById($dish_id) == null)
             return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
 
         $sale = $this->saleRepository->caeate(['sale_at' => $sale_at, 'dish_id' => $dish_id, 'status' => $status]);
