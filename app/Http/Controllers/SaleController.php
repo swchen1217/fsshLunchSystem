@@ -52,6 +52,9 @@ class SaleController extends Controller
 
     public function edit(Request $request, $sale_id)
     {
+        $validator = Validator::make($request, ['sale_at'=>'date_format:Y-m-d']);
+        if ($validator->fails())
+            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
         $mResult = $this->saleService->edit($request, $sale_id);
         return response()->json($mResult[0], $mResult[1]);
     }
