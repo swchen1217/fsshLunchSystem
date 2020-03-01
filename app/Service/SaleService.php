@@ -95,7 +95,6 @@ class SaleService
             return [$this->saleRepository->findById($sale_id), Response::HTTP_OK];
         else
             return [['error' => 'The Sale Not Found'], Response::HTTP_NOT_FOUND];
-
     }
 
     public function remove(Request $request, $sale_id)
