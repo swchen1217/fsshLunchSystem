@@ -86,16 +86,17 @@ Route::group([
 Route::group([
     'prefix' => 'order'
 ], function ($router) {
-    Route::get('/', '');
-    Route::get('/id/{order_id}', '');
-    Route::get('/user/{user_id}', '');
-    Route::get('/dish/{dish_id}', '');
-    Route::get('/date/{date_id}', '');
-    Route::get('/manufacturer/{manufacturer_id}', '');
-    Route::get('/class/{class_id}', '');
-    Route::post('/', '');
-    Route::patch('/{order_id}', '');
-    Route::delete('/{order_id}', '');
+    Route::get('/', 'OrderController@getAll');
+    Route::get('/id/{order_id}', 'OrderController@getById');
+    Route::get('/user/{user_id}', 'OrderController@getByUser');
+    Route::get('/dish/{dish_id}', 'OrderController@getByDish');
+    Route::get('/date/{date_id}', 'OrderController@getByDate');
+    Route::get('/manufacturer/{manufacturer_id}', 'OrderController@getByManufacturer');
+    Route::get('/class/{class}', 'OrderController@getByClass');
+    Route::get('/class/{class}/today', 'OrderController@getTodayByClass');
+    Route::post('/', 'OrderController@create');
+    Route::patch('/{order_id}', 'OrderController@edit');
+    Route::delete('/{order_id}', 'OrderController@remove');
 });
 
 /*Route::group([
