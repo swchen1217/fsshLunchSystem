@@ -7,6 +7,7 @@ use App\Repositories\SaleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class SaleService
@@ -89,7 +90,7 @@ class SaleService
     public function edit(Request $request, $manufacturer_id)
     {
         Cache::tags('sale')->flush();
-
+        return [['test'=>Auth::guest()],200];
 
     }
 
