@@ -81,7 +81,7 @@ Route::group([
     Route::post('/', '');
     Route::put('/{account}', '');
     Route::delete('/{account}', '');
-});
+});*/
 
 Route::group([
     'prefix' => 'order'
@@ -94,11 +94,11 @@ Route::group([
     Route::get('/manufacturer/{manufacturer_id}', '');
     Route::get('/class/{class_id}', '');
     Route::post('/', '');
-    Route::put('/{order_id}', '');
+    Route::patch('/{order_id}', '');
     Route::delete('/{order_id}', '');
-});*/
+});
 
-Route::group([
+/*Route::group([
     'prefix' => 'manufacturer'
 ], function ($router) {
     Route::get('/', 'ManufacturerController@get');
