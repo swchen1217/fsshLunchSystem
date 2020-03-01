@@ -39,7 +39,8 @@ class ManufacturerService
 
     public function remove(Request $request, $manufacturer_id)
     {
-        if ($this->manufacturerRepository->findById($manufacturer_id) != null)
+        $remove = $this->manufacturerRepository->delete($manufacturer_id);
+        if ($remove != 0)
             return [[], Response::HTTP_NO_CONTENT];
         else
             return [['error' => 'The Manufacturer Not Found'], Response::HTTP_NOT_FOUND];
