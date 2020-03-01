@@ -25,7 +25,7 @@ class PermissionSupport
             }
         }
         if ($throw)
-            throw UnauthorizedException::forPermissions($permission);
+            throw UnauthorizedException::forPermissions([$permission]);
         return false;
     }
 }
