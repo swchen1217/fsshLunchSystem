@@ -25,11 +25,11 @@ class RatingRepositiry
 
     public function getAverageByDishId($dish_id)
     {
-        return Cache::tags('rating')->remember($dish_id, Carbon::now()->addHours(3), function() use ($dish_id) {
-            $rating=$this->rating->where('dish_id', $dish_id)->get();
-            if($rating==null || $rating->count()<10)
+        return Cache::tags('rating')->remember($dish_id, Carbon::now()->addHours(3), function () use ($dish_id) {
+            $rating = $this->rating->where('dish_id', $dish_id)->get();
+            if ($rating == null || $rating->count() < 10)
                 return -1;
-            return round($rating->avg('rating'),1);
+            return round($rating->avg('rating'), 1);
         });
     }
 
@@ -37,6 +37,6 @@ class RatingRepositiry
     {
         Cache::tags('rating')->forget($dish_id);
         Cache::tags('sale')->flush();
-        return $this->rating->create(['user_id' => $user_id, 'dish_id' => $dish_id, 'rating' => $rating,'created_at'=>date('Y-m-d')]);
+        return $this->rating->create(['user_id' => $user_id, 'dish_id' => $dish_id, 'rating' => $rating, 'created_at' => date('Y-m-d')]);
     }
 }
