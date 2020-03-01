@@ -11,6 +11,7 @@ use App\Repositories\RatingRepositiry;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -108,6 +109,7 @@ class DishService
 
     public function image(Request $request, $dish_id)
     {
+        Cache::tags('sale')->flush();
         if ($request->input('type') == 'url') {
             $photo_url = $request->input('url');
         } elseif ($request->input('type') == 'image') {
@@ -134,6 +136,7 @@ class DishService
 
     public function editDish(Request $request, $dish_id)
     {
+        Cache::tags('sale')->flush();
         DB::beginTransaction();
         try {
             $dish = $this->dishRepository->findById($dish_id);
@@ -165,6 +168,7 @@ class DishService
 
     public function removeDish(Request $request, $dish_id)
     {
+        Cache::tags('sale')->flush();
         if ($this->dishRepository->delete($dish_id) != -1)
             return [[], Response::HTTP_NO_CONTENT];
         else
