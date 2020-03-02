@@ -38,9 +38,9 @@ class OrderController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getByDish(Request $request, $dish_id)
+    public function getBySale(Request $request, $sale_id)
     {
-        $mResult = $this->orderService->get('dish_id', $dish_id);
+        $mResult = $this->orderService->get('sale_id', $sale_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 
