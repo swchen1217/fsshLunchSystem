@@ -8,5 +8,5 @@ class Verify extends Model
 {
     public $timestamps = false;
 
-    protected $guarded=['id'];
+    protected $guarded = ['id'];
 }
