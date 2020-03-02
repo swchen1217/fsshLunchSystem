@@ -21,8 +21,8 @@ class PermissionMiddleware
      * admin.auth.users.modify
      * admin.auth.users.modify.create
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next, $permission)
@@ -39,7 +39,7 @@ class PermissionMiddleware
         foreach ($permissions as $p) {
 
             //explode by the point
-            $parts   = explode('.', $p);
+            $parts = explode('.', $p);
             $ability = '';
             foreach ($parts as $part) {
 
