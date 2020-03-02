@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Money_log extends Model
 {
     public $timestamps = false;
+
+    protected $guarded = ['id'];
 }
