@@ -128,13 +128,6 @@ class OrderService
             }else
                 return [['error' => 'The Order Not Found'], Response::HTTP_NOT_FOUND];
         }
-
-
-        //all
-        //id-self
-        //id-all
-        //user-self
-        //...
     }
 
     public function create(Request $request)
