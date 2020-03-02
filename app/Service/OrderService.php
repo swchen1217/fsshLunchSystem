@@ -153,6 +153,15 @@ class OrderService
     {
         //self
         //all
+
+        //user?
+        //sale_id
+
+        //has sale_id??
+        //get price
+        //has balance data ? create : get
+        //balance-price>=0 ? ok : fail
+        //log
     }
 
     public function edit(Request $request)
