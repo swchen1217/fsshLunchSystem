@@ -24,7 +24,7 @@ class RBACSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->init();
-        $roles=['student','student_LM','clerk','store_mgr','system_mgr','Super Admin'];
+        $roles = ['student', 'student_LM', 'clerk', 'store_mgr', 'system_mgr', 'Super Admin'];
         foreach ($roles as $role)
             Role::findByName($role)->syncPermissions([]);
 
@@ -62,7 +62,8 @@ class RBACSeeder extends Seeder
         Role::findByName("Super Admin")->givePermissionTo("admin");
     }
 
-    private function init(){
+    private function init()
+    {
 
         DB::table('roles')->delete();
         DB::table('permissions')->delete();
