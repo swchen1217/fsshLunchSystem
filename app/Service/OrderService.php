@@ -63,7 +63,9 @@ class OrderService
                 $sale = $this->saleRepository->findBySaleDate($data);
                 $order=collect();
                 foreach ($sale as $item){
-                    $order->push($this->orderRepository->findBySaleId($item->id));
+                    $ss=$this->orderRepository->findBySaleId($item->id);
+                    foreach ($ss as $s)
+                        $order->push($s);
                 }
             }
 
