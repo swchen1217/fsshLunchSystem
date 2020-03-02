@@ -52,7 +52,6 @@ class OrderService
 
     public function get($type = 'all', $data = null, Request $request = null)
     {
-
         if($type!='order_id'){
             if($type=='all')
                 $order = $this->orderRepository->all();
