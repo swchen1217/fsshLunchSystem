@@ -12,7 +12,7 @@ class ManufacturerSeeder extends Seeder
      */
     public function run()
     {
-        $manufacturers=[['name'=>'正園'],['name'=>'御饌坊'],['name'=>'彩鶴']];
+        $manufacturers = [['name' => '正園'], ['name' => '御饌坊'], ['name' => '彩鶴']];
         foreach ($manufacturers as $item)
             Manufacturer::create($item);
     }
