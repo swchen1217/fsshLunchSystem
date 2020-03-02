@@ -18,7 +18,7 @@ class VerifyRepository
 
     public function findByUserId($user_id)
     {
-        return $this->verify->where('user_id',$user_id)->get();
+        return $this->verify->where('user_id', $user_id)->get();
     }
 
     public function caeate($data)
@@ -28,7 +28,7 @@ class VerifyRepository
 
     public function deleteByUserId($user_id)
     {
-        return $this->verify->where('user_id',$user_id)->delete();
+        return $this->verify->where('user_id', $user_id)->delete();
     }
 
 }
