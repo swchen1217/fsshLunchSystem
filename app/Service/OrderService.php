@@ -53,13 +53,13 @@ class OrderService
     public function get($type = 'all', $data = null, Request $request = null)
     {
         if($type!='order_id'){
-            if($type=='all')
+            if($type=='all') //order.read
                 $order = $this->orderRepository->all();
-            elseif ($type=='user_id')
+            elseif ($type=='user_id') //order.read.self
                 $order = $this->orderRepository->findByUserId($data);
-            elseif ($type=='sale_id')
+            elseif ($type=='sale_id') //order.read
                 $order = $this->orderRepository->findBySaleId($data);
-            elseif ($type=='saleDate'){
+            elseif ($type=='saleDate'){ //order.read
                 $sale = $this->saleRepository->findBySaleDate($data);
                 $order=collect();
                 foreach ($sale as $item){
@@ -67,7 +67,7 @@ class OrderService
                     foreach ($ss as $s)
                         $order->push($s);
                 }
-            }elseif ($type=='manufacturer_id'){
+            }elseif ($type=='manufacturer_id'){ //order.read
                 $dish=$this->dishRepository->findByManufacturer_id($data);
                 $order=collect();
                 foreach ($dish as $dd){
@@ -80,7 +80,7 @@ class OrderService
                         }
                     }
                 }
-            }elseif ($type=='class'){
+            }elseif ($type=='class'){ //order.read.class
                 $user=$this->userRepository->findByClass($data);
                 $order=collect();
                 foreach ($user as $uu){
@@ -88,7 +88,7 @@ class OrderService
                     foreach ($oo as $o)
                         $order->push($o);
                 }
-            }elseif ($type=='classToday'){
+            }elseif ($type=='classToday'){ //order.read.class.today
                 $user=$this->userRepository->findByClass($data);
                 $order=collect();
                 foreach ($user as $uu){
