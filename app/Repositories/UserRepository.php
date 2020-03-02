@@ -34,6 +34,11 @@ class UserRepository
         return $this->user->where('email', $email)->first();
     }
 
+    public function findByClass($class)
+    {
+        return $this->user->where('class', $class)->get();
+    }
+
     public function caeate($data)
     {
         return $this->user->create($data);
