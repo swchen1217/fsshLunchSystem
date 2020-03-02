@@ -58,7 +58,7 @@ class OrderService
             if ($type == 'all' && PermissionSupport::check('order.read', null, true)) //order.read
                 $order = $this->orderRepository->all();
             elseif ($type == 'user_id') { //order.read.self
-                if($this->getByUserIdCheck($data))
+                if ($this->getByUserIdCheck($data))
                     $order = $this->orderRepository->findByUserId($data);
                 /*if (PermissionSupport::check('order.read'))
                     $order = $this->orderRepository->findByUserId($data);
@@ -168,7 +168,8 @@ class OrderService
         //all
     }
 
-    private function getByUserIdCheck($user_id){
+    private function getByUserIdCheck($user_id)
+    {
         if (PermissionSupport::check('order.read'))
             return true;
         elseif ($user_id == Auth::user()->id && PermissionSupport::check('order.read.self', null, true))
