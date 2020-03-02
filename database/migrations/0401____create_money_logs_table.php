@@ -19,6 +19,7 @@ class CreateMoneyLogsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->string('event');
             $table->unsignedInteger('money');
+            $table->unsignedInteger('trigger_id');
             $table->text('note');
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
