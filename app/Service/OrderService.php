@@ -10,6 +10,7 @@ use App\Repositories\UserRepository;
 use App\Supports\PermissionSupport;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use PhpParser\Node\Expr\Cast\Object_;
 
 class OrderService
@@ -67,9 +68,39 @@ class OrderService
                     foreach ($ss as $s)
                         $order->push($s);
                 }
+            }elseif ($type=='manufacturer_id'){
+                $dish=$this->dishRepository->findByManufacturer_id($data);
+                $order=collect();
+                foreach ($dish as $dd){
+                    $ss=$this->saleRepository->findByDishId($dd->id);
+                    if($ss!=null){
+                        foreach ($ss as $s){
+                            $oo=$this->orderRepository->findBySaleId($s->id);
+                            foreach ($oo as $o)
+                                $order->push($o);
+                        }
+                    }
+                }
+            }elseif ($type=='class'){
+                $user=$this->userRepository->findByClass($data);
+                $order=collect();
+                foreach ($user as $uu){
+                    $oo=$this->orderRepository->findByUserId($uu->id);
+                    foreach ($oo as $o)
+                        $order->push($o);
+                }
+            }elseif ($type=='classToday'){
+                $user=$this->userRepository->findByClass($data);
+                $order=collect();
+                foreach ($user as $uu){
+                    $oo=$this->orderRepository->findByUserId($uu->id);
+                    foreach ($oo as $o){
+                        $s=$this->saleRepository->findById($o->sale_id);
+                        if(Carbon::today()->eq(Carbon::parse($s->sale_at)))
+                            $order->push($o);
+                    }
+                }
             }
-
-
 
             $result = array();
             foreach ($order as $item) {
