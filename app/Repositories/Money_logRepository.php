@@ -23,17 +23,17 @@ class Money_logRepository
 
     public function findByUserId($user_id)
     {
-        return $this->money_log->where('user_id',$user_id)->get();
+        return $this->money_log->where('user_id', $user_id)->get();
     }
 
     public function findByTriggerId($trigger_id)
     {
-        return $this->money_log->where('trigger_id',$trigger_id)->get();
+        return $this->money_log->where('trigger_id', $trigger_id)->get();
     }
 
     public function findByEvent($event)
     {
-        return $this->money_log->where('event',$event)->get();
+        return $this->money_log->where('event', $event)->get();
     }
 
     public function caeate($data)
