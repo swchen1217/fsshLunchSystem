@@ -89,7 +89,7 @@ Route::group([
     Route::get('/', 'OrderController@getAll');
     Route::get('/id/{order_id}', 'OrderController@getById');
     Route::get('/user/{user_id}', 'OrderController@getByUser');
-    Route::get('/dish/{dish_id}', 'OrderController@getByDish');
+    Route::get('/sale/{sale_id}', 'OrderController@getBySale');
     Route::get('/date/{date_id}', 'OrderController@getByDate');
     Route::get('/manufacturer/{manufacturer_id}', 'OrderController@getByManufacturer');
     Route::get('/class/{class}', 'OrderController@getByClass');
