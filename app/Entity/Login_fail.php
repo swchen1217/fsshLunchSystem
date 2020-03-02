@@ -8,5 +8,5 @@ class Login_fail extends Model
 {
     public $timestamps = false;
 
-    protected $guarded=['id'];
+    protected $guarded = ['id'];
 }
