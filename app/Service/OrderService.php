@@ -169,6 +169,12 @@ class OrderService
          *      "sale_id":["16","25","31",...]
          * }
          */
+
+        //if($request->input('user_id')!=null && PermissionSupport::check('',null,true))
+
+        //$user=$this->userRepository->findById($request->input('user_id'));
+        //var_dump($request->input('user_id'));
+        //return [[],200];
     }
 
     public function edit(Request $request)
