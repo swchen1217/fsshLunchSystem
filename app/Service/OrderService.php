@@ -155,13 +155,20 @@ class OrderService
         //all
 
         //user?
-        //sale_id
+        //sale_id Array
 
         //has sale_id??
         //get price
         //has balance data ? create : get
         //balance-price>=0 ? ok : fail
         //log
+
+        /*
+         * {
+         *      "user_id":"1",
+         *      "sale_id":["16","25","31",...]
+         * }
+         */
     }
 
     public function edit(Request $request)
