@@ -31,6 +31,11 @@ class SaleRepository
         return $this->sale->where('sale_at', $date)->get();
     }
 
+    public function findByDishId($dish_id)
+    {
+        return $this->sale->where('dish_id', $dish_id)->get();
+    }
+
     public function caeate($data)
     {
         return $this->sale->create($data);
