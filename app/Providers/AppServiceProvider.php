@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->rebinding('request', function ($app, $request) {
             if ($request->is('api/*')) {
                 $accept = $request->header('Accept');
-                $accept = rtrim('application/json,'.$accept, ',');
+                $accept = rtrim('application/json,' . $accept, ',');
 
                 $request->headers->set('Accept', $accept);
                 $request->server->set('HTTP_ACCEPT', $accept);
