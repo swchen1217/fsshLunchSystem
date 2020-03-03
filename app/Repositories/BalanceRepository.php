@@ -23,7 +23,7 @@ class BalanceRepository
 
     public function findByUserId($user_id)
     {
-        return $this->balance->where('user_id', $user_id)->get();
+        return $this->balance->where('user_id', $user_id)->first();
     }
 
     public function caeate($data)
