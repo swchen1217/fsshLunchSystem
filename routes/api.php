@@ -95,7 +95,7 @@ Route::group([
     Route::get('/class/{class}', 'OrderController@getByClass');
     Route::get('/class/{class}/today', 'OrderController@getTodayByClass');
     Route::post('/', 'OrderController@create');
-    Route::patch('/{order_id}', 'OrderController@edit');
+    //Route::patch('/{order_id}', 'OrderController@edit');
     Route::delete('/{order_id}', 'OrderController@remove');
 });
 
