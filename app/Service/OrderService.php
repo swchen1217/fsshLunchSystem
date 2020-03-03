@@ -2,8 +2,11 @@
 
 namespace App\Service;
 
+use App\Exceptions\MyException;
+use App\Repositories\BalanceRepository;
 use App\Repositories\DishRepository;
 use App\Repositories\ManufacturerRepository;
+use App\Repositories\Money_logRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\SaleRepository;
 use App\Repositories\UserRepository;
@@ -12,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Cast\Object_;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
@@ -37,23 +41,31 @@ class OrderService
      * @var ManufacturerRepository
      */
     private $manufacturerRepository;
+    /**
+     * @var BalanceRepository
+     */
+    private $balanceRepository;
+    /**
+     * @var Money_logRepository
+     */
+    private $money_logRepository;
 
     public function __construct(
         OrderRepository $orderRepository,
         UserRepository $userRepository,
         SaleRepository $saleRepository,
         DishRepository $dishRepository,
-	ManufacturerRepository $manufacturerRepository,
-	BalanceRepository $balanceRepository,
-	Money_logRepository $money_logRepository)
+        ManufacturerRepository $manufacturerRepository,
+        BalanceRepository $balanceRepository,
+        Money_logRepository $money_logRepository)
     {
         $this->orderRepository = $orderRepository;
         $this->userRepository = $userRepository;
         $this->saleRepository = $saleRepository;
         $this->dishRepository = $dishRepository;
-	$this->manufacturerRepository = $manufacturerRepository;
-	$this->balanceRepository = $balanceRepository;
-	$this->money_logRepository = $money_logRepository;
+        $this->manufacturerRepository = $manufacturerRepository;
+        $this->balanceRepository = $balanceRepository;
+        $this->money_logRepository = $money_logRepository;
     }
 
     public function get($type = 'all', $data = null, Request $request = null)
@@ -155,46 +167,56 @@ class OrderService
          *      "sale_id":["16","25","31",...]
          * }
          */
-	    
-	DB::beginTransaction();
+
+        DB::beginTransaction();
         try {
-	    DB::commit();
-	    if($request->input('user_id')!=null && PermissionSupport::check('order.modify.create',null,true)){
-            $uu=$this->userRepository->findByUserId($request->input('user_id'));
-            if($uu!=null)
-                $user_id=$request->input('user_id');
-            else
-                throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST); // todo throw user 404
-            }else
-            	$user_id=Auth::user()->id;
-            $price_sum=0;
-            $sale=$request->input('sale_id');
-	        foreach($sale as $ss){
-            	    $s=$this->saleRepository->findById($ss);
-            	    if($s==null)
-                	throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);//throw sale not found 404
-                    $price_sum+=$s->price;
-      	   	}
-            $balance=$this->balanceRepository->findById($user_id);
-            if($balance==null){
-            	$this->balanceRepository->create(['user_id'=>$user_id,'money'=>0]);
-            	$money=0;
-		throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);//throw insufficient balance 403 ?
-            }else
-            	$money=$this->balanceRepository->findByUserId($user_id)->money;
-            $mm=$money-$price_sum;
-            if($mm<0)
-        	throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);//throw insufficient balance 403 ?
-            $this->balanceRepository->updateByUserId($user_id,['money'=>$mm]);
-            $this->money_logRepository->create(['user_id'=>$user_id,'event'=>'deduction','money'=>$price_sum,'trigger_id'=>Auth::user()->id,'note'=>'FIOS_Sys_Auto']);
-            foreach($sale as $ss)
-            	$this->orderRepository->create(['user_id'=>$user_id,'sale_id'=$ss]);
-	    return [[], Response::HTTP_CREATED];//TODO
+            DB::commit();
+            if ($request->input('user_id') != null && PermissionSupport::check('order.modify.create', null, true)) {
+                $uu = $this->userRepository->findById($request->input('user_id'));
+                if ($uu != null)
+                    $user_id = $request->input('user_id');
+                else
+                    throw new MyException(serialize(['error' => 'The User Not Found']), Response::HTTP_NOT_FOUND); // todo throw user 404
+            } else
+                $user_id = Auth::user()->id;
+            $price_sum = 0;
+            $sale = $request->input('sale_id');
+            foreach ($sale as $ss) {
+                $s = $this->saleRepository->findById($ss);
+                //todo 檢查SALE_AT
+                if ($s == null)
+                    throw new MyException(serialize(['error' => 'The Sale Not Found']), Response::HTTP_NOT_FOUND);//throw sale not found 404
+                if (Carbon::today()->gt(Carbon::parse($s->sale_at)))
+                    throw new MyException(serialize(['error' => 'Sales time has passed']), Response::HTTP_BAD_REQUEST);
+                elseif (Carbon::today()->eq(Carbon::parse($s->sale_at))) {
+                    if (Carbon::now()->gt(Carbon::createFromTimeString(env('ORDER_DEADLINE', '08:00'))))
+                        throw new MyException(serialize(['error' => 'Sales time has passed']), Response::HTTP_BAD_REQUEST);
+                }
+                $price_sum += $s->price;
+            }
+            $balance = $this->balanceRepository->findById($user_id);
+            if ($balance == null) {
+                $this->balanceRepository->caeate(['user_id' => $user_id, 'money' => 0]);
+                $money = 0;
+                throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
+            } else
+                $money = $this->balanceRepository->findByUserId($user_id)->money;
+            $mm = $money - $price_sum;
+            if ($mm < 0)
+                throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
+            $this->balanceRepository->updateByUserId($user_id, ['money' => $mm]);
+            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'FIOS_Sys_Auto']);
+            $oId = array();
+            foreach ($sale as $ss)
+                $oId[] = $this->orderRepository->create(['user_id' => $user_id, 'sale_id' => $ss])->id;
+            return [['success' => true, 'Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];//TODO
         } catch (MyException $e) {
             return [unserialize($e->getMessage()), $e->getCode()];
-        } catch (\Exception $e) {
+        } catch (UnauthorizedException $e){
+            return [['error' => $e->getMessage()], Response::HTTP_FORBIDDEN];
+        }catch (\Exception $e) {
             DB::rollback();
-            return [['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR];
+            throw $e;
         }
     }
 
