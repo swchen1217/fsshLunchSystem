@@ -192,15 +192,15 @@ class OrderService
                     if (Carbon::now()->gt(Carbon::createFromTimeString(env('ORDER_DEADLINE', '08:00'))))
                         throw new MyException(serialize(['error' => 'Sales time has passed']), Response::HTTP_BAD_REQUEST);
                 }
-                $price_sum += $s->price;
+                $price_sum += $this->dishRepository->findById($s->dish_id)->price;
             }
-            $balance = $this->balanceRepository->findById($user_id);
+            $balance = $this->balanceRepository->findByUserId($user_id);
             if ($balance == null) {
                 $this->balanceRepository->caeate(['user_id' => $user_id, 'money' => 0]);
                 $money = 0;
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
             } else
-                $money = $this->balanceRepository->findByUserId($user_id)->money;
+                $money = $balance->money;
             $mm = $money - $price_sum;
             if ($mm < 0)
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
@@ -209,7 +209,7 @@ class OrderService
             $oId = array();
             foreach ($sale as $ss)
                 $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
-            return [['success' => true, 'Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];//TODO
+            return [['Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];//TODO
         } catch (MyException $e) {
             return [unserialize($e->getMessage()), $e->getCode()];
         } catch (UnauthorizedException $e){
