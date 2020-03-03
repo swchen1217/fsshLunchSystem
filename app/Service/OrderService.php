@@ -74,7 +74,7 @@ class OrderService
             if ($type == 'all' && PermissionSupport::check('order.read', null, true)) //order.read
                 $order = $this->orderRepository->all();
             elseif ($type == 'user_id') { //order.read.self
-                if ($this->getByUserIdCheck($data))
+                if ($this->userIdCheckWithAllAndSelfAndClass($data,'order.read'))
                     $order = $this->orderRepository->findByUserId($data);
             } elseif ($type == 'sale_id' && PermissionSupport::check('order.read', null, true)) //order.read
                 $order = $this->orderRepository->findBySaleId($data);
@@ -133,7 +133,7 @@ class OrderService
             return [$result, Response::HTTP_OK];
         } else {
             $order = $this->orderRepository->findById($data);
-            if ($order != null && $this->getByUserIdCheck($order->user_id)) {
+            if ($order != null && $this->userIdCheckWithAllAndSelfAndClass($order->user_id,'order.read')) {
                 $user = $this->userRepository->findById($order->user_id)->only(['id', 'account', 'class', 'number']);
                 $sale = $this->saleRepository->findById($order->sale_id)->only(['id', 'sale_at', 'dish_id']);
                 $dish_id = $sale['dish_id'];
@@ -151,18 +151,19 @@ class OrderService
     {
         DB::beginTransaction();
         try {
-            DB::commit();
             if ($request->input('user_id') != null && PermissionSupport::check('order.modify.create', null, true)) {
                 $uu = $this->userRepository->findById($request->input('user_id'));
                 if ($uu != null)
                     $user_id = $request->input('user_id');
                 else
-                    throw new MyException(serialize(['error' => 'The User Not Found']), Response::HTTP_NOT_FOUND); // todo throw user 404
+                    throw new MyException(serialize(['error' => 'The User Not Found']), Response::HTTP_NOT_FOUND);
             } else
                 $user_id = Auth::user()->id;
             $price_sum = 0;
             $sale = $request->input('sale_id');
+            $oIdString="";
             foreach ($sale as $ss) {
+                $oIdString.=" ".$ss;
                 $s = $this->saleRepository->findById($ss);
                 if ($s == null)
                     throw new MyException(serialize(['error' => 'The Sale Not Found']), Response::HTTP_NOT_FOUND);//throw sale not found 404
@@ -185,46 +186,76 @@ class OrderService
             if ($mm < 0)
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
             $this->balanceRepository->updateByUserId($user_id, ['money' => $mm]);
-            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'FIOS_Sys_Auto']);
+            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:'.$oIdString]);
             $oId = array();
             foreach ($sale as $ss)
                 $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
-            return [['Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];//TODO
+            DB::commit();
+            return [['Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
             return [unserialize($e->getMessage()), $e->getCode()];
-        } catch (UnauthorizedException $e){
+        } catch (UnauthorizedException $e) {
             return [['error' => $e->getMessage()], Response::HTTP_FORBIDDEN];
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             throw $e;
         }
     }
 
-    public function edit(Request $request)
+    public function edit(Request $request, $order_id)
     {
         //self
         //all
+        return [['error'=>'The Route Not Enable'],Response::HTTP_FORBIDDEN];
     }
 
-    public function remove(Request $request)
+    public function remove(Request $request, $order_id)
     {
-
+        DB::beginTransaction();
+        try {
+            $order=$this->orderRepository->findById($order_id);
+            if($order==null)
+                throw new MyException(serialize(['error' => 'The Order Not Found']), Response::HTTP_NOT_FOUND);
+            if ($this->userIdCheckWithAllAndSelfAndClass($order->user_id,'order.modify.delete')){
+                $this->orderRepository->delete($order_id);
+                $price = $this->dishRepository->findById($order->sale_id)->price;
+                $balance = $this->balanceRepository->findByUserId($order->user_id);
+                if ($balance == null) {
+                    $this->balanceRepository->caeate(['user_id' => $order->user_id, 'money' => 0]);
+                    $money = 0;
+                } else
+                    $money = $balance->money;
+                $mm = $money + $price;
+                $this->balanceRepository->updateByUserId($order->user_id, ['money' => $mm]);
+                $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund to balance', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: '.$order_id]);
+                DB::commit();
+                return [['Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm], Response::HTTP_OK];
+            }
+            return [[],500];
+        } catch (MyException $e) {
+            return [unserialize($e->getMessage()), $e->getCode()];
+        } catch (UnauthorizedException $e) {
+            return [['error' => $e->getMessage()], Response::HTTP_FORBIDDEN];
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
     }
 
-    private function getByUserIdCheck($user_id)
+    private function userIdCheckWithAllAndSelfAndClass($user_id, $permission)
     {
-        if (PermissionSupport::check('order.read'))
+        if (PermissionSupport::check($permission))
             return true;
-        elseif ($user_id == Auth::user()->id && PermissionSupport::check('order.read.self', null, true))
+        elseif ($user_id == Auth::user()->id && PermissionSupport::check($permission.'.self', null, true))
             return true;
-        elseif (PermissionSupport::check('order.read.class', null, true)) {
+        elseif (PermissionSupport::check($permission.'.class', null, true)) {
             $class_user = $this->userRepository->findByClass(Auth::user()->class);
             foreach ($class_user as $cu) {
                 if ($user_id == $cu->id) {
                     return true;
                 }
             }
-            throw UnauthorizedException::forPermissions(['order.read.class']);
+            throw UnauthorizedException::forPermissions([$permission.'.class']);
         }
         return false;
     }
