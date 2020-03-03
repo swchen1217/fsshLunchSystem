@@ -149,25 +149,6 @@ class OrderService
 
     public function create(Request $request)
     {
-        //self
-        //all
-
-        //user?
-        //sale_id Array
-
-        //has sale_id??
-        //get price
-        //has balance data ? create : get
-        //balance-price>=0 ? ok : fail
-        //log
-
-        /*
-         * {
-         *      "user_id":"1",
-         *      "sale_id":["16","25","31",...]
-         * }
-         */
-
         DB::beginTransaction();
         try {
             DB::commit();
@@ -227,9 +208,7 @@ class OrderService
 
     public function remove(Request $request)
     {
-        //self
-        //class
-        //all
+
     }
 
     private function getByUserIdCheck($user_id)
