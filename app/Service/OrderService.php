@@ -208,7 +208,7 @@ class OrderService
             $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'FIOS_Sys_Auto']);
             $oId = array();
             foreach ($sale as $ss)
-                $oId[] = $this->orderRepository->create(['user_id' => $user_id, 'sale_id' => $ss])->id;
+                $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
             return [['success' => true, 'Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];//TODO
         } catch (MyException $e) {
             return [unserialize($e->getMessage()), $e->getCode()];
