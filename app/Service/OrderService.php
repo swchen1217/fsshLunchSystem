@@ -183,7 +183,6 @@ class OrderService
             $sale = $request->input('sale_id');
             foreach ($sale as $ss) {
                 $s = $this->saleRepository->findById($ss);
-                //todo 檢查SALE_AT
                 if ($s == null)
                     throw new MyException(serialize(['error' => 'The Sale Not Found']), Response::HTTP_NOT_FOUND);//throw sale not found 404
                 if (Carbon::today()->gt(Carbon::parse($s->sale_at)))
