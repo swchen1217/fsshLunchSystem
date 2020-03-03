@@ -104,7 +104,7 @@ class DishService
             return [unserialize($e->getMessage()), $e->getCode()];
         } catch (\Exception $e) {
             DB::rollback();
-            return [['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR];
+            throw $e;
         }
     }
 
