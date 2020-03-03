@@ -38,7 +38,7 @@ class BalanceRepository
 
     public function updateByUserId($id, $data)
     {
-        return $this->balance->where('id', $id)->update($data);
+        return $this->balance->where('user_id', $id)->update($data);
     }
 
     public function delete($id)
