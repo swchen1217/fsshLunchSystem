@@ -77,15 +77,15 @@ class OrderController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function edit(Request $request, $sale_id)
+    public function edit(Request $request, $order_id)
     {
-        $mResult = $this->orderService->edit($request, $sale_id);
+        $mResult = $this->orderService->edit($request, $order_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function remove(Request $request, $sale_id)
+    public function remove(Request $request, $order_id)
     {
-        $mResult = $this->orderService->remove($request, $sale_id);
+        $mResult = $this->orderService->remove($request, $order_id);
         return response()->json($mResult[0], $mResult[1]);
     }
 }
