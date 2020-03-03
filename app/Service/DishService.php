@@ -99,7 +99,8 @@ class DishService
                 $this->dishContentRepository->caeate(['dish_id' => $dish->id, 'name' => $item]);
             DB::commit();
             return [$this->getDish($dish->id)[0], Response::HTTP_CREATED];
-        } catch (MyException $e) {
+	} catch (MyException $e) {
+	    DB::rollback();
             return [unserialize($e->getMessage()), $e->getCode()];
         } catch (\Exception $e) {
             DB::rollback();

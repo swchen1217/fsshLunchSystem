@@ -43,13 +43,17 @@ class OrderService
         UserRepository $userRepository,
         SaleRepository $saleRepository,
         DishRepository $dishRepository,
-        ManufacturerRepository $manufacturerRepository)
+	ManufacturerRepository $manufacturerRepository,
+	BalanceRepository $balanceRepository,
+	Money_logRepository $money_logRepository)
     {
         $this->orderRepository = $orderRepository;
         $this->userRepository = $userRepository;
         $this->saleRepository = $saleRepository;
         $this->dishRepository = $dishRepository;
-        $this->manufacturerRepository = $manufacturerRepository;
+	$this->manufacturerRepository = $manufacturerRepository;
+	$this->balanceRepository = $balanceRepository;
+	$this->money_logRepository = $money_logRepository;
     }
 
     public function get($type = 'all', $data = null, Request $request = null)
@@ -151,12 +155,47 @@ class OrderService
          *      "sale_id":["16","25","31",...]
          * }
          */
-
-        //if($request->input('user_id')!=null && PermissionSupport::check('',null,true))
-
-        //$user=$this->userRepository->findById($request->input('user_id'));
-        //var_dump($request->input('user_id'));
-        //return [[],200];
+	    
+	DB::beginTransaction();
+        try {
+	    DB::commit();
+	    if($request->input('user_id')!=null && PermissionSupport::check('order.modify.create',null,true)){
+            $uu=$this->userRepository->findByUserId($request->input('user_id'));
+            if($uu!=null)
+                $user_id=$request->input('user_id');
+            else
+                a(); // todo throw user 404
+            }else
+            	$user_id=Auth::user()->id;
+            $price_sum=0;
+            $sale=$request->input('sale_id');
+	        foreach($sale as $ss){
+            	    $s=$this->saleRepository->findById($ss);
+            	    if($s==null)
+                	a();//throw sale not found 404
+                    $price_sum+=$s->price;
+      	   	}
+            $balance=$this->balanceRepository->findById($user_id);
+            if($balance==null){
+            	$this->balanceRepository->create(['user_id'=>$user_id,'money'=>0]);
+            	$money=0;
+            	//throw insufficient balance 403 ?
+            }else
+            	$money=$this->balanceRepository->findByUserId($user_id)->money;
+            $mm=$money-$price_sum;
+            if($mm<0)
+        	a();//throw insufficient balance 403 ?
+            $this->balanceRepository->updateByUserId($user_id,['money'=>$mm]);
+            $this->money_logRepository->create(['user_id'=>$user_id,'event'=>'deduction','money'=>$price_sum,'trigger_id'=>Auth::user()->id,'note'=>'FIOS_Sys_Auto']);
+            foreach($sale as $ss)
+            	$this->orderRepository->create(['user_id'=>$user_id,'sale_id'=$ss]);
+	    return [[], Response::HTTP_CREATED];
+        } catch (MyException $e) {
+            return [unserialize($e->getMessage()), $e->getCode()];
+        } catch (\Exception $e) {
+            DB::rollback();
+            return [['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR];
+        }
     }
 
     public function edit(Request $request)
