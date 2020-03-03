@@ -164,7 +164,7 @@ class OrderService
             if($uu!=null)
                 $user_id=$request->input('user_id');
             else
-                a(); // todo throw user 404
+                throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST); // todo throw user 404
             }else
             	$user_id=Auth::user()->id;
             $price_sum=0;
@@ -172,24 +172,24 @@ class OrderService
 	        foreach($sale as $ss){
             	    $s=$this->saleRepository->findById($ss);
             	    if($s==null)
-                	a();//throw sale not found 404
+                	throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);//throw sale not found 404
                     $price_sum+=$s->price;
       	   	}
             $balance=$this->balanceRepository->findById($user_id);
             if($balance==null){
             	$this->balanceRepository->create(['user_id'=>$user_id,'money'=>0]);
             	$money=0;
-            	//throw insufficient balance 403 ?
+		throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);//throw insufficient balance 403 ?
             }else
             	$money=$this->balanceRepository->findByUserId($user_id)->money;
             $mm=$money-$price_sum;
             if($mm<0)
-        	a();//throw insufficient balance 403 ?
+        	throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);//throw insufficient balance 403 ?
             $this->balanceRepository->updateByUserId($user_id,['money'=>$mm]);
             $this->money_logRepository->create(['user_id'=>$user_id,'event'=>'deduction','money'=>$price_sum,'trigger_id'=>Auth::user()->id,'note'=>'FIOS_Sys_Auto']);
             foreach($sale as $ss)
             	$this->orderRepository->create(['user_id'=>$user_id,'sale_id'=$ss]);
-	    return [[], Response::HTTP_CREATED];
+	    return [[], Response::HTTP_CREATED];//TODO
         } catch (MyException $e) {
             return [unserialize($e->getMessage()), $e->getCode()];
         } catch (\Exception $e) {
