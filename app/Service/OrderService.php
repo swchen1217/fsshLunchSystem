@@ -60,24 +60,6 @@ class OrderService
             elseif ($type == 'user_id') { //order.read.self
                 if ($this->getByUserIdCheck($data))
                     $order = $this->orderRepository->findByUserId($data);
-                /*if (PermissionSupport::check('order.read'))
-                    $order = $this->orderRepository->findByUserId($data);
-                elseif ($data == Auth::user()->id && PermissionSupport::check('order.read.self', null, true))
-                    $order = $this->orderRepository->findByUserId($data);
-                elseif (PermissionSupport::check('order.read.class', null, true)) {
-                    $pass = false;
-                    $class_user = $this->userRepository->findByClass(Auth::user()->class);
-                    foreach ($class_user as $cu) {
-                        if ($data == $cu->id) {
-                            $pass = true;
-                            break;
-                        }
-                    }
-                    if ($pass)
-                        $order = $this->orderRepository->findByUserId($data);
-                    else
-                        throw UnauthorizedException::forPermissions(['order.read.class']);
-                }*/
             } elseif ($type == 'sale_id' && PermissionSupport::check('order.read', null, true)) //order.read
                 $order = $this->orderRepository->findBySaleId($data);
             elseif ($type == 'saleDate' && PermissionSupport::check('order.read', null, true)) { //order.read
