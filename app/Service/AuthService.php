@@ -87,6 +87,7 @@ class AuthService
                 } else {
                     if ($mResultStatusCode == 200) {
                         $this->login_failRepository->deleteByUserId($user_id);
+                        $mResultContent['access_token'] = $this->payload($access_token);
                         return [$mResultContent, Response::HTTP_OK];
                     } else {
                         //todo Log or Notify
@@ -177,4 +178,13 @@ class AuthService
         return [[], Response::HTTP_NO_CONTENT];
     }
 
+    private function payload($access_token)
+    {
+        $jwt = explode('.', $access_token);
+        $payload = json_decode(base64_decode($jwt[1]), true);
+        $user = $this->userRepository->findById($payload['sub']);
+        $user_info = array_merge($user->toArray(), ['permissions' => $this->userRepository->getAllPermissiosNamesById($user->id)]);
+        $payload = rtrim(base64_encode(json_encode(array_merge($payload, ['user' => $user_info]))), '=');
+        return $jwt[0] . '.' . $payload . '.' . $jwt[2];
+    }
 }
