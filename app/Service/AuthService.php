@@ -87,7 +87,7 @@ class AuthService
                 } else {
                     if ($mResultStatusCode == 200) {
                         $this->login_failRepository->deleteByUserId($user_id);
-                        $mResultContent['access_token'] = $this->payload($access_token);
+                        $mResultContent['access_token'] = $this->payload($mResultContent['access_token']);
                         return [$mResultContent, Response::HTTP_OK];
                     } else {
                         //todo Log or Notify
@@ -148,6 +148,7 @@ class AuthService
                             //todo delete V_C
                             $this->login_failRepository->deleteByUserId($user_id);
                             $this->verifyRepository->deleteByUserId($user_id);
+                            $m2ResultContent['access_token'] = $this->payload($m2ResultContent['access_token']);
                             return [$m2ResultContent, Response::HTTP_OK];
                         } else {
                             //todo Log or Notify
