@@ -69,7 +69,7 @@ class AuthService
                 $user = $this->userRepository->findByAccount($req['username']);
                 $user_id = $user->id;
                 $ip = $request->ip();
-                $fail = $this->login_failRepository->findByUserIdAndIp($user_id, $ip);
+                $fail = $this->login_failRepository->findByUserId($user_id);
                 if (count($fail) > 5) {
                     $path = storage_path('oauth-public.key');
                     $file = fopen($path, "r");
