@@ -185,7 +185,12 @@ class AuthService
         $payload = json_decode(base64_decode($jwt[1]), true);
         $user = $this->userRepository->findById($payload['sub']);
         $user_info = array_merge($user->toArray(), ['permissions' => $this->userRepository->getAllPermissiosNamesById($user->id)]);
-        $payload = rtrim(base64_encode(json_encode(array_merge($payload, ['user' => $user_info]))), '=');
-        return $jwt[0] . '.' . $payload . '.' . $jwt[2];
+        $payload = array_merge($payload, ['user' => $user_info]);
+        $path = storage_path('oauth-private.key');
+        $file = fopen($path, "r");
+        $privateKey = fread($file, filesize($path));
+        fclose($file);
+        $token = JWT::encode($payload, $privateKey, 'RS256');
+        return $token;
     }
 }
