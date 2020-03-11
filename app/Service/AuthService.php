@@ -175,7 +175,8 @@ class AuthService
             return [[], Response::HTTP_NOT_FOUND];
         }
         $token->revoke();
-        Passport::refreshToken()->where('access_token_id', $tokenId)->update(['revoked' => true]);
+        if (!$request->has('rememberme') || $request->input('rememberme') != true)
+            Passport::refreshToken()->where('access_token_id', $tokenId)->update(['revoked' => true]);
         return [[], Response::HTTP_NO_CONTENT];
     }
 
