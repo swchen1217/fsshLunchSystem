@@ -65,7 +65,6 @@ class AuthService
             $access_token = $mResultContent['access_token'] ?? null;
             $refresh_token = $mResultContent['refresh_token'] ?? null;
             if (!empty($access_token)) {
-                Log::info('pass');
                 $user = $this->userRepository->findByAccount($req['username']);
                 $user_id = $user->id;
                 $ip = $request->ip();
@@ -95,7 +94,6 @@ class AuthService
                     }
                 }
             } else {
-                Log::info('not-pass');
                 $user_id = $this->userRepository->findByAccount($req['username'])->id;
                 $ip = $request->ip();
                 if ($mResultContent['error'] == "invalid_client") {
@@ -109,6 +107,12 @@ class AuthService
                 } else {
                     //todo Log or Notify
                 }
+            }
+        }
+        if ($req['grant_type'] == "refresh_token"){
+            if(!empty($mResultContent['access_token'] ?? null) && $mResultStatusCode == 200){
+                $mResultContent['access_token'] = $this->payload($mResultContent['access_token']);
+                return [$mResultContent, Response::HTTP_OK];
             }
         }
         return [$mResultContent, $mResultStatusCode];
