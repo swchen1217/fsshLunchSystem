@@ -48,7 +48,7 @@ class AuthService
                 if ($timeNow - $timeLast > 600) {
                     $this->login_failRepository->changeToUsedByUserIdAndIp($user_id, $ip);
                 } else {
-                    Log::channel('login')->notice('Block after trying', ['user_id' => $user_id, 'ip' => $ip, 'fail_count' => $fail_count]);
+                    Log::channel('login')->notice('Block after trying', ['ip' => $ip, 'user_id' => $user_id, 'fail_count' => $fail_count]);
                     return [
                         ["message" => "You try and fail many times" .
                             ",Please try again later" .
@@ -81,7 +81,7 @@ class AuthService
                     $code = strtoupper(substr(md5(time()), 0, 10));
                     $this->verifyRepository->caeate(['user_id' => $user_id, 'code' => $code, 'client_id' => $req['client_id'], 'client_secret' => $req['client_secret'], 'refresh_token' => $refresh_token]);
                     Mail::to($user)->queue(new Verify(['verify_code' => $code]));
-                    Log::channel('login')->info('Verify email sent', ['user_id' => $user_id, 'ip' => $ip, 'fail_count' => count($fail)]);
+                    Log::channel('login')->info('Verify email sent', ['ip' => $ip, 'user_id' => $user_id, 'fail_count' => count($fail)]);
                     return [['message' => 'You failed to log in too many times,' .
                         'Please verify your identity before you can log in.' .
                         'Receive email and get verification code to request `/ oauth / verify` API.']
@@ -90,7 +90,7 @@ class AuthService
                     if ($mResultStatusCode == 200) {
                         $this->login_failRepository->deleteByUserId($user_id);
                         $mResultContent['access_token'] = $this->payload($mResultContent['access_token']);
-                        Log::channel('login')->info('Success', ['user_id' => $user_id, 'ip' => $ip]);
+                        Log::channel('login')->info('Success', ['ip' => $ip, 'user_id' => $user_id]);
                         return [$mResultContent, Response::HTTP_OK];
                     }
                 }
@@ -99,13 +99,13 @@ class AuthService
                 $ip = $request->ip();
                 if ($mResultContent['error'] == "invalid_client") {
                     // todo Notify
-                    Log::channel('login')->warning('Invalid_client', ['user_id' => $user_id, 'ip' => $ip, 'client_id' => $req['client_id']]);
+                    Log::channel('login')->warning('Invalid_client', ['ip' => $ip, 'user_id' => $user_id, 'client_id' => $req['client_id']]);
                     return [$mResultContent, Response::HTTP_UNAUTHORIZED];
                 } elseif ($mResultContent['error'] == "invalid_grant") {
                     if ($user_id != null) {
-                        $this->login_failRepository->caeate(['user_id' => $user_id, 'ip' => $ip, 'used' => false]);
+                        $this->login_failRepository->caeate(['ip' => $ip, 'user_id' => $user_id, 'used' => false]);
                         $fail = $this->login_failRepository->findByUserId($user_id);
-                        Log::channel('login')->info('Wrong password', ['user_id' => $user_id, 'ip' => $ip, 'fail_count' => count($fail)]);
+                        Log::channel('login')->info('Wrong password', ['ip' => $ip, 'user_id' => $user_id, 'fail_count' => count($fail)]);
                     }
                     return [['error' => 'Username or Password Error'], Response::HTTP_UNAUTHORIZED];
                 }
@@ -116,11 +116,11 @@ class AuthService
                 $getPayload = $this->payload($mResultContent['access_token'], true);
                 $mResultContent['access_token'] = $getPayload['token'];
                 $ip = $request->ip();
-                Log::channel('login')->info('Success (Refresh)', ['user_id' => $getPayload['user_id'], 'ip' => $ip]);
+                Log::channel('login')->info('Success (Refresh)', ['ip' => $ip, 'user_id' => $getPayload['user_id']]);
                 return [$mResultContent, Response::HTTP_OK];
             }
         }
-        if(floor($mResultStatusCode/100)==5){
+        if (floor($mResultStatusCode / 100) == 5) {
             $ip = $request->ip();
             Log::channel('login')->error('Server Error', ['ip' => $ip]);
         }
@@ -162,7 +162,7 @@ class AuthService
                             $this->login_failRepository->deleteByUserId($user_id);
                             $this->verifyRepository->deleteByUserId($user_id);
                             $m2ResultContent['access_token'] = $this->payload($m2ResultContent['access_token']);
-                            Log::channel('login')->info('Success (Verify)', ['user_id' => $user_id, 'ip' => $ip]);
+                            Log::channel('login')->info('Success (Verify)', ['ip' => $ip, 'user_id' => $user_id]);
                             return [$m2ResultContent, Response::HTTP_OK];
                         }
                     } else {
