@@ -150,9 +150,9 @@ class OrderService
 
     public function create(Request $request)
     {
+        $ip = $request->ip();
         DB::beginTransaction();
         try {
-            $ip = $request->ip();
             if ($request->input('user_id') != null && PermissionSupport::check('order.modify.create', null, true)) {
                 $uu = $this->userRepository->findById($request->input('user_id'));
                 if ($uu != null)
@@ -195,7 +195,7 @@ class OrderService
             $oId = array();
             foreach ($sale as $ss)
                 $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
-            Log::channel('order')->info('Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm]);
+            Log::channel('order')->info('Create Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm]);
             DB::commit();
             return [['Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
@@ -205,7 +205,6 @@ class OrderService
             DB::rollback();
             return [['error' => $e->getMessage()], Response::HTTP_FORBIDDEN];
         } catch (\Exception $e) {
-            $ip = $request->ip();
             if ($request->input('user_id') != null)
                 $uid = $request->input('user_id');
             else
@@ -225,6 +224,7 @@ class OrderService
 
     public function remove(Request $request, $order_id)
     {
+        $ip = $request->ip();
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->findById($order_id);
@@ -242,10 +242,10 @@ class OrderService
                 $mm = $money + $price;
                 $this->balanceRepository->updateByUserId($order->user_id, ['money' => $mm]);
                 $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund to balance', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: ' . $order_id]);
+                Log::channel('order')->info('Remove Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $order->user_id, 'order_id' => $order_id, 'Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm]);
                 DB::commit();
                 return [['Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm], Response::HTTP_OK];
             }
-            return [[], 500];
         } catch (MyException $e) {
             DB::rollback();
             return [unserialize($e->getMessage()), $e->getCode()];
@@ -253,6 +253,7 @@ class OrderService
             DB::rollback();
             return [['error' => $e->getMessage()], Response::HTTP_FORBIDDEN];
         } catch (\Exception $e) {
+            Log::channel('order')->warning('Remove order failed', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'order_id' => $order]);
             DB::rollback();
             throw $e;
         }
