@@ -50,6 +50,14 @@ Route::group([
     Route::delete('/{sale_id}', 'SaleController@remove')->middleware(['permission2:sale.modify.delete']);
 });
 
+Route::group([
+    'prefix' => 'psed'
+], function ($router) {
+    //Route::post('/forget/{email}', '');
+    //Route::post('/pswd/account/{account}', '');
+    //Route::post('/token/{token}', '');
+});
+
 /*Route::group([
     'prefix' => 'balance'
 ], function ($router) {
