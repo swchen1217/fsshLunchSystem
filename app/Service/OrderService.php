@@ -16,6 +16,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Expr\Cast\Object_;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
@@ -74,7 +75,7 @@ class OrderService
             if ($type == 'all' && PermissionSupport::check('order.read', null, true)) //order.read
                 $order = $this->orderRepository->all();
             elseif ($type == 'user_id') { //order.read.self
-                if ($this->userIdCheckWithAllAndSelfAndClass($data,'order.read'))
+                if ($this->userIdCheckWithAllAndSelfAndClass($data, 'order.read'))
                     $order = $this->orderRepository->findByUserId($data);
             } elseif ($type == 'sale_id' && PermissionSupport::check('order.read', null, true)) //order.read
                 $order = $this->orderRepository->findBySaleId($data);
@@ -133,7 +134,7 @@ class OrderService
             return [$result, Response::HTTP_OK];
         } else {
             $order = $this->orderRepository->findById($data);
-            if ($order != null && $this->userIdCheckWithAllAndSelfAndClass($order->user_id,'order.read')) {
+            if ($order != null && $this->userIdCheckWithAllAndSelfAndClass($order->user_id, 'order.read')) {
                 $user = $this->userRepository->findById($order->user_id)->only(['id', 'account', 'class', 'number']);
                 $sale = $this->saleRepository->findById($order->sale_id)->only(['id', 'sale_at', 'dish_id']);
                 $dish_id = $sale['dish_id'];
@@ -151,6 +152,7 @@ class OrderService
     {
         DB::beginTransaction();
         try {
+            $ip = $request->ip();
             if ($request->input('user_id') != null && PermissionSupport::check('order.modify.create', null, true)) {
                 $uu = $this->userRepository->findById($request->input('user_id'));
                 if ($uu != null)
@@ -161,9 +163,9 @@ class OrderService
                 $user_id = Auth::user()->id;
             $price_sum = 0;
             $sale = $request->input('sale_id');
-            $oIdString="";
+            $oIdString = "";
             foreach ($sale as $ss) {
-                $oIdString.=" ".$ss;
+                $oIdString .= " " . $ss;
                 $s = $this->saleRepository->findById($ss);
                 if ($s == null)
                     throw new MyException(serialize(['error' => 'The Sale Not Found']), Response::HTTP_NOT_FOUND);//throw sale not found 404
@@ -186,17 +188,25 @@ class OrderService
             if ($mm < 0)
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
             $this->balanceRepository->updateByUserId($user_id, ['money' => $mm]);
-            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:'.$oIdString]);
+            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
             $oId = array();
             foreach ($sale as $ss)
                 $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
             DB::commit();
             return [['Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
+            DB::rollback();
             return [unserialize($e->getMessage()), $e->getCode()];
         } catch (UnauthorizedException $e) {
+            DB::rollback();
             return [['error' => $e->getMessage()], Response::HTTP_FORBIDDEN];
         } catch (\Exception $e) {
+            $ip = $request->ip();
+            if ($request->input('user_id') != null)
+                $uid = $request->input('user_id');
+            else
+                $uid = Auth::user()->id;
+            Log::channel('order')->warning('Order failed', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $uid, 'sale_id' => $request->input('sale_id')]);
             DB::rollback();
             throw $e;
         }
@@ -206,17 +216,17 @@ class OrderService
     {
         //self
         //all
-        return [['error'=>'The Route Not Enable'],Response::HTTP_FORBIDDEN];
+        return [['error' => 'The Route Not Enable'], Response::HTTP_FORBIDDEN];
     }
 
     public function remove(Request $request, $order_id)
     {
         DB::beginTransaction();
         try {
-            $order=$this->orderRepository->findById($order_id);
-            if($order==null)
+            $order = $this->orderRepository->findById($order_id);
+            if ($order == null)
                 throw new MyException(serialize(['error' => 'The Order Not Found']), Response::HTTP_NOT_FOUND);
-            if ($this->userIdCheckWithAllAndSelfAndClass($order->user_id,'order.modify.delete')){
+            if ($this->userIdCheckWithAllAndSelfAndClass($order->user_id, 'order.modify.delete')) {
                 $this->orderRepository->delete($order_id);
                 $price = $this->dishRepository->findById($order->sale_id)->price;
                 $balance = $this->balanceRepository->findByUserId($order->user_id);
@@ -227,14 +237,16 @@ class OrderService
                     $money = $balance->money;
                 $mm = $money + $price;
                 $this->balanceRepository->updateByUserId($order->user_id, ['money' => $mm]);
-                $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund to balance', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: '.$order_id]);
+                $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund to balance', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: ' . $order_id]);
                 DB::commit();
                 return [['Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm], Response::HTTP_OK];
             }
-            return [[],500];
+            return [[], 500];
         } catch (MyException $e) {
+            DB::rollback();
             return [unserialize($e->getMessage()), $e->getCode()];
         } catch (UnauthorizedException $e) {
+            DB::rollback();
             return [['error' => $e->getMessage()], Response::HTTP_FORBIDDEN];
         } catch (\Exception $e) {
             DB::rollback();
@@ -246,16 +258,16 @@ class OrderService
     {
         if (PermissionSupport::check($permission))
             return true;
-        elseif ($user_id == Auth::user()->id && PermissionSupport::check($permission.'.self', null, true))
+        elseif ($user_id == Auth::user()->id && PermissionSupport::check($permission . '.self', null, true))
             return true;
-        elseif (PermissionSupport::check($permission.'.class', null, true)) {
+        elseif (PermissionSupport::check($permission . '.class', null, true)) {
             $class_user = $this->userRepository->findByClass(Auth::user()->class);
             foreach ($class_user as $cu) {
                 if ($user_id == $cu->id) {
                     return true;
                 }
             }
-            throw UnauthorizedException::forPermissions([$permission.'.class']);
+            throw UnauthorizedException::forPermissions([$permission . '.class']);
         }
         return false;
     }
