@@ -168,7 +168,7 @@ class OrderService
                 $oIdString .= " " . $ss;
                 $s = $this->saleRepository->findById($ss);
                 if ($s == null)
-                    throw new MyException(serialize(['error' => 'The Sale Not Found']), Response::HTTP_NOT_FOUND);//throw sale not found 404
+                    throw new MyException(serialize(['error' => 'The Sale Not Found']), Response::HTTP_NOT_FOUND);
                 if (Carbon::today()->gt(Carbon::parse($s->sale_at)))
                     throw new MyException(serialize(['error' => 'Sales time has passed']), Response::HTTP_BAD_REQUEST);
                 elseif (Carbon::today()->eq(Carbon::parse($s->sale_at))) {
@@ -181,17 +181,21 @@ class OrderService
             if ($balance == null) {
                 $this->balanceRepository->caeate(['user_id' => $user_id, 'money' => 0]);
                 $money = 0;
-                throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
+                Log::channel('order')->notice('Insufficient balance', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'Balance' => $money, 'Total cost' => $price_sum]);
+                throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);
             } else
                 $money = $balance->money;
             $mm = $money - $price_sum;
-            if ($mm < 0)
-                throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);//throw insufficient balance 403 ?
+            if ($mm < 0) {
+                Log::channel('order')->notice('Insufficient balance', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'Balance' => $money, 'Total cost' => $price_sum]);
+                throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);
+            }
             $this->balanceRepository->updateByUserId($user_id, ['money' => $mm]);
             $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
             $oId = array();
             foreach ($sale as $ss)
                 $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
+            Log::channel('order')->info('Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm]);
             DB::commit();
             return [['Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
