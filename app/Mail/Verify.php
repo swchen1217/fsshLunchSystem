@@ -10,16 +10,16 @@ use Illuminate\Queue\SerializesModels;
 class Verify extends Mailable
 {
     use Queueable, SerializesModels;
-    public $date;
+    public $data;
 
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param $data
      */
-    public function __construct($date)
+    public function __construct($data)
     {
-        $this->date = $date;
+        $this->data = $data;
     }
 
     /**
@@ -32,6 +32,6 @@ class Verify extends Mailable
         return $this->from('lunch.fios@gmail.com', 'FIOS')
             ->view('emails.user_verify')
             ->subject('【鳳山高中午餐系統】帳號活動異常-使用者驗證')
-            ->with(['verify_code' => $this->date['verify_code']]);
+            ->with($this->data);
     }
 }
