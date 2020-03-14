@@ -15,11 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return response()->json(['success' => true]);
-});
+Route::get('/', 'GeneralController@isOk');
 
-Route::get('/ip', function (Request $request) {
+/*Route::get('/ip', function (Request $request) {
     return response()->json([
         'HTTP_CLIENT_IP' => $_SERVER['HTTP_CLIENT_IP'] ?? '',
         'HTTP_X_FORWARDED_FOR' => $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '',
@@ -30,7 +28,7 @@ Route::get('/ip', function (Request $request) {
         'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'] ?? '',
         'HTTP_VIA' => $_SERVER['HTTP_VIA'] ?? '',
         'Request::ip()' => $request->ip()]);
-});
+});*/
 
 Route::group([
     'prefix' => 'oauth'
