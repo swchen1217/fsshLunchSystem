@@ -53,9 +53,9 @@ Route::group([
 Route::group([
     'prefix' => 'psed'
 ], function ($router) {
-    //Route::post('/forget/{email}', '');
-    //Route::post('/pswd/account/{account}', '');
-    //Route::post('/token/{token}', '');
+    Route::post('/account/{account}', 'PswdController@account');
+    Route::post('/forget/{email}', 'PswdController@forget');
+    Route::post('/token/{token}', 'PswdController@token');
 });
 
 /*Route::group([
