@@ -13,14 +13,14 @@ class PswdService
      */
     private $userRepository;
 
-    public function account(Request $request, $account)
-    {
-
-    }
-
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
+    }
+
+    public function account(Request $request, $account)
+    {
+
     }
 
     public function forget(Request $request, $email)
