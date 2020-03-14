@@ -217,8 +217,6 @@ class OrderService
 
     public function edit(Request $request, $order_id)
     {
-        //self
-        //all
         return [['error' => 'The Route Not Enable'], Response::HTTP_FORBIDDEN];
     }
 
