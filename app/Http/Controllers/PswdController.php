@@ -19,24 +19,24 @@ class PswdController extends Controller
         $this->pswdService = $pswdService;
     }
 
-    public function account(Request $request, $account)
+    public function account(Request $request)
     {
-        $mResult = $this->pswdService->account($request, $account);
+        $mResult = $this->pswdService->account($request);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function forget(Request $request, $email)
+    public function forget(Request $request)
     {
-        $validator = Validator::make([$email], ['required|email']);
+        $validator = Validator::make([$request->input('email')], ['required|email']);
         if ($validator->fails())
             return response()->json(['error' => 'Email format error'], Response::HTTP_BAD_REQUEST);
-        $mResult = $this->pswdService->forget($request, $email);
+        $mResult = $this->pswdService->forget($request);
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function token(Request $request, $token)
+    public function token(Request $request)
     {
-        $mResult = $this->pswdService->token($request, $token);
+        $mResult = $this->pswdService->token($request);
         return response()->json($mResult[0], $mResult[1]);
     }
 }
