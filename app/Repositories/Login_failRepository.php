@@ -18,12 +18,12 @@ class Login_failRepository
 
     public function findByUserId($user_id)
     {
-        return $this->login_fail->where('user_id',$user_id)->get();
+        return $this->login_fail->where('user_id', $user_id)->get();
     }
 
-    public function findByUserIdAndIp($user_id,$ip)
+    public function findByUserIdAndIp($user_id, $ip)
     {
-        return $this->login_fail->where('user_id',$user_id)->where('ip',$ip)->get();
+        return $this->login_fail->where('user_id', $user_id)->where('ip', $ip)->get();
     }
 
     public function caeate($data)
@@ -31,19 +31,19 @@ class Login_failRepository
         return $this->login_fail->create($data);
     }
 
-    public function changeToUsedByUserIdAndIp($user_id,$ip)
+    public function changeToUsedByUserIdAndIp($user_id, $ip)
     {
-        return $this->login_fail->where('user_id',$user_id)->where('ip',$ip)->where('used',false)->update(['used'=>true]);
+        return $this->login_fail->where('user_id', $user_id)->where('ip', $ip)->where('used', false)->update(['used' => true]);
     }
 
     public function deleteByUserId($user_id)
     {
-        return $this->login_fail->where('user_id',$user_id)->delete();
+        return $this->login_fail->where('user_id', $user_id)->delete();
     }
 
-    public function deleteByUserIdAndIp($user_id,$ip)
+    public function deleteByUserIdAndIp($user_id, $ip)
     {
-        return $this->login_fail->where('user_id',$user_id)->where('ip',$ip)->delete();
+        return $this->login_fail->where('user_id', $user_id)->where('ip', $ip)->delete();
     }
 
 }
