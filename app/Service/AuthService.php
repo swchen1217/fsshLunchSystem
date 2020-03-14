@@ -120,6 +120,10 @@ class AuthService
                 return [$mResultContent, Response::HTTP_OK];
             }
         }
+        if(floor($mResultStatusCode/100)==5){
+            $ip = $request->ip();
+            Log::channel('login')->error('Server Error', ['ip' => $ip]);
+        }
         return [$mResultContent, $mResultStatusCode];
     }
 
@@ -137,6 +141,7 @@ class AuthService
         $req = $request->all();
         $user = $this->userRepository->findByAccount($req['username']);
         if ($user != null) {
+            $ip = $request->ip();
             $user_id = $user->id;
             $verify = $this->verifyRepository->findByUserId($user_id)->sortByDesc('created_at')->first();
             if ($verify != null) {
@@ -157,10 +162,8 @@ class AuthService
                             $this->login_failRepository->deleteByUserId($user_id);
                             $this->verifyRepository->deleteByUserId($user_id);
                             $m2ResultContent['access_token'] = $this->payload($m2ResultContent['access_token']);
+                            Log::channel('login')->info('Success (Verify)', ['user_id' => $user_id, 'ip' => $ip]);
                             return [$m2ResultContent, Response::HTTP_OK];
-                        } else {
-                            //todo Log or Notify
-                            return [['error' => 'Server Error ,Please contact the admin'], Response::HTTP_INTERNAL_SERVER_ERROR];
                         }
                     } else {
                         return [['error' => 'Verify code expired'], Response::HTTP_FORBIDDEN];
