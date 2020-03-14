@@ -61,6 +61,13 @@ return [
             'days' => 14,
         ],
 
+        'order' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/order/order.log'),
+            'level' => 'info',
+            'days' => 14,
+        ],
+
 
         'slack' => [
             'driver' => 'slack',
