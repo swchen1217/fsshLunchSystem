@@ -47,20 +47,21 @@ class PswdService
         $user = $this->userRepository->findByEmail($request->input('email'));
         if ($user != null) {
             $token = md5(rand());
-            $this->forgetPswdRepository->caeate(['user_id' => $user->id, 'token' => $token]);
             if ($request->input('redirect') == 'Frontend') {
+                $this->forgetPswdRepository->caeate(['user_id' => $user->id, 'token' => $token]);
                 if (env('APP_ENV') == 'local')
                     $url = URLConstant::URL_DEV_FRONTEND_FORGET_PW;
                 else
                     $url = URLConstant::URL_PDC_FRONTEND_FORGET_PW;
                 Mail::to($user)->queue(new ForgetPswd(['url' => $url . '?token=' . $user->account . '.' . $token]));
             } elseif ($request->input('redirect') == 'AdminFrontend') {
+                $this->forgetPswdRepository->caeate(['user_id' => $user->id, 'token' => $token]);
                 if (env('APP_ENV') == 'local')
                     $url = URLConstant::URL_DEV_ADMIN_FRONTEND_FORGET_PW;
                 else
                     $url = URLConstant::URL_PDC_ADMIN_FRONTEND_FORGET_PW;
                 $url2 = explode('#', $url);
-                Mail::to($user)->queue(new ForgetPswd(['url' => $url2[0] . '?token=' . $user->account . '.' . $token . '#' . $url2[2]]));
+                Mail::to($user)->queue(new ForgetPswd(['url' => $url2[0] . '?token=' . $user->account . '.' . $token . '#' . $url2[1]]));
             } else
                 return [['error' => 'The Redirect Not Found'], Response::HTTP_NOT_FOUND];
             return [[], Response::HTTP_NO_CONTENT];
