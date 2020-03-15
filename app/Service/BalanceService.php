@@ -7,6 +7,8 @@ use App\Repositories\Money_logRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BalanceService
 {
@@ -67,8 +69,12 @@ class BalanceService
 
     public function topUp(Request $request)
     {
-        /*$user = $this->userRepository->findById($request->input('user'));
+        $ip = $request->ip();
+        $user = $this->userRepository->findById($request->input('user'));
         if ($user != null) {
+            $money = $request->input('money');
+            if ($money < 0)
+                return [['error' => '`money` must unsigned'], Response::HTTP_BAD_REQUEST];
             $balance = $this->balanceRepository->findByUserId($user->id);
             if ($balance != null)
                 $money = $balance->money;
@@ -76,10 +82,13 @@ class BalanceService
                 $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
                 $money = 0;
             }
-            $log = $this->money_logRepository->findByUserIdAndOrderByCreated_atDesc($user->id, 20);
-            return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money, 'log' => $log->toArray()], Response::HTTP_OK];
+            $mm = $balance + $money;
+            $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
+            $this->money_logRepository->caeate(['user_id' => $user->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '+' . $money . '=' . $mm]);
+            Log::channel('balance')->info('Top up Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
+            return [['Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm], Response::HTTP_OK];
         } else
-            return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];*/
+            return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
 
     public function deduct(Request $request)
