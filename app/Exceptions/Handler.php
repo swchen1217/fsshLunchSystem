@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Laravel\Passport\Exceptions\OAuthServerException as PassportOAuthServerException;
+use League\OAuth2\Server\Exception\OAuthServerException as LeagueOAuthServerException;
 
 class Handler extends ExceptionHandler
 {
@@ -30,14 +32,19 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param \Exception $exception
+     * @param \Exception $e
      * @return void
      *
      * @throws \Exception
      */
-    public function report(Exception $exception)
+    public function report(Exception $e)
     {
-        parent::report($exception);
+        if (!(
+            ($e instanceof PassportOAuthServerException && $e->getCode() == 10) ||
+            ($e instanceof PassportOAuthServerException && $e->getCode() == 4) ||
+            ($e instanceof LeagueOAuthServerException && $e->getCode() == 9)
+        ))
+            parent::report($e);
     }
 
     /**
