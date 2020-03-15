@@ -33,8 +33,7 @@ Artisan::command('log:clear', function () {
 });
 
 Artisan::command('my:test', function () {
-    for ($i = 0; $i < 10; $i++)
-        \App\Entity\Rating::create(['user_id' => '1', 'dish_id' => '2', 'rating' => '3', 'created_at' => Carbon::now()->addDays($i + 1)->toDateString()]);
+    throw new Exception('testB');
     $this->info('ok');
 });
 
