@@ -75,6 +75,13 @@ return [
             'days' => 14,
         ],
 
+        'money' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/money/money.log'),
+            'level' => 'info',
+            'days' => 14,
+        ],
+
 
         'slack' => [
             'driver' => 'slack',
