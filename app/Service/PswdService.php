@@ -71,6 +71,6 @@ class PswdService
 
     public function token(Request $request)
     {
-
+        
     }
 }
