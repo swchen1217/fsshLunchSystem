@@ -179,13 +179,13 @@ class OrderService
             if ($balance == null) {
                 $this->balanceRepository->caeate(['user_id' => $user_id, 'money' => 0]);
                 $money = 0;
-                Log::channel('order')->notice('Insufficient balance', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'Balance' => $money, 'Total cost' => $price_sum]);
+                Log::channel('order')->notice('Insufficient balance', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'Balance' => $money, 'Total pay' => $price_sum]);
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);
             } else
                 $money = $balance->money;
             $mm = $money - $price_sum;
             if ($mm < 0) {
-                Log::channel('order')->notice('Insufficient balance', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'Balance' => $money, 'Total cost' => $price_sum]);
+                Log::channel('order')->notice('Insufficient balance', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'Balance' => $money, 'Total pay' => $price_sum]);
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);
             }
             $this->balanceRepository->updateByUserId($user_id, ['money' => $mm]);
@@ -198,9 +198,9 @@ class OrderService
             }
             $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'pay', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
             DB::commit();
-            Log::channel('money')->info('Pay Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'Balance before pay' => $money, 'Total cost' => $price_sum, 'Balance after pay' => $mm]);
-            Log::channel('order')->info('Create Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before pay' => $money, 'Total cost' => $price_sum, 'Balance after pay' => $mm]);
-            return [['Balance before pay' => $money, 'Total cost' => $price_sum, 'Balance after pay' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
+            Log::channel('money')->info('Pay Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'Balance before pay' => $money, 'Total pay' => $price_sum, 'Balance after pay' => $mm]);
+            Log::channel('order')->info('Create Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before pay' => $money, 'Total pay' => $price_sum, 'Balance after pay' => $mm]);
+            return [['Balance before pay' => $money, 'Total pay' => $price_sum, 'Balance after pay' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
             DB::rollback();
             return [unserialize($e->getMessage()), $e->getCode()];
