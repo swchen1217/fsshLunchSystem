@@ -22,6 +22,11 @@ class ForgetPswdRepository
         return $this->forgetPswd->where('user_id', $user_id)->get();
     }
 
+    public function findByUserIdAndToken($user_id, $token)
+    {
+        return $this->forgetPswd->where('user_id', $user_id)->where('token', $token)->first();
+    }
+
     public function caeate($data)
     {
         return $this->forgetPswd->create($data);
