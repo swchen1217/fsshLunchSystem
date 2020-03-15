@@ -90,6 +90,8 @@ class DishService
             if ($this->manufacturerRepository->findById($request->input('manufacturer_id')) == null) {
                 throw new MyException(serialize(['error' => 'The manufacturer_id error']), Response::HTTP_BAD_REQUEST);
             }
+            if ($request->input('price') < 0)
+                return [['error' => '`price` must unsigned'], Response::HTTP_BAD_REQUEST];
             $nutrition_data = $request->only(['calories', 'protein', 'fat', 'carbohydrate']);
             $nutrition = $this->nutritionRepository->caeate($nutrition_data);
             $dish_data = array_merge($request->only(['name', 'manufacturer_id', 'price']), ['nutrition_id' => $nutrition->id, 'photo' => Storage::disk('public')->url('image/dish/default.png')]);
@@ -143,6 +145,8 @@ class DishService
             $dish = $this->dishRepository->findById($dish_id);
             if ($dish == null)
                 throw new MyException(serialize(['error' => 'The Dish Not Found']), Response::HTTP_NOT_FOUND);
+            if ($request->has('price') && $request->input('price') < 0)
+                return [['error' => '`price` must unsigned'], Response::HTTP_BAD_REQUEST];
             foreach ($request->all() as $key => $value) {
                 $data = [$key => $value];
                 if ($key == "name" || $key == "manufacturer_id" || $key == "price" || $key == "photo") {
