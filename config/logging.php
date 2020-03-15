@@ -68,6 +68,13 @@ return [
             'days' => 14,
         ],
 
+        'pswd' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/pswd/pswd.log'),
+            'level' => 'info',
+            'days' => 14,
+        ],
+
 
         'slack' => [
             'driver' => 'slack',
