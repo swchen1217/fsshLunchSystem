@@ -163,9 +163,7 @@ class OrderService
                 $user_id = Auth::user()->id;
             $price_sum = 0;
             $sale = $request->input('sale_id');
-            $oIdString = "";
             foreach ($sale as $ss) {
-                $oIdString .= " " . $ss;
                 $s = $this->saleRepository->findById($ss);
                 if ($s == null)
                     throw new MyException(serialize(['error' => 'The Sale Not Found']), Response::HTTP_NOT_FOUND);
@@ -191,11 +189,15 @@ class OrderService
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);
             }
             $this->balanceRepository->updateByUserId($user_id, ['money' => $mm]);
-            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'pay', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
             $oId = array();
-            foreach ($sale as $ss)
-                $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
+            $oIdString = "";
+            foreach ($sale as $ss) {
+                $order = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss]);
+                $oId[] = $order->id;
+                $oIdString .= $order->id . " ";
+            }
             Log::channel('order')->info('Create Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm]);
+            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'pay', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
             DB::commit();
             return [['Balance before deduction' => $money, 'Total cost' => $price_sum, 'Balance after deduction' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
@@ -239,8 +241,8 @@ class OrderService
                     $money = $balance->money;
                 $mm = $money + $price;
                 $this->balanceRepository->updateByUserId($order->user_id, ['money' => $mm]);
-                $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: ' . $order_id]);
                 Log::channel('order')->info('Remove Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $order->user_id, 'order_id' => $order_id, 'Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm]);
+                $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: ' . $order_id]);
                 DB::commit();
                 return [['Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm], Response::HTTP_OK];
             }
