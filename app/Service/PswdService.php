@@ -9,6 +9,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class PswdService
@@ -30,11 +31,12 @@ class PswdService
 
     public function account(Request $request)
     {
+        $ip = $request->ip();
         $user = $this->userRepository->findByAccount($request->input('account'));
         if ($user != null) {
             if (Hash::check($request->input('old_pswd'), $user->password)) {
                 $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd'))]);
-                //todo log
+                Log::channel('pswd')->info('Success (Account)', ['ip' => $ip, 'user_id' => $user->id]);
                 return [[], Response::HTTP_NO_CONTENT];
             } else
                 return [['error' => 'Old password error'], Response::HTTP_FORBIDDEN];
@@ -71,6 +73,25 @@ class PswdService
 
     public function token(Request $request)
     {
-        
+        $ip = $request->ip();
+        $token = $request->input('token');
+        $tt = explode('.', $token);
+        $user = $this->userRepository->findByAccount($tt[0]);
+        if ($user != null) {
+            $fp = $this->forgetPswdRepository->findByUserIdAndToken($user->id, $tt[1]);
+            if ($fp != null) {
+                $ct = strtotime($fp->created_at);
+                $now = time();
+                if ($now - $ct <= 1800) {
+                    $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd'))]);
+                    $this->forgetPswdRepository->deleteByUserId($user->id);
+                    Log::channel('pswd')->info('Success (Token)', ['ip' => $ip, 'user_id' => $user->id]);
+                    return [[], Response::HTTP_NO_CONTENT];
+                } else
+                    return [['error' => 'Verify code expired'], Response::HTTP_FORBIDDEN];
+            } else
+                return [['error' => 'The Token Not Found'], Response::HTTP_NOT_FOUND];
+        } else
+            return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
 }
