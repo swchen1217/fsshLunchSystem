@@ -30,6 +30,7 @@ class AuthService
 
     public function createToken(Request $request)
     {
+        $ip = $request->ip();
         $req = $request->all();
         if ($req['grant_type'] == "password") {
             $user = $this->userRepository->findByAccount($req['username']);
@@ -38,7 +39,6 @@ class AuthService
             } else {
                 return [['error' => 'Username or Password Error'], Response::HTTP_UNAUTHORIZED];
             }
-            $ip = $request->ip();
             $fail = $this->login_failRepository->findByUserIdAndIp($user_id, $ip)->sortByDesc('created_at');
             $fail_count = count($fail->where('used', false));
             if ($fail_count >= 5) {
@@ -69,7 +69,6 @@ class AuthService
             if (!empty($access_token)) {
                 $user = $this->userRepository->findByAccount($req['username']);
                 $user_id = $user->id;
-                $ip = $request->ip();
                 $fail = $this->login_failRepository->findByUserId($user_id);
                 if (count($fail) > 5) {
                     $path = storage_path('oauth-public.key');
@@ -96,7 +95,6 @@ class AuthService
                 }
             } else {
                 $user_id = $this->userRepository->findByAccount($req['username'])->id;
-                $ip = $request->ip();
                 if ($mResultContent['error'] == "invalid_client") {
                     // todo Notify
                     Log::channel('login')->warning('Invalid_client', ['ip' => $ip, 'user_id' => $user_id, 'client_id' => $req['client_id']]);
@@ -115,13 +113,11 @@ class AuthService
             if (!empty($mResultContent['access_token'] ?? null) && $mResultStatusCode == 200) {
                 $getPayload = $this->payload($mResultContent['access_token'], true);
                 $mResultContent['access_token'] = $getPayload['token'];
-                $ip = $request->ip();
                 Log::channel('login')->info('Success (Refresh)', ['ip' => $ip, 'user_id' => $getPayload['user_id']]);
                 return [$mResultContent, Response::HTTP_OK];
             }
         }
         if (floor($mResultStatusCode / 100) == 5) {
-            $ip = $request->ip();
             Log::channel('login')->error('Server Error', ['ip' => $ip]);
         }
         return [$mResultContent, $mResultStatusCode];
