@@ -103,6 +103,27 @@ class BalanceService
 
     public function deduct(Request $request)
     {
-
+        $ip = $request->ip();
+        $user = $this->userRepository->findById($request->input('user_id'));
+        if ($user != null) {
+            $money = $request->input('money');
+            if ($money < 0)
+                return [['error' => '`money` must unsigned'], Response::HTTP_BAD_REQUEST];
+            $balanceObj = $this->balanceRepository->findByUserId($user->id);
+            if ($balanceObj != null)
+                $balance = $balanceObj->money;
+            else {
+                $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                $balance = 0;
+            }
+            $mm = $balance - $money;
+            if ($mm < 0)
+                return [['error' => 'Balance after deduct must unsigned'], Response::HTTP_BAD_REQUEST];
+            $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
+            $this->money_logRepository->caeate(['user_id' => $user->id, 'event' => 'deduct', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '-' . $money . '=' . $mm]);
+            Log::channel('money')->info('Deduct Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before deduct' => $balance, 'Total deduct' => $money, 'Balance after deduct' => $mm]);
+            return [['Balance before deduct' => $balance, 'Total deduct' => $money, 'Balance after deduct' => $mm], Response::HTTP_OK];
+        } else
+            return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
 }
