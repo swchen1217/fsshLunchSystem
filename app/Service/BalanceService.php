@@ -95,7 +95,7 @@ class BalanceService
             $mm = $balance + $money;
             $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
             $this->money_logRepository->caeate(['user_id' => $user->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '+' . $money . '=' . $mm]);
-            Log::channel('balance')->info('Top up Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
+            Log::channel('money')->info('Top up Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
             return [['Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm], Response::HTTP_OK];
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
