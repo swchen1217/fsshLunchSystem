@@ -62,6 +62,16 @@ class BalanceService
                 $money = 0;
             }
             $log = $this->money_logRepository->findByUserIdAndOrderByCreated_atDesc($user->id, 20);
+            $tid = 0;
+            $tname = "";
+            foreach ($log as $key => $value) {
+                if ($tid != $value['trigger_id']) {
+                    $tid = $value['trigger_id'];
+                    $tt = $this->userRepository->findById($tid);
+                    $tname = $tt->name;
+                }
+                $log[$key] = array_merge($value->toArray(), ['user_name' => $user->name, 'trigger_name' => $tname]);
+            }
             return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money, 'log' => $log->toArray()], Response::HTTP_OK];
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
@@ -70,17 +80,17 @@ class BalanceService
     public function topUp(Request $request)
     {
         $ip = $request->ip();
-        $user = $this->userRepository->findById($request->input('user'));
+        $user = $this->userRepository->findById($request->input('user_id'));
         if ($user != null) {
             $money = $request->input('money');
             if ($money < 0)
                 return [['error' => '`money` must unsigned'], Response::HTTP_BAD_REQUEST];
-            $balance = $this->balanceRepository->findByUserId($user->id);
-            if ($balance != null)
-                $money = $balance->money;
+            $balanceObj = $this->balanceRepository->findByUserId($user->id);
+            if ($balanceObj != null)
+                $balance = $balanceObj->money;
             else {
                 $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
-                $money = 0;
+                $balance = 0;
             }
             $mm = $balance + $money;
             $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
