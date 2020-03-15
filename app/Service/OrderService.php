@@ -191,7 +191,7 @@ class OrderService
                 throw new MyException(serialize(['error' => 'Insufficient balance']), Response::HTTP_FORBIDDEN);
             }
             $this->balanceRepository->updateByUserId($user_id, ['money' => $mm]);
-            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'deduction', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
+            $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'pay', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
             $oId = array();
             foreach ($sale as $ss)
                 $oId[] = $this->orderRepository->caeate(['user_id' => $user_id, 'sale_id' => $ss])->id;
@@ -239,7 +239,7 @@ class OrderService
                     $money = $balance->money;
                 $mm = $money + $price;
                 $this->balanceRepository->updateByUserId($order->user_id, ['money' => $mm]);
-                $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund to balance', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: ' . $order_id]);
+                $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: ' . $order_id]);
                 Log::channel('order')->info('Remove Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $order->user_id, 'order_id' => $order_id, 'Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm]);
                 DB::commit();
                 return [['Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm], Response::HTTP_OK];
