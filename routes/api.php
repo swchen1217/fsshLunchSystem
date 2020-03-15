@@ -58,16 +58,16 @@ Route::group([
     Route::post('/token', 'PswdController@token');
 });
 
-/*Route::group([
+Route::group([
     'prefix' => 'balance'
 ], function ($router) {
-    Route::get('/{account}', '');
-    Route::get('/log/{account}', '');
-    Route::post('/top-up', '');
-    Route::post('/refund', '');
+    Route::get('/{account}', 'BalanceController@getByAccount');
+    Route::get('/log/{account}', 'BalanceController@getLogByAccount');
+    Route::post('/top-up', 'BalanceController@topUp');
+    Route::post('/deduct', 'BalanceController@deduct');
 });
 
-Route::group([
+/*Route::group([
     'prefix' => 'user'
 ], function ($router) {
     Route::get('/', '');
