@@ -198,6 +198,7 @@ class OrderService
             }
             $this->money_logRepository->caeate(['user_id' => $user_id, 'event' => 'pay', 'money' => $price_sum, 'trigger_id' => Auth::user()->id, 'note' => 'new Order ID:' . $oIdString]);
             DB::commit();
+            Log::channel('money')->info('Pay Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'Balance before pay' => $money, 'Total cost' => $price_sum, 'Balance after pay' => $mm]);
             Log::channel('order')->info('Create Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before pay' => $money, 'Total cost' => $price_sum, 'Balance after pay' => $mm]);
             return [['Balance before pay' => $money, 'Total cost' => $price_sum, 'Balance after pay' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
@@ -243,6 +244,7 @@ class OrderService
                 $this->balanceRepository->updateByUserId($order->user_id, ['money' => $mm]);
                 $this->money_logRepository->caeate(['user_id' => $order->user_id, 'event' => 'refund', 'money' => $price, 'trigger_id' => Auth::user()->id, 'note' => 'delete Order ID: ' . $order_id]);
                 DB::commit();
+                Log::channel('money')->info('Refund Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $order->user_id, 'Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm]);
                 Log::channel('order')->info('Remove Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $order->user_id, 'order_id' => $order_id, 'Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm]);
                 return [['Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm], Response::HTTP_OK];
             }
