@@ -95,7 +95,7 @@ class RBACSeeder extends Seeder
         Permission::create(['name' => 'balance.read.self.log']);
         Permission::create(['name' => 'balance.modify']);
         Permission::create(['name' => 'balance.modify.topup']);
-        Permission::create(['name' => 'balance.modify.refund']);
+        Permission::create(['name' => 'balance.modify.deduct']);
         Permission::create(['name' => 'user']);
         Permission::create(['name' => 'user.read']);
         Permission::create(['name' => 'user.modify']);
