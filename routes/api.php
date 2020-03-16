@@ -61,10 +61,10 @@ Route::group([
 Route::group([
     'prefix' => 'balance'
 ], function ($router) {
-    Route::get('/{account}', 'BalanceController@getByAccount');
-    Route::get('/log/{account}', 'BalanceController@getLogByAccount');
-    Route::post('/top-up', 'BalanceController@topUp');
-    Route::post('/deduct', 'BalanceController@deduct');
+    Route::get('/{account}', 'BalanceController@getByAccount')->middleware(['permission2:balance.read.self.money']);
+    Route::get('/log/{account}', 'BalanceController@getLogByAccount')->middleware(['permission2:balance.read.self.log']);
+    Route::post('/top-up', 'BalanceController@topUp')->middleware(['permission2:balance.modify.top-up']);
+    Route::post('/deduct', 'BalanceController@deduct')->middleware(['permission2:balance.modify.deduct']);
 });
 
 /*Route::group([
