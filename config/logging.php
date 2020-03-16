@@ -82,6 +82,13 @@ return [
             'days' => 14,
         ],
 
+        'request' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/request/request.log'),
+            'level' => 'info',
+            'days' => 14,
+        ],
+
 
         'slack' => [
             'driver' => 'slack',
