@@ -175,7 +175,8 @@ class DishService
     public function removeDish(Request $request, $dish_id)
     {
         Cache::tags('sale')->flush();
-        if ($this->dishRepository->delete($dish_id) != -1)
+        $remove = $this->dishRepository->delete($dish_id);
+        if ($remove != 0)
             return [[], Response::HTTP_NO_CONTENT];
         else
             return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
