@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Repositories\BalanceRepository;
 use App\Repositories\Money_logRepository;
 use App\Repositories\UserRepository;
+use App\Supports\PermissionSupport;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -36,16 +37,29 @@ class BalanceService
     {
         $user = $this->userRepository->findByAccount($account);
         if ($user != null) {
-            $balance = $this->balanceRepository->findByUserId($user->id);
-            if ($balance != null)
-                $money = $balance->money;
-            else {
-                $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
-                $money = 0;
+            if ($user->id != Auth::user()->id && PermissionSupport::check('balance.read.money', null, true)) {
+                $balance = $this->balanceRepository->findByUserId($user->id);
+                if ($balance != null)
+                    $money = $balance->money;
+                else {
+                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $money = 0;
+                }
+                if ($detail)
+                    return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money], Response::HTTP_OK];
+                return [['balance' => $money], Response::HTTP_OK];
+            } else {
+                $balance = $this->balanceRepository->findByUserId($user->id);
+                if ($balance != null)
+                    $money = $balance->money;
+                else {
+                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $money = 0;
+                }
+                if ($detail)
+                    return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money], Response::HTTP_OK];
+                return [['balance' => $money], Response::HTTP_OK];
             }
-            if ($detail)
-                return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money], Response::HTTP_OK];
-            return [['balance' => $money], Response::HTTP_OK];
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
@@ -54,25 +68,47 @@ class BalanceService
     {
         $user = $this->userRepository->findByAccount($account);
         if ($user != null) {
-            $balance = $this->balanceRepository->findByUserId($user->id);
-            if ($balance != null)
-                $money = $balance->money;
-            else {
-                $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
-                $money = 0;
-            }
-            $log = $this->money_logRepository->findByUserIdAndOrderByCreated_atDesc($user->id, 20);
-            $tid = 0;
-            $tname = "";
-            foreach ($log as $key => $value) {
-                if ($tid != $value['trigger_id']) {
-                    $tid = $value['trigger_id'];
-                    $tt = $this->userRepository->findById($tid);
-                    $tname = $tt->name;
+            if ($user->id != Auth::user()->id && PermissionSupport::check('balance.read.log', null, true)){
+                $balance = $this->balanceRepository->findByUserId($user->id);
+                if ($balance != null)
+                    $money = $balance->money;
+                else {
+                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $money = 0;
                 }
-                $log[$key] = array_merge($value->toArray(), ['user_name' => $user->name, 'trigger_name' => $tname]);
+                $log = $this->money_logRepository->findByUserIdAndOrderByCreated_atDesc($user->id, 20);
+                $tid = 0;
+                $tname = "";
+                foreach ($log as $key => $value) {
+                    if ($tid != $value['trigger_id']) {
+                        $tid = $value['trigger_id'];
+                        $tt = $this->userRepository->findById($tid);
+                        $tname = $tt->name;
+                    }
+                    $log[$key] = array_merge($value->toArray(), ['user_name' => $user->name, 'trigger_name' => $tname]);
+                }
+                return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money, 'log' => $log->toArray()], Response::HTTP_OK];
+            }else{
+                $balance = $this->balanceRepository->findByUserId($user->id);
+                if ($balance != null)
+                    $money = $balance->money;
+                else {
+                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $money = 0;
+                }
+                $log = $this->money_logRepository->findByUserIdAndOrderByCreated_atDesc($user->id, 20);
+                $tid = 0;
+                $tname = "";
+                foreach ($log as $key => $value) {
+                    if ($tid != $value['trigger_id']) {
+                        $tid = $value['trigger_id'];
+                        $tt = $this->userRepository->findById($tid);
+                        $tname = $tt->name;
+                    }
+                    $log[$key] = array_merge($value->toArray(), ['user_name' => $user->name, 'trigger_name' => $tname]);
+                }
+                return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money, 'log' => $log->toArray()], Response::HTTP_OK];
             }
-            return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money, 'log' => $log->toArray()], Response::HTTP_OK];
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
