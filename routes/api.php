@@ -94,7 +94,7 @@ Route::group([
     Route::delete('/{order_id}', 'OrderController@remove')->middleware(['permission2:order.modify.delete.self']);
 });
 
-/*Route::group([
+Route::group([
     'prefix' => 'manufacturer'
 ], function ($router) {
     Route::get('/', 'ManufacturerController@get');
