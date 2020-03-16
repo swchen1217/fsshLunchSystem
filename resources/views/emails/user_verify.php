@@ -169,12 +169,12 @@
             <tr style="background-color:#f4faf8;color:black;font-size:13px;line-height:15px;width:700px;padding:10px 0 10px 0;text-align:center">
                 <td style="padding:20px">
                     <div style="font-size:15px">
-                        <a href="http://dabo.xyz/fios/privacy1.html"
+                        <a href="https://dabo.xyz/fios/privacy1.html"
                            style="color:black;text-decoration:none;padding:0px 10px;letter-spacing:1px" target="_blank">隱私權政策</a>
                         <a href="https://www.instagram.com/fssh_fios/"
                            style="color:black;text-decoration:none;border-left:1px solid;padding:0px 10px;letter-spacing:1px"
                            target="_blank">關於我們</a>
-                        <a href="http://dabo.xyz/fios/privacy1.html"
+                        <a href="https://dabo.xyz/fios/privacy1.html"
                            style="color:black;text-decoration:none;border-left:1px solid;padding:0px 10px;letter-spacing:1px"
                            target="_blank">服務條款</a>
                     </div>
@@ -224,7 +224,7 @@
                             style="display:block;color:white;letter-spacing:1px;border-left:2px solid #eb691c;margin-bottom:10px;padding-left:15px;margin-left:30px;font-weight:400">IG客服 : fssh_fios</span>
                         <span
                             style="display:block;color:white;letter-spacing:1px;border-left:2px solid #eb691c;margin-bottom:10px;padding-left:15px;margin-left:30px;font-weight:400"><wbr>
-Line小助手 : @140xoylw</span> <span
+Line小助手 : 尚未開放</span> <span
                             style=" display:block;color:white;letter-spacing:1px;margin-top:35px;font-weight:400;line-height:1.4;text-align:center">
 © 2020 FIOS All Rights Reserved <br>鳳山高中線上訂餐系統製作團隊版權所有
 </span></div>
