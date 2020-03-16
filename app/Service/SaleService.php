@@ -70,7 +70,11 @@ class SaleService
 
     public function create(Request $request)
     {
-        Cache::tags('sale')->flush();
+        foreach ($request->all() as $item){
+            $this->saleRepository->caeate(['sale_at' => $item['sale_at'], 'dish_id' => $item['dish_id'], 'status' => $item['status']]);
+        }
+        return [[],201];
+        /*Cache::tags('sale')->flush();
         $sale_at = $request->input('sale_at');
         $dish_id = $request->input('dish_id');
         $status = $request->input('status');
@@ -84,7 +88,7 @@ class SaleService
             return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
 
         $sale = $this->saleRepository->caeate(['sale_at' => $sale_at, 'dish_id' => $dish_id, 'status' => $status]);
-        return [$sale, Response::HTTP_CREATED];
+        return [$sale, Response::HTTP_CREATED];*/
     }
 
     public function edit(Request $request, $sale_id)

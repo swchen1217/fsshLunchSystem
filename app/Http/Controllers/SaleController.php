@@ -43,9 +43,9 @@ class SaleController extends Controller
 
     public function create(Request $request)
     {
-        $validator = Validator::make($request->all(), ['sale_at' => 'required|date_format:Y-m-d']);
+        /*$validator = Validator::make($request->all(), ['sale_at' => 'required|date_format:Y-m-d']);
         if ($validator->fails())
-            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);*/
         $mResult = $this->saleService->create($request);
         return response()->json($mResult[0], $mResult[1]);
     }
