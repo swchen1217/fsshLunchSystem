@@ -67,3 +67,14 @@ Artisan::command('my:pswd', function () {
     }
     $this->info('ok');
 });
+
+Artisan::command('my:stu', function () {
+    $user=App\Entity\User::all();
+    foreach ($user as $uu){
+        if($uu->id==1 || $uu->id==2)
+            continue;
+        $uu->syncRoles('Student');
+        $this->line($uu->account.' : '.'Student');
+    }
+    $this->info('ok');
+});
