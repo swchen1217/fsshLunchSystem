@@ -55,3 +55,15 @@ Artisan::command('my:test2', function () {
     $this->line($result);
     $this->info('ok');
 });
+
+Artisan::command('my:pswd', function () {
+    $user=App\Entity\User::all();
+    foreach ($user as $uu){
+        if($uu->id==1 || $uu->id==2)
+            continue;
+        $npw=bcrypt($uu->password);
+        App\Entity\User::where('id',$uu->id)->update(['password'=>$npw]);
+        $this->line($uu->account.' : '.$npw);
+    }
+    $this->info('ok');
+});
