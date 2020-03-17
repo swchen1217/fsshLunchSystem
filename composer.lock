@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "49a59ea5688ed904e05764544b25c311",
@@ -1022,16 +1022,16 @@
         },
         {
             "name": "jzonta/faker-restaurant",
-            "version": "1.1.3",
+            "version": "1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jzonta/FakerRestaurant.git",
-                "reference": "965c4158378d8d8869f2d62bb0be349907089a04"
+                "reference": "cf009a77665eff70e20ba2c235c740cd63de02ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jzonta/FakerRestaurant/zipball/965c4158378d8d8869f2d62bb0be349907089a04",
-                "reference": "965c4158378d8d8869f2d62bb0be349907089a04",
+                "url": "https://api.github.com/repos/jzonta/FakerRestaurant/zipball/cf009a77665eff70e20ba2c235c740cd63de02ab",
+                "reference": "cf009a77665eff70e20ba2c235c740cd63de02ab",
                 "shasum": ""
             },
             "require": {
@@ -1055,7 +1055,7 @@
             ],
             "description": "Food and Beverage names generate using fzaninotto/Faker",
             "homepage": "https://github.com/jzonta/FakerRestaurant",
-            "time": "2019-10-29T20:22:42+00:00"
+            "time": "2020-03-11T22:29:33+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -1195,16 +1195,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v6.18.0",
+            "version": "v6.18.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "077b895d935b7fbcfb1d1eb34217fa4f80a130d8"
+                "reference": "367c2c8dfdfe83cb2ddbc029c0222174098d093a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/077b895d935b7fbcfb1d1eb34217fa4f80a130d8",
-                "reference": "077b895d935b7fbcfb1d1eb34217fa4f80a130d8",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/367c2c8dfdfe83cb2ddbc029c0222174098d093a",
+                "reference": "367c2c8dfdfe83cb2ddbc029c0222174098d093a",
                 "shasum": ""
             },
             "require": {
@@ -1337,7 +1337,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2020-03-03T13:14:27+00:00"
+            "time": "2020-03-10T14:11:04+00:00"
         },
         {
             "name": "laravel/passport",
@@ -1657,16 +1657,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.64",
+            "version": "1.0.65",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "d13c43dbd4b791f815215959105a008515d1a2e0"
+                "reference": "8f17b3ba67097aafb8318cd5c553b1acf7c891c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/d13c43dbd4b791f815215959105a008515d1a2e0",
-                "reference": "d13c43dbd4b791f815215959105a008515d1a2e0",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/8f17b3ba67097aafb8318cd5c553b1acf7c891c8",
+                "reference": "8f17b3ba67097aafb8318cd5c553b1acf7c891c8",
                 "shasum": ""
             },
             "require": {
@@ -1737,7 +1737,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2020-02-05T18:14:17+00:00"
+            "time": "2020-03-08T18:53:20+00:00"
         },
         {
             "name": "league/oauth2-server",
@@ -4549,16 +4549,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v3.6.0",
+            "version": "v3.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "1bdf24f065975594f6a117f0f1f6cabf1333b156"
+                "reference": "8f7961f7b9deb3b432452c18093cf16f88205902"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/1bdf24f065975594f6a117f0f1f6cabf1333b156",
-                "reference": "1bdf24f065975594f6a117f0f1f6cabf1333b156",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/8f7961f7b9deb3b432452c18093cf16f88205902",
+                "reference": "8f7961f7b9deb3b432452c18093cf16f88205902",
                 "shasum": ""
             },
             "require": {
@@ -4567,7 +4567,11 @@
                 "symfony/polyfill-ctype": "^1.9"
             },
             "require-dev": {
+                "ext-filter": "*",
                 "phpunit/phpunit": "^4.8.35 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "suggest": {
+                "ext-filter": "Required to use the boolean validator."
             },
             "type": "library",
             "extra": {
@@ -4602,7 +4606,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2019-09-10T21:37:39+00:00"
+            "time": "2020-03-12T13:44:00+00:00"
         }
     ],
     "packages-dev": [
