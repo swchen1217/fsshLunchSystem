@@ -20,6 +20,7 @@ return [
     'except' => [
         'password',
         'password_confirmation',
+		'new_pswd',
     ],
 
 ];
