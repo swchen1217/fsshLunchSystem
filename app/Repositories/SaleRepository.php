@@ -36,7 +36,7 @@ class SaleRepository
         return $this->sale->where('dish_id', $dish_id)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->sale->create($data);
     }
