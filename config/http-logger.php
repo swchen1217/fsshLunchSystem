@@ -21,6 +21,7 @@ return [
         'password',
         'password_confirmation',
 		'new_pswd',
+		'old_pswd',
     ],
 
 ];
