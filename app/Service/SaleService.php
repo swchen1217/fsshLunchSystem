@@ -83,7 +83,7 @@ class SaleService
         if ($this->dishRepository->findById($dish_id) == null)
             return [['error' => 'The Dish Not Found'], Response::HTTP_NOT_FOUND];
 
-        $sale = $this->saleRepository->caeate(['sale_at' => $sale_at, 'dish_id' => $dish_id, 'status' => $status]);
+        $sale = $this->saleRepository->create(['sale_at' => $sale_at, 'dish_id' => $dish_id, 'status' => $status]);
         return [$sale, Response::HTTP_CREATED];
     }
 
