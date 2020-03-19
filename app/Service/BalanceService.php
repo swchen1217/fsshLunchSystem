@@ -132,7 +132,7 @@ class BalanceService
             $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
             $this->money_logRepository->caeate(['user_id' => $user->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '+' . $money . '=' . $mm]);
             Log::channel('money')->info('Top up Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
-            return [['Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm], Response::HTTP_OK];
+            return [['before' => $balance, 'total' => $money, 'after' => $mm], Response::HTTP_OK];
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
@@ -158,7 +158,7 @@ class BalanceService
             $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
             $this->money_logRepository->caeate(['user_id' => $user->id, 'event' => 'deduct', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '-' . $money . '=' . $mm]);
             Log::channel('money')->info('Deduct Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before deduct' => $balance, 'Total deduct' => $money, 'Balance after deduct' => $mm]);
-            return [['Balance before deduct' => $balance, 'Total deduct' => $money, 'Balance after deduct' => $mm], Response::HTTP_OK];
+            return [['before' => $balance, 'total' => $money, 'after' => $mm], Response::HTTP_OK];
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
