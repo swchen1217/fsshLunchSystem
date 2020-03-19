@@ -1,6 +1,8 @@
 <?php
 
 use App\Mail\Verify;
+use App\Repositories\BalanceRepository;
+use App\Repositories\Money_logRepository;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -79,7 +81,7 @@ Artisan::command('my:stu', function () {
     $this->info('ok');
 });
 
-Artisan::command('my:mailTest01', function () {
+Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository,Money_logRepository $money_logRepository) {
     $money=1000;
     $user=App\Entity\User::all();
     foreach ($user as $uu){
