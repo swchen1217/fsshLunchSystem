@@ -78,3 +78,27 @@ Artisan::command('my:stu', function () {
     }
     $this->info('ok');
 });
+
+Artisan::command('my:mailTest01', function () {
+    $money=1000;
+    $user=App\Entity\User::all();
+    foreach ($user as $uu){
+        if($uu->id!=1)
+            continue;
+        $uu->syncRoles('Student');
+        $balanceObj = $this->balanceRepository->findByUserId($uu->id);
+        if ($balanceObj != null)
+            $balance = $balanceObj->money;
+        else {
+            $this->balanceRepository->caeate(['user_id' => $uu->id, 'money' => 0]);
+            $balance = 0;
+        }
+        $mm = $balance + $money;
+        $this->balanceRepository->updateByUserId($uu->id, ['money' => $mm]);
+        $this->money_logRepository->caeate(['user_id' => $uu->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => 1, 'note' => $balance . '+' . $money . '=' . $mm.'(TEST01)']);
+        Log::channel('money')->info('Top up Success', ['ip' => '127.0.0.1', 'trigger_id' => 1, 'user_id' => $uu->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
+        Mail::to($user)->queue(new \App\Mail\TestInvite01());
+        $this->line($uu->account.' OK');
+    }
+    $this->info('ok');
+});
