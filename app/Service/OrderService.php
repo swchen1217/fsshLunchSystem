@@ -233,7 +233,7 @@ class OrderService
                 throw new MyException(serialize(['error' => 'The Order Not Found']), Response::HTTP_NOT_FOUND);
             if ($this->userIdCheckWithAllAndSelfAndClass($order->user_id, 'order.modify.delete')) {
                 $this->orderRepository->delete($order_id);
-                $price = $this->dishRepository->findById($order->sale_id)->price;
+                $price = $this->dishRepository->findById($order->dish_id)->price;
                 $balance = $this->balanceRepository->findByUserId($order->user_id);
                 if ($balance == null) {
                     $this->balanceRepository->caeate(['user_id' => $order->user_id, 'money' => 0]);
