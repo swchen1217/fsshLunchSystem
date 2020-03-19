@@ -102,5 +102,5 @@ Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository
         Mail::to($uu)->queue(new \App\Mail\TestInvite01());
         $this->line($uu->account.' OK');
     }
-    $this->info('ok');
+    $this->info('DONE');
 });
