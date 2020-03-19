@@ -88,16 +88,16 @@ Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository
         if($uu->id!=1)
             continue;
         $uu->syncRoles('Student');
-        $balanceObj = $this->balanceRepository->findByUserId($uu->id);
+        $balanceObj = $balanceRepository->findByUserId($uu->id);
         if ($balanceObj != null)
             $balance = $balanceObj->money;
         else {
-            $this->balanceRepository->caeate(['user_id' => $uu->id, 'money' => 0]);
+            $balanceRepository->caeate(['user_id' => $uu->id, 'money' => 0]);
             $balance = 0;
         }
         $mm = $balance + $money;
-        $this->balanceRepository->updateByUserId($uu->id, ['money' => $mm]);
-        $this->money_logRepository->caeate(['user_id' => $uu->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => 1, 'note' => $balance . '+' . $money . '=' . $mm.'(TEST01)']);
+        $balanceRepository->updateByUserId($uu->id, ['money' => $mm]);
+        $money_logRepository->caeate(['user_id' => $uu->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => 1, 'note' => $balance . '+' . $money . '=' . $mm.'(TEST01)']);
         Log::channel('money')->info('Top up Success', ['ip' => '127.0.0.1', 'trigger_id' => 1, 'user_id' => $uu->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
         Mail::to($uu)->queue(new \App\Mail\TestInvite01());
         $this->line($uu->account.' OK');
