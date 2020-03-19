@@ -97,7 +97,7 @@ Artisan::command('my:mailTest01', function () {
         $this->balanceRepository->updateByUserId($uu->id, ['money' => $mm]);
         $this->money_logRepository->caeate(['user_id' => $uu->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => 1, 'note' => $balance . '+' . $money . '=' . $mm.'(TEST01)']);
         Log::channel('money')->info('Top up Success', ['ip' => '127.0.0.1', 'trigger_id' => 1, 'user_id' => $uu->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
-        Mail::to($user)->queue(new \App\Mail\TestInvite01());
+        Mail::to($uu)->queue(new \App\Mail\TestInvite01());
         $this->line($uu->account.' OK');
     }
     $this->info('ok');
