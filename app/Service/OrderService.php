@@ -200,7 +200,7 @@ class OrderService
             DB::commit();
             Log::channel('money')->info('Pay Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'Balance before pay' => $money, 'Total pay' => $price_sum, 'Balance after pay' => $mm]);
             Log::channel('order')->info('Create Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user_id, 'sale_id' => $sale, 'order_id' => $oId, 'Balance before pay' => $money, 'Total pay' => $price_sum, 'Balance after pay' => $mm]);
-            return [['Balance before pay' => $money, 'Total pay' => $price_sum, 'Balance after pay' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
+            return [['before' => $money, 'total' => $price_sum, 'after' => $mm, 'order_id' => $oId], Response::HTTP_CREATED];
         } catch (MyException $e) {
             DB::rollback();
             return [unserialize($e->getMessage()), $e->getCode()];
@@ -247,7 +247,7 @@ class OrderService
                 DB::commit();
                 Log::channel('money')->info('Refund Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $order->user_id, 'Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm]);
                 Log::channel('order')->info('Remove Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $order->user_id, 'order_id' => $order_id, 'Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm]);
-                return [['Balance before refund' => $money, 'Total refund' => $price, 'Balance after refund' => $mm], Response::HTTP_OK];
+                return [['before' => $money, 'total' => $price, 'after' => $mm], Response::HTTP_OK];
             }
         } catch (MyException $e) {
             DB::rollback();
