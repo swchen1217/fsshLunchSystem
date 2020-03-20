@@ -59,33 +59,33 @@ Artisan::command('my:test2', function () {
 });
 
 Artisan::command('my:pswd', function () {
-    $user=App\Entity\User::all();
-    foreach ($user as $uu){
-        if($uu->id==1 || $uu->id==2)
+    $user = App\Entity\User::all();
+    foreach ($user as $uu) {
+        if ($uu->id == 1 || $uu->id == 2)
             continue;
-        $npw=bcrypt($uu->password);
-        App\Entity\User::where('id',$uu->id)->update(['password'=>$npw]);
-        $this->line($uu->account.' : '.$npw);
+        $npw = bcrypt($uu->password);
+        App\Entity\User::where('id', $uu->id)->update(['password' => $npw]);
+        $this->line($uu->account . ' : ' . $npw);
     }
     $this->info('ok');
 });
 
 Artisan::command('my:stu', function () {
-    $user=App\Entity\User::all();
-    foreach ($user as $uu){
-        if($uu->id==1 || $uu->id==2)
+    $user = App\Entity\User::all();
+    foreach ($user as $uu) {
+        if ($uu->id == 1 || $uu->id == 2)
             continue;
         $uu->syncRoles('Student');
-        $this->line($uu->account.' : '.'Student');
+        $this->line($uu->account . ' : ' . 'Student');
     }
     $this->info('ok');
 });
 
-Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository,Money_logRepository $money_logRepository) {
-    $money=1000;
-    $user=App\Entity\User::all();
-    foreach ($user as $uu){
-        if($uu->id!=1)
+Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository, Money_logRepository $money_logRepository) {
+    $money = 1000;
+    $user = App\Entity\User::all();
+    foreach ($user as $uu) {
+        if ($uu->id == 1 || $uu->id == 2 || $uu->id == 94 || $uu->id == 95)
             continue;
         $uu->syncRoles('Student');
         $balanceObj = $balanceRepository->findByUserId($uu->id);
@@ -97,10 +97,10 @@ Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository
         }
         $mm = $balance + $money;
         $balanceRepository->updateByUserId($uu->id, ['money' => $mm]);
-        $money_logRepository->caeate(['user_id' => $uu->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => 1, 'note' => $balance . '+' . $money . '=' . $mm.'(TEST01)']);
+        $money_logRepository->caeate(['user_id' => $uu->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => 1, 'note' => $balance . '+' . $money . '=' . $mm . '(TEST01)']);
         Log::channel('money')->info('Top up Success', ['ip' => '127.0.0.1', 'trigger_id' => 1, 'user_id' => $uu->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
         Mail::to($uu)->queue(new \App\Mail\TestInvite01());
-        $this->line($uu->account.' OK');
+        $this->line($uu->account . ' OK');
     }
     $this->info('DONE');
 });
