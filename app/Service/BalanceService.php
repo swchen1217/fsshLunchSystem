@@ -113,6 +113,20 @@ class BalanceService
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
 
+    public function getToday()
+    {
+        $topUp=0;
+        $deduct=0;
+        $balance=$this->balanceRepository->findByCreateAt(Carbon::today()->toDateString());
+        foreach ($balance as $item){
+            if($item->event=='top-up')
+                $topUp+=$item+=money;
+            if($item->event=='deduct')
+                $deduct+=$item+=money;
+        }
+        return [['top-up' => $topUp,'deduct' => $deduct,'Total revenue' => $topUp-$deduct], Response::HTTP_OK];
+    }
+
     public function topUp(Request $request)
     {
         $ip = $request->ip();
