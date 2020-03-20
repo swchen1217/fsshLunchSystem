@@ -68,7 +68,7 @@ class BalanceService
     {
         $user = $this->userRepository->findByAccount($account);
         if ($user != null) {
-            if ($user->id != Auth::user()->id && PermissionSupport::check('balance.read.log', null, true)){
+            if ($user->id != Auth::user()->id && PermissionSupport::check('balance.read.log', null, true)) {
                 $balance = $this->balanceRepository->findByUserId($user->id);
                 if ($balance != null)
                     $money = $balance->money;
@@ -88,7 +88,7 @@ class BalanceService
                     $log[$key] = array_merge($value->toArray(), ['user_name' => $user->name, 'trigger_name' => $tname]);
                 }
                 return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money, 'log' => $log->toArray()], Response::HTTP_OK];
-            }else{
+            } else {
                 $balance = $this->balanceRepository->findByUserId($user->id);
                 if ($balance != null)
                     $money = $balance->money;
@@ -115,16 +115,16 @@ class BalanceService
 
     public function getToday()
     {
-        $topUp=0;
-        $deduct=0;
-        $balance=$this->balanceRepository->findByCreateAt(Carbon::today()->toDateString());
-        foreach ($balance as $item){
-            if($item->event=='top-up')
-                $topUp+=$item+=money;
-            if($item->event=='deduct')
-                $deduct+=$item+=money;
+        $topUp = 0;
+        $deduct = 0;
+        $balance = $this->balanceRepository->findByCreateAt(Carbon::today()->toDateString());
+        foreach ($balance as $item) {
+            if ($item->event == 'top-up')
+                $topUp += $item += money;
+            if ($item->event == 'deduct')
+                $deduct += $item += money;
         }
-        return [['top-up' => $topUp,'deduct' => $deduct,'Total revenue' => $topUp-$deduct], Response::HTTP_OK];
+        return [['top-up' => $topUp, 'deduct' => $deduct, 'Total revenue' => $topUp - $deduct], Response::HTTP_OK];
     }
 
     public function topUp(Request $request)
