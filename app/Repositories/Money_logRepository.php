@@ -46,7 +46,7 @@ class Money_logRepository
 
     public function findByCreateAt($date)
     {
-        return $this->money_log->where('created_at', '>=', "'" . $date . " 00:00:00'")->where('created_at', '<=', "'" . $date . " 23:59:59'")->first();
+        return $this->money_log->where('created_at', '>=', "'" . $date . " 00:00:00'")->where('created_at', '<=', "'" . $date . " 23:59:59'")->get();
     }
 
     public function caeate($data)
