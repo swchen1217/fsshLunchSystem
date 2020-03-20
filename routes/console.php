@@ -85,7 +85,7 @@ Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository
     $money = 1000;
     $user = App\Entity\User::all();
     foreach ($user as $uu) {
-        if ($uu->id == 1 || $uu->id == 2 || $uu->id == 94 || $uu->id == 95)
+        if ($uu->id != 96)
             continue;
         $uu->syncRoles('Student');
         $balanceObj = $balanceRepository->findByUserId($uu->id);
