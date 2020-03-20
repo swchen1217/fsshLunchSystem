@@ -28,7 +28,7 @@ class BalanceRepository
 
     public function findByCreateAt($date)
     {
-        return $this->balance->where('create_at','>=', $date.' 00:00:00')->where('create_at','<=', $date.' 23:59:59')->first();
+        return $this->balance->where('create_at', '>=', $date . ' 00:00:00')->where('create_at', '<=', $date . ' 23:59:59')->first();
     }
 
     public function caeate($data)
