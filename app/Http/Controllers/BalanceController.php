@@ -30,6 +30,12 @@ class BalanceController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
+    public function getToday(Request $request)
+    {
+        $mResult = $this->balanceService->getToday();
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
     public function topUp(Request $request)
     {
         $mResult = $this->balanceService->topUp($request);
