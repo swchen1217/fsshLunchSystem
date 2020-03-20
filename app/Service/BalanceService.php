@@ -119,7 +119,6 @@ class BalanceService
         $topUp = 0;
         $deduct = 0;
         $balance = $this->money_logRepository->findByCreateAt(Carbon::today()->toDateString());
-        var_dump($balance);
         foreach ($balance as $item) {
             if ($item->event == 'top-up')
                 $topUp += $item->money;
