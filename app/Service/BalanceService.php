@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 class BalanceService
 {
@@ -68,7 +69,7 @@ class BalanceService
     {
         $user = $this->userRepository->findByAccount($account);
         if ($user != null) {
-            if ($user->id != Auth::user()->id && PermissionSupport::check('balance.read.log', null, true)){
+            if ($user->id != Auth::user()->id && PermissionSupport::check('balance.read.log', null, true)) {
                 $balance = $this->balanceRepository->findByUserId($user->id);
                 if ($balance != null)
                     $money = $balance->money;
@@ -88,7 +89,7 @@ class BalanceService
                     $log[$key] = array_merge($value->toArray(), ['user_name' => $user->name, 'trigger_name' => $tname]);
                 }
                 return [['user_id' => $user->id, 'name' => $user->name, 'balance' => $money, 'log' => $log->toArray()], Response::HTTP_OK];
-            }else{
+            } else {
                 $balance = $this->balanceRepository->findByUserId($user->id);
                 if ($balance != null)
                     $money = $balance->money;
@@ -111,6 +112,20 @@ class BalanceService
             }
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
+    }
+
+    public function getToday()
+    {
+        $topUp = 0;
+        $deduct = 0;
+        $balance = $this->money_logRepository->findByCreateAt(Carbon::today()->toDateString());
+        foreach ($balance as $item) {
+            if ($item->event == 'top-up')
+                $topUp += $item->money;
+            if ($item->event == 'deduct')
+                $deduct += $item->money;
+        }
+        return [['top-up' => $topUp, 'deduct' => $deduct, 'Total revenue' => $topUp - $deduct], Response::HTTP_OK];
     }
 
     public function topUp(Request $request)

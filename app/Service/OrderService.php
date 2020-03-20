@@ -232,8 +232,14 @@ class OrderService
             if ($order == null)
                 throw new MyException(serialize(['error' => 'The Order Not Found']), Response::HTTP_NOT_FOUND);
             if ($this->userIdCheckWithAllAndSelfAndClass($order->user_id, 'order.modify.delete')) {
-                $this->orderRepository->delete($order_id);
                 $sale = $this->saleRepository->findById($order->sale_id);
+                if (Carbon::today()->gt(Carbon::parse($sale->sale_at)))
+                    throw new MyException(serialize(['error' => 'Sales time has passed']), Response::HTTP_BAD_REQUEST);
+                elseif (Carbon::today()->eq(Carbon::parse($sale->sale_at))) {
+                    if (Carbon::now()->gt(Carbon::createFromTimeString(env('ORDER_DEADLINE', '08:00'))))
+                        throw new MyException(serialize(['error' => 'Sales time has passed']), Response::HTTP_BAD_REQUEST);
+                }
+                $this->orderRepository->delete($order_id);
                 $price = $this->dishRepository->findById($sale->dish_id)->price;
                 $balance = $this->balanceRepository->findByUserId($order->user_id);
                 if ($balance == null) {
