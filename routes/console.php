@@ -81,9 +81,12 @@ Artisan::command('my:stu', function () {
     $this->info('ok');
 });
 
-Artisan::command('my:mailTest01 {user_id}', function (BalanceRepository $balanceRepository,Money_logRepository $money_logRepository) {
+Artisan::command('my:mailTest01', function (BalanceRepository $balanceRepository,Money_logRepository $money_logRepository) {
     $money=1000;
-    $uu=App\Entity\User::find($this->argument('user_id'));
+    $user=App\Entity\User::all();
+    foreach ($user as $uu){
+        if($uu->id!=1)
+            continue;
         $uu->syncRoles('Student');
         $balanceObj = $balanceRepository->findByUserId($uu->id);
         if ($balanceObj != null)
@@ -98,5 +101,6 @@ Artisan::command('my:mailTest01 {user_id}', function (BalanceRepository $balance
         Log::channel('money')->info('Top up Success', ['ip' => '127.0.0.1', 'trigger_id' => 1, 'user_id' => $uu->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
         Mail::to($uu)->queue(new \App\Mail\TestInvite01());
         $this->line($uu->account.' OK');
+    }
     $this->info('DONE');
 });
