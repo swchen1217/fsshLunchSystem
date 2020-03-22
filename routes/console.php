@@ -135,3 +135,18 @@ Artisan::command('user:new', function () {
     $this->error('Bye');
     return false;
 });
+
+Artisan::command('my:mailTest02 {user_id}', function () {
+    $user = App\Entity\User::all();
+    foreach ($user as $uu){
+        $uid=$uu->id;
+        $skipId=['1','2','3','4','6','8','11','19','23','24','25','28','31','39','40','41','43','56','57','60','70','71','73','77','78','88','89','92','94'];
+        foreach ($skipId as $sid){
+            if($uid==$sid)
+                continue;
+        }
+        Mail::to($uu)->queue(new \App\Mail\TestInvite01());
+        $this->line($uu->account . ' OK');
+    }
+    $this->info('DONE');
+});
