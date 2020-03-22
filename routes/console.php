@@ -136,7 +136,7 @@ Artisan::command('user:new', function () {
     return false;
 });
 
-Artisan::command('my:mailTest02 {user_id}', function () {
+Artisan::command('my:mailTest02', function () {
     $user = App\Entity\User::all();
     foreach ($user as $uu) {
         $uid = $uu->id;
