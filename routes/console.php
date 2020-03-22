@@ -116,7 +116,7 @@ Artisan::command('user:new', function () {
     $number = $this->ask('Input Number: ');
     $name = $this->ask('Input Name: ');
     $email = $this->ask('Input Email: ');
-    $data = ['account' => $account, 'password' => '********', 'class' => $class, 'number' => $number, 'name' => $name, 'email' => $email];
+    $data = [['account' => $account, 'password' => '********', 'class' => $class, 'number' => $number, 'name' => $name, 'email' => $email]];
     $headers = ['account', 'password', 'class', 'number', 'name', 'email'];
     $this->table($headers, $data);
     if ($this->confirm('Is the user information correct? [y|N]')) {
