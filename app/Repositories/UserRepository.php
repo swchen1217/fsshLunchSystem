@@ -63,4 +63,14 @@ class UserRepository
         }
         return $permissions;
     }
+
+    public function getRoleNamesById($id)
+    {
+        $roles = array();
+        $uu = $this->findById($id);
+        foreach ($uu->roles as $item) {
+            $roles[] = $item['name'];
+        }
+        return $roles;
+    }
 }
