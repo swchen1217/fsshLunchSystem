@@ -176,12 +176,12 @@
             <tr style="background-color:#f4faf8;color:black;font-size:13px;line-height:15px;width:700px;padding:10px 0 10px 0;text-align:center">
                 <td style="padding:20px">
                     <div style="font-size:15px">
-                        <a href="https://dabo.xyz/fios/privacy1.html"
+                        <a href="http://blog.fios.fssh.khc.edu.tw/?page_id=3"
                            style="color:black;text-decoration:none;padding:0px 10px;letter-spacing:1px" target="_blank">隱私權政策</a>
                         <a href="https://www.instagram.com/fssh_fios/"
                            style="color:black;text-decoration:none;border-left:1px solid;padding:0px 10px;letter-spacing:1px"
                            target="_blank">關於我們</a>
-                        <a href="https://dabo.xyz/fios/privacy1.html"
+                        <a href="http://blog.fios.fssh.khc.edu.tw/?page_id=3"
                            style="color:black;text-decoration:none;border-left:1px solid;padding:0px 10px;letter-spacing:1px"
                            target="_blank">服務條款</a>
                     </div>
