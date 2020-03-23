@@ -148,6 +148,19 @@ class OrderService
         }
     }
 
+    public function getInfo($date)
+    {
+        $sale = $this->saleRepository->findBySaleDate($date);
+        $resultBySale = array();
+        foreach ($sale as $ss) {
+            $price = $this->dishRepository->findById($ss->dish_id)->price;
+            $order = $this->orderRepository->findBySaleId($ss->id);
+            $count = count($order);
+            $resultBySale[] = ['count' => $count, 'total' => $price * $count];
+        }
+        return [$resultBySale, Response::HTTP_OK];
+    }
+
     public function create(Request $request)
     {
         $ip = $request->ip();
