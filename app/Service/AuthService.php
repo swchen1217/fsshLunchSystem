@@ -192,7 +192,7 @@ class AuthService
         $jwt = explode('.', $access_token);
         $payload = json_decode(base64_decode($jwt[1]), true);
         $user = $this->userRepository->findById($payload['sub']);
-        $user_info = array_merge($user->toArray(), ['permissions' => $this->userRepository->getAllPermissiosNamesById($user->id)]);
+        $user_info = array_merge($user->toArray(), ['roles' => $this->userRepository->getRoleNamesById($user->id)]);
         $payload = array_merge($payload, ['user' => $user_info]);
         $path = storage_path('oauth-private.key');
         $file = fopen($path, "r");
