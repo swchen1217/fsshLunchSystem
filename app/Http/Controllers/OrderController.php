@@ -71,6 +71,12 @@ class OrderController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
+    public function getInfoToday()
+    {
+        $mResult = $this->orderService->getInfo(Carbon::today()->toDateString());
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
     public function create(Request $request)
     {
         $mResult = $this->orderService->create($request);

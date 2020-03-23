@@ -90,6 +90,7 @@ Route::group([
     Route::get('/manufacturer/{manufacturer_id}', 'OrderController@getByManufacturer');
     Route::get('/class/{class}', 'OrderController@getByClass');
     Route::get('/class/{class}/today', 'OrderController@getTodayByClass');
+    Route::get('/class/info/today', 'OrderController@getInfoToday')->middleware(['permission2:order.read']);
     Route::post('/', 'OrderController@create')->middleware(['permission2:order.modify.create.self']);
     //Route::patch('/{order_id}', 'OrderController@edit');
     Route::delete('/{order_id}', 'OrderController@remove')->middleware(['permission2:order.modify.delete.self']);
