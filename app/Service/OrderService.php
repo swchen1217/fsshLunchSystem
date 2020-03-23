@@ -156,7 +156,7 @@ class OrderService
             $price = $this->dishRepository->findById($ss->dish_id)->price;
             $order = $this->orderRepository->findBySaleId($ss->id);
             $count = count($order);
-            $resultBySale[] = ['count' => $count, 'total' => $price * $count];
+            $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count];
         }
         return [$resultBySale, Response::HTTP_OK];
     }
