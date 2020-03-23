@@ -127,7 +127,7 @@ class AuthService
     {
         //$user = $request->user();
         $user = Auth::user();
-        $mResult[0] = array_merge($user->toArray(), array('permissions' => $this->userRepository->getAllPermissiosNamesById(auth()->user()->id)));
+        $mResult[0] = array_merge($user->toArray(), array('roles' => $this->userRepository->getRoleNamesById(auth()->user()->id)));
         $mResult[1] = Response::HTTP_OK;
         return $mResult;
     }
