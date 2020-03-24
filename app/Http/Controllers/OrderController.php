@@ -72,9 +72,12 @@ class OrderController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
-    public function getInfoToday()
+    public function getInfoToday(Request $request, $date)
     {
-        $mResult = $this->orderService->getInfo(Carbon::today()->toDateString());
+        $validator = Validator::make([$date], ['required|date_format:Y-m-d']);
+        if ($validator->fails())
+            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
+        $mResult = $this->orderService->getInfo($date);
         return response()->json($mResult[0], $mResult[1]);
     }
 
