@@ -161,6 +161,8 @@ class OrderService
             $ss = $this->orderRepository->findBySaleId($ss->id);
             foreach ($order as $oo) {
                 $user = $this->userRepository->findById($oo->user_id);
+                var_dump($user);
+                var_dump($user->class);
                 if ($class[$user->class] != null)
                     $class[$user->class] += 1;
                 else
