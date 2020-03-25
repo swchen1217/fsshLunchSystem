@@ -152,13 +152,22 @@ class OrderService
     {
         $sale = $this->saleRepository->findBySaleDate($date);
         $resultBySale = array();
+        $class = array();
         foreach ($sale as $ss) {
             $price = $this->dishRepository->findById($ss->dish_id)->price;
             $order = $this->orderRepository->findBySaleId($ss->id);
             $count = count($order);
             $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count];
+            $ss = $this->orderRepository->findBySaleId($ss->id);
+            foreach ($order as $oo) {
+                $user = $this->userRepository->findById($oo->user_id);
+                if ($class[$user->calss] != null)
+                    $class[$user->calss] += 1;
+                else
+                    $class[$user->calss] = 1;
+            }
         }
-        return [$resultBySale, Response::HTTP_OK];
+        return [['sale' => $resultBySale, 'class' => $class], Response::HTTP_OK];
     }
 
     public function create(Request $request)
