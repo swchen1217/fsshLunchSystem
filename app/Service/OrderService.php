@@ -161,10 +161,10 @@ class OrderService
             $ss = $this->orderRepository->findBySaleId($ss->id);
             foreach ($order as $oo) {
                 $user = $this->userRepository->findById($oo->user_id);
-                if ($class[$user->calss] != null)
-                    $class[$user->calss] += 1;
+                if ($class[$user->class] != null)
+                    $class[$user->class] += 1;
                 else
-                    $class[$user->calss] = 1;
+                    $class[$user->class] = 1;
             }
         }
         return [['sale' => $resultBySale, 'class' => $class], Response::HTTP_OK];
