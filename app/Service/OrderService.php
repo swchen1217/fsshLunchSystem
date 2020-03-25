@@ -154,10 +154,13 @@ class OrderService
         $resultBySale = array();
         $class = array();
         foreach ($sale as $ss) {
-            $price = $this->dishRepository->findById($ss->dish_id)->price;
+            $dish = $this->dishRepository->findById($ss->dish_id);
+            $price = $dish->price;
+            $name = $dish->name;
+            $manufacturer_name = $this->manufacturerRepository->findById($dish->manufacturer_id)->name;
             $order = $this->orderRepository->findBySaleId($ss->id);
             $count = count($order);
-            $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count];
+            $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count, 'name' => $name, 'manufacturer_name' => $manufacturer_name];
             $ss = $this->orderRepository->findBySaleId($ss->id);
             foreach ($order as $oo) {
                 $user = $this->userRepository->findById($oo->user_id);
