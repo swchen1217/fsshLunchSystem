@@ -170,10 +170,14 @@ class OrderService
             }
             foreach ($order as $oo) {
                 $user = $this->userRepository->findById($oo->user_id);
-                if (isset($class[$user['class']]))
-                    $class[$user['class']] += 1;
-                else
-                    $class[$user['class']] = 1;
+                if (isset($class[$user['class']])) {
+                    if (isset($class[$user['class']][$ss->id]))
+                        $class[$user['class']][$ss->id] += 1;
+                    else
+                        $class[$user['class']][$ss->id] = 1;
+                } else {
+                    $class[$user['class']] = array($ss->id => 1);
+                }
             }
         }
         return [['sale' => $resultBySale, 'class' => $class, 'sort' => $sort], Response::HTTP_OK];
