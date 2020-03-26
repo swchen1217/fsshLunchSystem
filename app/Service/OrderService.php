@@ -164,7 +164,7 @@ class OrderService
             $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count, 'name' => $name, 'manufacturer_name' => $manufacturer_name];
             if (isset($sort[$manufacturer_name])) {
                 $sort[$manufacturer_name] = array_merge($sort[$manufacturer_name], [substr($name, 0, 1) => $ss->id]);
-                krsort($sort[$manufacturer_name]);
+                ksort($sort[$manufacturer_name]);
             } else {
                 $sort[$manufacturer_name] = array(substr($name, 0, 1) => $ss->id);
             }
