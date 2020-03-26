@@ -172,7 +172,8 @@ class OrderService
                     $class[$user['class']] = 1;
             }
         }
-        return [['sale' => $resultBySale, 'class' => $class, 'sort' => collect($sort)->groupBy('manufacturer_id')->toArray()], Response::HTTP_OK];
+        $tmp = collect($sort)->groupBy('manufacturer_id')->toArray();
+        return [['sale' => $resultBySale, 'class' => $class, 'sort' => $tmp], Response::HTTP_OK];
     }
 
 
