@@ -162,7 +162,7 @@ class OrderService
             $order = $this->orderRepository->findBySaleId($ss->id);
             $count = count($order);
             $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count, 'name' => $name, 'manufacturer_name' => $manufacturer_name];
-            $key = mb_convert_encoding(substr($name, 0, 1), 'UTF-8', 'UTF-8');
+            $key = substr($name, 0, 1);
             $sort[] = [$key => $ss->id, 'manufacturer_id' => $dish->manufacturer_id];
             foreach ($order as $oo) {
                 $user = $this->userRepository->findById($oo->user_id);
