@@ -162,10 +162,10 @@ class OrderService
             $order = $this->orderRepository->findBySaleId($ss->id);
             $count = count($order);
             $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count, 'name' => $name, 'manufacturer_name' => $manufacturer_name];
-            if (isset($sort[$dish->manufacturer_id])) {
-                $sort[$dish->manufacturer_id] = array_merge($sort[$dish->manufacturer_id], [substr($name, 0, 1) => $ss->id]);
+            if (isset($sort[$manufacturer_name])) {
+                $sort[$manufacturer_name] = array_merge($sort[$manufacturer_name], [substr($name, 0, 1) => $ss->id]);
             } else {
-                $sort[$dish->manufacturer_id] = array(substr($name, 0, 1) => $ss->id);
+                $sort[$manufacturer_name] = array(substr($name, 0, 1) => $ss->id);
             }
             foreach ($order as $oo) {
                 $user = $this->userRepository->findById($oo->user_id);
@@ -175,7 +175,6 @@ class OrderService
                     $class[$user['class']] = 1;
             }
         }
-        //$tmp = collect($sort)->groupBy('manufacturer_id')->toArray();
         return [['sale' => $resultBySale, 'class' => $class, 'sort' => $sort], Response::HTTP_OK];
     }
 
