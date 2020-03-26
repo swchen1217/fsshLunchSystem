@@ -164,7 +164,7 @@ class OrderService
             $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count, 'name' => $name, 'manufacturer_name' => $manufacturer_name];
             $key = substr($name, 0, 1);
             if (isset($sort[$dish->manufacturer_id])) {
-                $sort[$dish->manufacturer_id] = array_merge($sort[$manufacturer_name], [substr($name, 0, 1) => $ss->id]);
+                $sort[$dish->manufacturer_id] = array_merge($sort[$dish->manufacturer_id], [substr($name, 0, 1) => $ss->id]);
             } else {
                 $sort[$dish->manufacturer_id] = array(substr($name, 0, 1) => $ss->id);
             }
