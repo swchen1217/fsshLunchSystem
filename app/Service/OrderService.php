@@ -163,7 +163,8 @@ class OrderService
             $count = count($order);
             $resultBySale[] = ['sale_id' => $ss->id, 'count' => $count, 'total' => $price * $count, 'name' => $name, 'manufacturer_name' => $manufacturer_name];
             $ss = $this->orderRepository->findBySaleId($ss->id);
-            $sort[] = [substr($name, 0, 1) => $ss->id, 'manufacturer_id' => $dish->manufacturer_id];
+            $key = substr($name, 0, 1);
+            $sort[] = [$key => $ss->id, 'manufacturer_id' => $dish->manufacturer_id];
             foreach ($order as $oo) {
                 $user = $this->userRepository->findById($oo->user_id);
                 if (isset($class[$user['class']]))
