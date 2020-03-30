@@ -151,7 +151,8 @@ Artisan::command('my:mailTest02', function () {
     $this->info('DONE');
 });
 
-Artisan::command('user:importInit', function () {
+Artisan::command('user:importInit', function (BalanceRepository $balanceRepository, Money_logRepository $money_logRepository) {
+    $money = 1000;
     $this->info('ok');
     $user = App\Entity\User::all();
     foreach ($user as $uu) {
@@ -160,6 +161,17 @@ Artisan::command('user:importInit', function () {
         $npw = bcrypt($uu->password);
         App\Entity\User::where('id', $uu->id)->update(['password' => $npw]);
         $uu->syncRoles('Student');
+        $balanceObj = $balanceRepository->findByUserId($uu->id);
+        if ($balanceObj != null)
+            $balance = $balanceObj->money;
+        else {
+            $balanceRepository->caeate(['user_id' => $uu->id, 'money' => 0]);
+            $balance = 0;
+        }
+        $mm = $balance + $money;
+        $balanceRepository->updateByUserId($uu->id, ['money' => $mm]);
+        $money_logRepository->caeate(['user_id' => $uu->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => 1, 'note' => $balance . '+' . $money . '=' . $mm . '(TEST02)']);
+        Log::channel('money')->info('Top up Success', ['ip' => '127.0.0.1', 'trigger_id' => 1, 'user_id' => $uu->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
         $this->line('OK ' . $uu->account . ' : ' . $npw . ' : Student');
     }
     $this->info('DONE');
