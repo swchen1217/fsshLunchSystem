@@ -150,3 +150,18 @@ Artisan::command('my:mailTest02', function () {
     }
     $this->info('DONE');
 });
+
+Artisan::command('user:importInit', function () {
+    $this->info('ok');
+    $user = App\Entity\User::all();
+    foreach ($user as $uu) {
+        if ($uu->id == 1 || $uu->id == 2 || $uu->id == 3)
+            continue;
+        $npw = bcrypt($uu->password);
+        App\Entity\User::where('id', $uu->id)->update(['password' => $npw]);
+        $uu->syncRoles('Student');
+        $this->line('OK ' . $uu->account . ' : ' . $npw . ' : Student');
+    }
+    $this->info('DONE');
+});
+
