@@ -14,7 +14,7 @@ class AddPwChangedToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+    	    $table->boolean('pw_changed')->after('email')->default(false);
         });
     }
 
