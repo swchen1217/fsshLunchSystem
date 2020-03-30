@@ -35,7 +35,10 @@ class PswdService
         $user = $this->userRepository->findByAccount($request->input('account'));
         if ($user != null) {
             if (Hash::check($request->input('old_pswd'), $user->password)) {
-                $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd'))]);
+                if (!$user->pw_changed)
+                    $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd')), 'pw_changed' => 1]);
+                else
+                    $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd'))]);
                 Log::channel('pswd')->info('Success (Account)', ['ip' => $ip, 'user_id' => $user->id]);
                 return [[], Response::HTTP_NO_CONTENT];
             } else
