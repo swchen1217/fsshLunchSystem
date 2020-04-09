@@ -69,8 +69,14 @@ class AuthService
             if (!empty($access_token)) {
                 $user = $this->userRepository->findByAccount($req['username']);
                 $user_id = $user->id;
-                $fail = $this->login_failRepository->findByUserId($user_id);
-                if (count($fail) > 5) {
+                //$fail = $this->login_failRepository->findByUserId($user_id);
+                if ($mResultStatusCode == 200) {
+                    $this->login_failRepository->deleteByUserId($user_id);
+                    $mResultContent['access_token'] = $this->payload($mResultContent['access_token']);
+                    Log::channel('login')->info('Success', ['ip' => $ip, 'user_id' => $user_id]);
+                    return [$mResultContent, Response::HTTP_OK];
+                }
+                /*if (count($fail) > 5) {
                     $path = storage_path('oauth-public.key');
                     $file = fopen($path, "r");
                     $publicKey = fread($file, filesize($path));
@@ -92,7 +98,7 @@ class AuthService
                         Log::channel('login')->info('Success', ['ip' => $ip, 'user_id' => $user_id]);
                         return [$mResultContent, Response::HTTP_OK];
                     }
-                }
+                }*/
             } else {
                 $user_id = $this->userRepository->findByAccount($req['username'])->id;
                 if ($mResultContent['error'] == "invalid_client") {
