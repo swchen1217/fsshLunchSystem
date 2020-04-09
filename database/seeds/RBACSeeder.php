@@ -32,7 +32,7 @@ class RBACSeeder extends Seeder
         //Role::findByName("student")->givePermissionTo("dish.read");
         Role::findByName("student")->givePermissionTo("balance.read.self");
         Role::findByName("student")->givePermissionTo("order.read.self");
-        Role::findByName("student")->givePermissionTo("order.read.class.today");
+        Role::findByName("student")->givePermissionTo("order.read.class");
         Role::findByName("student")->givePermissionTo("order.modify.create.self");
         Role::findByName("student")->givePermissionTo("order.modify.update.self");
         Role::findByName("student")->givePermissionTo("order.modify.delete.self");
