@@ -38,6 +38,12 @@ class OrderExport implements WithEvents
                         'name' => 'Noto Sans CJK TC Regular',
                         'color' => [
                             'rgb' => '000000'
+                        ],
+                        'borders' => [
+                            'outline' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                                'color' => ['argb' => '000000'],
+                            ],
                         ]
                     ]
                 ]);
