@@ -42,7 +42,7 @@ class OrderExport implements WithEvents
                         'borders' => [
                             'outline' => [
                                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                                'color' => ['argb' => '000000'],
+                                'color' => ['rgb' => '000000'],
                             ],
                         ]
                     ]
