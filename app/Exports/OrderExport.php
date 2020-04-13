@@ -75,6 +75,7 @@ class OrderExport implements WithEvents
                 for ($g = 1; $g >= 3; $g++) {
                     $r = ($g - 1) * 18;
                     for ($c = 1; $c >= 18; $c++) {
+                        var_dump('A' . ($r + $c + 3));
                         $event->sheet->setCellValue('A' . ($r + $c + 3), 'class'/*$g.str_pad($c,2,"0",STR_PAD_LEFT)*/);
                     }
                 }
