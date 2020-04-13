@@ -41,19 +41,21 @@ class OrderExport implements WithEvents
                         ],
                         'borders' => [
                             'outline' => [
-                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                                'borderStyle' => 'trick',
                                 'color' => ['rgb' => '000000'],
                             ],
                         ]
                     ]
                 ]);
                 //合併單元格
-                $event->sheet->getDelegate()->mergeCells('A1:G1');
-                $event->sheet->getDelegate()->mergeCells('H1:K1');
+                $event->sheet->getDelegate()->mergeCells('A1:H1');
+                $event->sheet->getDelegate()->mergeCells('I1:K1');
                 $event->sheet->getDelegate()->mergeCells('B2:C2');
                 $event->sheet->getDelegate()->mergeCells('D2:E2');
                 $event->sheet->getDelegate()->mergeCells('F2:G2');
                 $event->sheet->getDelegate()->mergeCells('H2:I2');
+
+                $event->sheet->setCellValue('A1', '國立鳳山高中線上訂餐系統');
             }
         ];
     }
