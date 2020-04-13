@@ -11,6 +11,7 @@ class OrderExport implements WithEvents
 {
     public function registerEvents(): array
     {
+        $col=['A','B','C','D','E','F','G','H','I','J','K'];
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 //設定列寬
@@ -56,6 +57,29 @@ class OrderExport implements WithEvents
                 $event->sheet->getDelegate()->mergeCells('H2:I2');
 
                 $event->sheet->setCellValue('A1', '國立鳳山高中線上訂餐系統');
+                $event->sheet->setCellValue('I1', '2020-04-13 (一)');
+                $event->sheet->setCellValue('B2', '正園');
+                $event->sheet->setCellValue('D2', '御饌坊');
+                $event->sheet->setCellValue('F2', '彩鶴');
+                $event->sheet->setCellValue('H2', '素食');
+                $event->sheet->setCellValue('B3', 'A');
+                $event->sheet->setCellValue('C3', 'B');
+                $event->sheet->setCellValue('D3', 'A');
+                $event->sheet->setCellValue('E3', 'B');
+                $event->sheet->setCellValue('F3', 'A');
+                $event->sheet->setCellValue('G3', 'B');
+                $event->sheet->setCellValue('H3', 'A');
+                $event->sheet->setCellValue('I3', 'B');
+                $event->sheet->setCellValue('J3', '總數量');
+                $event->sheet->setCellValue('K3', '總金額');
+                for($g=1;$g>=3;$g++){
+                    $r=($g-1)*18;
+                    for($c=1;$c>=3;$c++){
+                        $event->sheet->setCellValue('A'.($r+$c+3), $g.str_pad($c,2,"0",STR_PAD_LEFT));
+                    }
+                }
+                $event->sheet->setCellValue('A58', '總數量');
+                $event->sheet->setCellValue('A59', '總金額');
             }
         ];
     }
