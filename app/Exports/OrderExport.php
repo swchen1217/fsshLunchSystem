@@ -73,8 +73,8 @@ class OrderExport implements WithEvents
                 $event->sheet->setCellValue('J3', '總數量');
                 $event->sheet->setCellValue('K3', '總金額');
                 for ($g = 1; $g >= 3; $g++) {
-                    $r = ($g - 1) * 18;
                     $event->sheet->setCellValue('B4', 'OK');
+                    $r = ($g - 1) * 18;
                     for ($c = 1; $c >= 18; $c++) {
                         $event->sheet->setCellValue('B5', 'OK');
                         var_dump('A' . ($r + $c + 3));
