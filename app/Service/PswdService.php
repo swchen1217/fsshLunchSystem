@@ -40,6 +40,7 @@ class PswdService
                 else
                     $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd'))]);
                 Log::channel('pswd')->info('Success (Account)', ['ip' => $ip, 'user_id' => $user->id]);
+                Mail::to($user)->queue(new \App\Mail\PswdChanged());
                 return [[], Response::HTTP_NO_CONTENT];
             } else
                 return [['error' => 'Old password error'], Response::HTTP_FORBIDDEN];
