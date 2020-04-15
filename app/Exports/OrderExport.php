@@ -40,12 +40,12 @@ class OrderExport implements WithEvents
                         'color' => [
                             'rgb' => '000000'
                         ],
-                        'borders' => [
+                        /*'borders' => [
                             'outline' => [
                                 'borderStyle' => 'thin',
                                 'color' => ['argb' => '000000'],
                             ],
-                        ]
+                        ]*/
                     ]
                 ]);
                 //合併單元格
@@ -80,6 +80,15 @@ class OrderExport implements WithEvents
                 }
                 $event->sheet->setCellValue('A58', '總數量');
                 $event->sheet->setCellValue('A59', '總金額');
+
+                $event->sheet->getStyle('A1:K59')->applyFromArray([
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
             }
         ];
     }
