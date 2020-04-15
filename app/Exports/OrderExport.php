@@ -83,7 +83,7 @@ class OrderExport implements WithEvents
                 $event->sheet->setCellValue('A58', '總數量');
                 $event->sheet->setCellValue('A59', '總金額');
 
-                $event->sheet->setBorder('A1:K59', 'thin');
+                $event->sheet->getDelegate()->setBorder('A1:K59', 'thin');
             }
         ];
     }
