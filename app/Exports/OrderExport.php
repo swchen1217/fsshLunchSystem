@@ -36,16 +36,20 @@ class OrderExport implements WithEvents
                 //設定區域單元格字型、顏色、背景等，其他設定請檢視 applyFromArray 方法，提供了註釋
                 $event->sheet->getStyle('A1:K59')->applyFromArray([
                     'font' => [
-                        'name' => 'aNoto Sans CJK TC Regular',
+                        'name' => 'Noto Sans CJK TC Regular',
                         'color' => [
                             'rgb' => '000000'
                         ],
-                        /*'borders' => [
-                            'outline' => [
+                        'borders' => [
+                            'allBorders' => [
                                 'borderStyle' => 'thin',
                                 'color' => ['argb' => '000000'],
                             ],
-                        ]*/
+                            'outline' => [
+                                'borderStyle' => 'trick',
+                                'color' => ['argb' => '000000'],
+                            ],
+                        ],
                     ]
                 ]);
                 //合併單元格
@@ -81,10 +85,10 @@ class OrderExport implements WithEvents
                 $event->sheet->setCellValue('A58', '總數量');
                 $event->sheet->setCellValue('A59', '總金額');
 
-                $event->sheet->getStyle('A1:K59')->applyFromArray([
+                $event->sheet->getStyle('B2:C59')->applyFromArray([
                     'borders' => [
-                        'allBorders' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'outline' => [
+                            'borderStyle' => 'trick',
                             'color' => ['argb' => '000000'],
                         ],
                     ],
