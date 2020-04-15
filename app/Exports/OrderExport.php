@@ -161,7 +161,71 @@ class OrderExport implements WithEvents
                         ],
                     ],
                 ]);
-                $event->sheet->getStyle('A19:K20')->applyFromArray([
+                $event->sheet->getStyle('A19:K21')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A22:K26')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A27:K31')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A32:K36')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A37:K39')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A40:K44')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A45:K49')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A50:K54')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('A55:K57')->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => 'medium',
