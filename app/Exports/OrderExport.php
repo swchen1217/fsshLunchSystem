@@ -97,6 +97,38 @@ class OrderExport implements WithEvents
                         ],
                     ],
                 ]);
+                $event->sheet->getStyle('B2:C59')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('D2:E59')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('F2:G59')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $event->sheet->getStyle('H2:I59')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
             }
         ];
     }
