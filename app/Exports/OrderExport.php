@@ -40,7 +40,7 @@ class OrderExport implements WithEvents
                         'color' => [
                             'rgb' => '000000'
                         ],
-                        'borders' => [
+                        /*'borders' => [
                             'allBorders' => [
                                 'borderStyle' => 'thin',
                                 'color' => ['argb' => '000000'],
@@ -49,7 +49,7 @@ class OrderExport implements WithEvents
                                 'borderStyle' => 'trick',
                                 'color' => ['argb' => '000000'],
                             ],
-                        ],
+                        ],*/
                     ]
                 ]);
                 //合併單元格
