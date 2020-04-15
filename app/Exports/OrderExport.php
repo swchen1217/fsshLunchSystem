@@ -88,7 +88,7 @@ class OrderExport implements WithEvents
                 $event->sheet->getStyle('A1:K59')->applyFromArray([
                     'borders' => [
                         'outline' => [
-                            'borderStyle' => 'trick',
+                            'borderStyle' => 'medium',
                             'color' => ['argb' => '000000'],
                         ],
                     ],
