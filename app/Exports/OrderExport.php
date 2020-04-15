@@ -91,6 +91,10 @@ class OrderExport implements WithEvents
                             'borderStyle' => 'medium',
                             'color' => ['argb' => '000000'],
                         ],
+                        'allBorders' => [
+                            'borderStyle' => 'thin',
+                            'color' => ['argb' => '000000'],
+                        ],
                     ],
                 ]);
             }
