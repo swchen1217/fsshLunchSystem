@@ -85,10 +85,10 @@ class OrderExport implements WithEvents
                 $event->sheet->setCellValue('A58', '總數量');
                 $event->sheet->setCellValue('A59', '總金額');
 
-                $event->sheet->getStyle('B2:C59')->applyFromArray([
+                $event->sheet->getStyle('A1:K59')->applyFromArray([
                     'borders' => [
                         'outline' => [
-                            'borderStyle' => 'trick',
+                            'borderStyle' => 'thin',
                             'color' => ['argb' => '000000'],
                         ],
                     ],
