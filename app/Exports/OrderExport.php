@@ -40,12 +40,12 @@ class OrderExport implements WithEvents
                         'color' => [
                             'rgb' => '000000'
                         ],
-                        'borders' => [
+                        /*'borders' => [
                             'outline' => [
                                 'borderStyle' => 'trick',
                                 'color' => ['rgb' => '000000'],
                             ],
-                        ]
+                        ]*/
                     ]
                 ]);
                 //合併單元格
@@ -77,13 +77,13 @@ class OrderExport implements WithEvents
                     $r = ($g - 1) * 18;
                     for ($c = 1; $c <= 18; $c++) {
                         $event->sheet->setCellValue('B5', 'OK');
-                        var_dump('A' . ($r + $c + 3));
-                        var_dump($g . str_pad($c, 2, "0", STR_PAD_LEFT));
                         $event->sheet->setCellValue('A' . ($r + $c + 3), $g . str_pad($c, 2, "0", STR_PAD_LEFT));
                     }
                 }
                 $event->sheet->setCellValue('A58', '總數量');
                 $event->sheet->setCellValue('A59', '總金額');
+
+                $event->sheet->setBorder('A1:K59', 'thin');
             }
         ];
     }
