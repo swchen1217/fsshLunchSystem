@@ -36,13 +36,13 @@ class OrderExport implements WithEvents
                 //設定區域單元格字型、顏色、背景等，其他設定請檢視 applyFromArray 方法，提供了註釋
                 $event->sheet->getStyle('A1:K59')->applyFromArray([
                     'font' => [
-                        'name' => 'Noto Sans CJK TC Regular',
+                        'name' => 'aNoto Sans CJK TC Regular',
                         'color' => [
                             'rgb' => '000000'
                         ],
                         'borders' => [
                             'outline' => [
-                                'borderStyle' => 'trick',
+                                'borderStyle' => 'thin',
                                 'color' => ['argb' => '000000'],
                             ],
                         ]
