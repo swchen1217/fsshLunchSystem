@@ -79,7 +79,7 @@ class OrderExport implements WithEvents
                         $event->sheet->setCellValue('B5', 'OK');
                         var_dump('A' . ($r + $c + 3));
                         var_dump($g.str_pad($c,2,"0",STR_PAD_LEFT));
-                        $event->sheet->setCellValue('A' . ($r + $c + 3), 'class'/*$g.str_pad($c,2,"0",STR_PAD_LEFT)*/);
+                        $event->sheet->setCellValue('A' . ($r + $c + 3), 'class'/*$g.str_pad($c,2,"0",STR_PAD_LEFT)*//*);
                     }*/
                 }
                 $event->sheet->setCellValue('A58', '總數量');
