@@ -283,10 +283,10 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 foreach ($sale_data as $ss){
                     $tmp[]=$order_data[$ss['sale_id']]['class'][$cc] ?? 0;
                 }
+                while (count($tmp)<8)
+                    array_push($tmp,[0]);
                 $display_data[]=[];
-
                 echo json_encode($tmp);
-
             }
         }
 
