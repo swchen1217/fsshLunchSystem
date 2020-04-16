@@ -318,8 +318,6 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
         array_push($tmp_money, null, $total_money);
         array_push($display_data, $tmp_count, $tmp_money);
 
-        echo json_encode($display_data);
-
         return collect($display_data);
     }
 
