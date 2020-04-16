@@ -188,6 +188,7 @@ class OrderService
         $manufacturer_data = $this->manufacturerRepository->all()->sortBy('id')->toArray();
         $mm = array();
         $sale = $this->saleRepository->findBySaleDateInterval($date1, $date2);
+        var_dump($sale);
         foreach ($sale as $ss) {
             $dish = $this->dishRepository->findById($ss['dish_id']);
             $order = $this->orderRepository->findBySaleId($ss['id']);
@@ -198,6 +199,7 @@ class OrderService
                 $mm[$dish['manufacturer_id']] = $money;
             }
         }
+        var_dump($mm);
         foreach ($manufacturer_data as $key => $value)
             array_merge($manufacturer_data[$key], ['total_money' => $mm[$value['id']] ?? 0]);
         return [$manufacturer_data, Response::HTTP_OK];
