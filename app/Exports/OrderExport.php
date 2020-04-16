@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Entity\Dish;
+use App\Entity\Order;
 use App\Entity\Sale;
 use App\Entity\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -239,6 +240,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
     public function collection()
     {
         $sale_data = array();
+        $order_data = array();
 
         $sale = Sale::where('sale_at', $this->date)->get();
         foreach ($sale as $item) {
@@ -253,14 +255,29 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
         }
 
         usort($sale_data, function ($a, $b) {
-            if($a['dish_manufacturer_id']==$b['dish_manufacturer_id']){
+            if ($a['dish_manufacturer_id'] == $b['dish_manufacturer_id']) {
                 return strcmp($a['dish_alias'], $b['dish_alias']);
             }
             return $a['dish_manufacturer_id'] - $b['dish_manufacturer_id'];
         });
 
-        echo json_encode($sale_data);
+        foreach ($sale_data as $ss) {
+            $order = Order::where('sale_id', $ss['sale_id'])->get();
+            $class = array();
+            foreach ($order as $oo) {
+                $user = User::find($oo->user_id);
+                if (isset($class[$user['class']])) {
+                    $class[$user['class']] += 1;
+                } else {
+                    $class[$user['class']] = 1;
+                }
+            }
+            $order_data[$ss['sale_id']] = ['count' => count($order), 'class' => $class];
 
+        }
+
+
+        echo json_encode($order_data);
 
         return collect($sale_data);
     }
