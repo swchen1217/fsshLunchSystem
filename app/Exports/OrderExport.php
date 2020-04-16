@@ -252,6 +252,8 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
             ];
         }
 
+        var_dump($sale_data);
+
 
         return collect($sale_data);
     }
