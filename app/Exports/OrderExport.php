@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Entity\Dish;
 use App\Entity\Sale;
 use App\Entity\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -237,9 +238,22 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
     public function collection()
     {
-        $sale = Sale::where('sale_at', $this->date)->get();
+        $sale_data = array();
 
-        return collect($sale->toArray());
+        $sale = Sale::where('sale_at', $this->date)->get();
+        foreach ($sale as $item) {
+            $dish = Dish::find($item['dish_id']);
+            $sale_data[] = [
+                'sale_id' => $item['id'],
+                'dish_id' => $item['dish_id'],
+                'dish_alias' => substr($dish['name'], 0, 1),
+                'dish_manufacturer_id' => $dish['manufacturer_id'],
+                'dish_price' => $dish['price']
+            ];
+        }
+
+
+        return collect($sale_data);
     }
 
     public function startCell(): string
