@@ -306,7 +306,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
             $tmp_count[] = $count;
             $tmp_money[] = $money;
             $total_count += $count;
-            $total_money += $money;
+            $total_money += $money * $count;
         }
         while (count($tmp_count) < 8)
             array_push($tmp_count, 0);
@@ -315,7 +315,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
         array_push($tmp_count, $total_count, null);
         array_push($tmp_money, null, $total_money);
         array_push($display_data, $tmp_count, $tmp_money);
-        
+
         echo json_encode($display_data);
 
         return collect($display_data);
