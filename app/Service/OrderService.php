@@ -199,7 +199,7 @@ class OrderService
             }
         }
         foreach ($manufacturer_data as $key => $value)
-            array_merge($manufacturer_data[$key], ['total_money' => $mm[$value['manufacturer_id']] ?? 0]);
+            array_merge($manufacturer_data[$key], ['total_money' => $mm[$value['id']] ?? 0]);
         return [$this->manufacturerRepository, Response::HTTP_OK];
     }
 
