@@ -281,7 +281,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 $cc=$g . str_pad($c, 2, "0", STR_PAD_LEFT);
                 $tmp=array();
                 foreach ($sale_data as $ss){
-                    $tmp[]=$order_data[$ss[sale_id]['class'][$cc]] ?? 0;
+                    $tmp[]=$order_data[$ss['sale_id']]['class'][$cc] ?? 0;
                 }
                 $display_data[]=[];
 
