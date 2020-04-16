@@ -295,9 +295,10 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
         }
 
 
+
         echo json_encode($display_data);
 
-        return collect($sale_data);
+        return collect($display_data);
     }
 
     public function startCell(): string
