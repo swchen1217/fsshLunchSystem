@@ -304,7 +304,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
             $count = $order_data[$ss['sale_id']]['count'];
             $money = $ss['dish_price'];
             $tmp_count[] = $count;
-            $tmp_money[] = $money;
+            $tmp_money[] = ($money * $count);
             $total_count += $count;
             $total_money += ($money * $count);
         }
