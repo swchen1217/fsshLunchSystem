@@ -188,7 +188,7 @@ class OrderService
         $manufacturer_data = $this->manufacturerRepository->all()->sortBy('id')->toArray();
         $mm = array();
         $sale = $this->saleRepository->findBySaleDateInterval($date1, $date2);
-        var_dump($sale);
+        return [$sale, Response::HTTP_OK];
         foreach ($sale as $ss) {
             $dish = $this->dishRepository->findById($ss['dish_id']);
             $order = $this->orderRepository->findBySaleId($ss['id']);
