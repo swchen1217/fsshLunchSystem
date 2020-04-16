@@ -32,9 +32,11 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 $event->sheet->getDelegate()->getPageMargins()->setBottom(1);
                 $event->sheet->getDelegate()->getPageMargins()->setRight(0.5);
                 $event->sheet->getDelegate()->getPageMargins()->setLeft(0.5);
+                $event->sheet->getDelegate()->getPageMargins()->setHeader(0);
+                $event->sheet->getDelegate()->getPageMargins()->setFooter(0);
 
                 //設定列寬
-                for ($i = 0; $i < 11; $i++) {
+                for ($i = 0; $i <= 11; $i++) {
                     $event->sheet->getDelegate()->getColumnDimension($col[$i])->setWidth(8.11);
                 }
                 //設定行高，$i為資料行數
