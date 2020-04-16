@@ -33,7 +33,7 @@ class SaleRepository
 
     public function findBySaleDateInterval($date1, $date2)
     {
-        return $this->sale->where('sale_at', '>=', $date1 . ' 00:00:00')->where('created_at', '<=', $date2 . ' 23:59:59')->get();
+        return $this->sale->where('sale_at', '>=', $date1 . ' 00:00:00')->where('sale_at', '<=', $date2 . ' 23:59:59')->get();
     }
 
     public function findByDishId($dish_id)
