@@ -252,6 +252,13 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
             ];
         }
 
+        usort($sale_data, function ($a, $b) {
+            if($a['dish_manufacturer_id']==$b['dish_manufacturer_id']){
+                return strcmp($a['dish_alias'], $b['dish_alias']);
+            }
+            return $a['dish_manufacturer_id'] - $b['dish_manufacturer_id'];
+        });
+
         echo json_encode($sale_data);
 
 
