@@ -40,7 +40,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                     $event->sheet->getDelegate()->getColumnDimension($col[$i])->setWidth(8.11);
                 }
                 //設定行高，$i為資料行數
-                for ($i = 0; $i <= 59; $i++) {
+                for ($i = 1; $i <= 59; $i++) {
                     $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(13.8);
                 }
                 //設定區域單元格垂直居中
