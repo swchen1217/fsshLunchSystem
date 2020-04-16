@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class OrderExport implements WithEvents
+class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomStartCell
 {
     public function registerEvents(): array
     {
@@ -40,16 +40,6 @@ class OrderExport implements WithEvents
                         'color' => [
                             'rgb' => '000000'
                         ],
-                        /*'borders' => [
-                            'allBorders' => [
-                                'borderStyle' => 'thin',
-                                'color' => ['argb' => '000000'],
-                            ],
-                            'outline' => [
-                                'borderStyle' => 'trick',
-                                'color' => ['argb' => '000000'],
-                            ],
-                        ],*/
                     ]
                 ]);
                 //合併單元格
@@ -235,5 +225,21 @@ class OrderExport implements WithEvents
                 ]);
             }
         ];
+    }
+
+    public function collection()
+    {
+        return collect([]);
+    }
+
+    public function startCell(): string
+    {
+        return 'B4';
+    }
+
+    public function title(): string
+    {
+        // 設定工作䈬的名稱
+        return '訂單';
     }
 }
