@@ -63,7 +63,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 $event->sheet->getDelegate()->mergeCells('H2:I2');
 
                 $event->sheet->setCellValue('A1', '國立鳳山高中線上訂餐系統');
-                $event->sheet->setCellValue('I1', date("Y-m-d (D)", strtotime($this->date)));
+                $event->sheet->setCellValue('I1', date("Y-m-d D", strtotime($this->date)));
                 $event->sheet->setCellValue('B2', '正園');
                 $event->sheet->setCellValue('D2', '御饌坊');
                 $event->sheet->setCellValue('F2', '彩鶴');
@@ -306,7 +306,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
             $tmp_count[] = $count;
             $tmp_money[] = $money;
             $total_count += $count;
-            $total_money += $money * $count;
+            $total_money += ($money * $count);
         }
         while (count($tmp_count) < 8)
             array_push($tmp_count, 0);
