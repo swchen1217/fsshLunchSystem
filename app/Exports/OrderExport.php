@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Entity\Sale;
 use App\Entity\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -9,6 +10,13 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomStartCell
 {
+    public $date;
+
+    public function __construct($date)
+    {
+        $this->date=$date;
+    }
+
     public function registerEvents(): array
     {
         $col = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
@@ -229,7 +237,9 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
     public function collection()
     {
-        return collect([]);
+        $sale=Sale::where('sale_at', $this->date)->get();
+
+        return collect($sale->toArray());
     }
 
     public function startCell(): string
@@ -240,6 +250,6 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
     public function title(): string
     {
         // 設定工作䈬的名稱
-        return '訂單';
+        return $this->date.'訂單';
     }
 }
