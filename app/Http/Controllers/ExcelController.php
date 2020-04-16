@@ -16,6 +16,6 @@ class ExcelController extends Controller
 
     public function exportOrder(Request $request, $date)
     {
-        Excel::download(new OrderExport($date), $date . '.xlsx');
+        Excel::store(new OrderExport($date), 'public/order/order-' . $date . '.xlsx');
     }
 }
