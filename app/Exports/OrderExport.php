@@ -285,7 +285,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 foreach ($sale_data as $ss){
                     $count=$order_data[$ss['sale_id']]['class'][$cc] ?? 0;
                     $total_count+=$count;
-                    $total_money+=$count*$ss['price'];
+                    $total_money+=$count*$ss['dish_price'];
                     $tmp[]=$count;
                 }
                 while (count($tmp)<8)
