@@ -241,6 +241,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
     {
         $sale_data = array();
         $order_data = array();
+        $display_data=array();
 
         $sale = Sale::where('sale_at', $this->date)->get();
         foreach ($sale as $item) {
@@ -273,11 +274,25 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 }
             }
             $order_data[$ss['sale_id']] = ['count' => count($order), 'class' => $class];
+        }
 
+        for ($g = 1; $g <= 3; $g++) {
+            for ($c = 1; $c <= 18; $c++) {
+                $cc=$g . str_pad($c, 2, "0", STR_PAD_LEFT);
+                $tmp=array();
+                foreach ($sale_data as $ss){
+                    echo json_encode($ss);
+                }
+
+
+
+                $display_data[]=[];
+
+            }
         }
 
 
-        echo json_encode($order_data);
+        //echo json_encode($order_data);
 
         return collect($sale_data);
     }
