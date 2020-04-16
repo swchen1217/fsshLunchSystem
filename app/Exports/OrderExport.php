@@ -48,6 +48,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 $event->sheet->getStyle('A1:K59')->applyFromArray([
                     'font' => [
                         'name' => 'Noto Sans CJK TC Regular',
+                        'size' => 12,
                         'color' => [
                             'rgb' => '000000'
                         ],
@@ -62,7 +63,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 $event->sheet->getDelegate()->mergeCells('H2:I2');
 
                 $event->sheet->setCellValue('A1', '國立鳳山高中線上訂餐系統');
-                $event->sheet->setCellValue('I1', '2020-04-13 (一)');
+                $event->sheet->setCellValue('I1', date("Y-m-d (D)", strtotime($this->date)));
                 $event->sheet->setCellValue('B2', '正園');
                 $event->sheet->setCellValue('D2', '御饌坊');
                 $event->sheet->setCellValue('F2', '彩鶴');
@@ -242,7 +243,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
     {
         $sale_data = array();
         $order_data = array();
-        $display_data=array();
+        $display_data = array();
 
         $sale = Sale::where('sale_at', $this->date)->get();
         foreach ($sale as $item) {
@@ -279,24 +280,42 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
         for ($g = 1; $g <= 3; $g++) {
             for ($c = 1; $c <= 18; $c++) {
-                $tmp=array();
-                $total_count=0;
-                $total_money=0;
-                $cc=$g . str_pad($c, 2, "0", STR_PAD_LEFT);
-                foreach ($sale_data as $ss){
-                    $count=$order_data[$ss['sale_id']]['class'][$cc] ?? 0;
-                    $total_count+=$count;
-                    $total_money+=$count*$ss['dish_price'];
-                    $tmp[]=$count;
+                $tmp = array();
+                $total_count_class = 0;
+                $total_money_class = 0;
+                $cc = $g . str_pad($c, 2, "0", STR_PAD_LEFT);
+                foreach ($sale_data as $ss) {
+                    $count = $order_data[$ss['sale_id']]['class'][$cc] ?? 0;
+                    $total_count_class += $count;
+                    $total_money_class += $count * $ss['dish_price'];
+                    $tmp[] = $count;
                 }
-                while (count($tmp)<8)
-                    array_push($tmp,0);
-                $display_data[]=array_merge($tmp,[$total_count,$total_money]);
+                while (count($tmp) < 8)
+                    array_push($tmp, 0);
+                $display_data[] = array_merge($tmp, [$total_count_class, $total_money_class]);
             }
         }
 
-
-
+        $tmp_count = array();
+        $tmp_money = array();
+        $total_count = 0;
+        $total_money = 0;
+        foreach ($sale_data as $ss) {
+            $count = $order_data[$ss['sale_id']]['count'];
+            $money = $ss['dish_price'];
+            $tmp_count[] = $count;
+            $tmp_money[] = $money;
+            $total_count += $count;
+            $total_money += $money;
+        }
+        while (count($tmp_count) < 8)
+            array_push($tmp_count, 0);
+        while (count($tmp_money) < 8)
+            array_push($tmp_money, 0);
+        array_push($tmp_count, $total_count, null);
+        array_push($tmp_money, null, $total_money);
+        array_push($display_data, $tmp_count, $tmp_money);
+        
         echo json_encode($display_data);
 
         return collect($display_data);
