@@ -16,26 +16,24 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
     public function __construct($date)
     {
-        $this->date=$date;
+        $this->date = $date;
     }
 
     public function registerEvents(): array
     {
-        $col = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
         return [
             AfterSheet::class => function (AfterSheet $event) {
+                $col = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+
+                $event->sheet->getDelegate()->getPageMargins()->setTop(1);
+                $event->sheet->getDelegate()->getPageMargins()->setBottom(1);
+                $event->sheet->getDelegate()->getPageMargins()->setRight(0.5);
+                $event->sheet->getDelegate()->getPageMargins()->setLeft(0.5);
+                
                 //設定列寬
-                $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(8.11);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(8.11);
+                for ($i = 0; $i <= 11; $i++) {
+                    $event->sheet->getDelegate()->getColumnDimension($col[$i])->setWidth(8.11);
+                }
                 //設定行高，$i為資料行數
                 for ($i = 0; $i <= 59; $i++) {
                     $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(13.8);
@@ -239,7 +237,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
     public function collection()
     {
-        $sale=Sale::where('sale_at', $this->date)->get();
+        $sale = Sale::where('sale_at', $this->date)->get();
 
         return collect($sale->toArray());
     }
@@ -252,6 +250,6 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
     public function title(): string
     {
         // 設定工作䈬的名稱
-        return $this->date.'訂單';
+        return $this->date . '訂單';
     }
 }
