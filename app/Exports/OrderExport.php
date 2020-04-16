@@ -7,6 +7,7 @@ use App\Entity\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
 class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomStartCell
 {
