@@ -19,7 +19,7 @@ Route::get('/', 'GeneralController@isOk');
 
 Route::get('/ip', 'GeneralController@ip');
 
-Route::get('/excel/export','ExcelController@export');
+Route::get('/excel/export/{date}','ExcelController@export');
 
 Route::group([
     'prefix' => 'oauth'
