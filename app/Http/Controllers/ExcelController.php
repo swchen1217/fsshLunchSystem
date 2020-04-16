@@ -14,7 +14,7 @@ class ExcelController extends Controller
 {
     // Excel 檔案到處功能
 
-    public function export(Request $request, $date)
+    public function exportOrder(Request $request, $date)
     {
         Excel::store(new OrderExport($date), 'user.xlsx');
     }
