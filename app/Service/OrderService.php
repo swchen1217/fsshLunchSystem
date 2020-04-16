@@ -185,10 +185,9 @@ class OrderService
 
     public function getTotal($date1, $date2)
     {
-        $manufacturer_data = $this->manufacturerRepository->all()->sortBy('id')->toArray();
-        $mm = array();
+        $manufacturer = $this->manufacturerRepository->all()->sortBy('id')->toArray();
         $sale = $this->saleRepository->findBySaleDateInterval($date1, $date2);
-        return [$sale, Response::HTTP_OK];
+        $mm = array();
         foreach ($sale as $ss) {
             $dish = $this->dishRepository->findById($ss['dish_id']);
             $order = $this->orderRepository->findBySaleId($ss['id']);
@@ -199,10 +198,11 @@ class OrderService
                 $mm[$dish['manufacturer_id']] = $money;
             }
         }
-        var_dump($mm);
-        foreach ($manufacturer_data as $key => $value)
-            array_merge($manufacturer_data[$key], ['total_money' => $mm[$value['id']] ?? 0]);
-        return [$manufacturer_data, Response::HTTP_OK];
+        $result = array();
+        foreach ($manufacturer as $key => $value) {
+            $result[] = ['manufacturer_id' => $value['id'], 'manufacturer_name' => $value['name'], 'total' => $mm[$value['id']] ?? 0];
+        }
+        return [$result, Response::HTTP_OK];
     }
 
     public function create(Request $request)
