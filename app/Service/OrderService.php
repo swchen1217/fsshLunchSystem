@@ -185,7 +185,7 @@ class OrderService
 
     public function getTotal($date1, $date2)
     {
-        $manufacturer_data = $this->manufacturerRepository->all()->sortBy('id');
+        $manufacturer_data = $this->manufacturerRepository->all()->sortBy('id')->toArray();
         $mm = array();
         $sale = $this->saleRepository->findBySaleDateInterval($date1, $date2);
         foreach ($sale as $ss) {
