@@ -11,8 +11,9 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomStartCell
+class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomStartCell, WithStrictNullComparison
 {
     public $date;
 
