@@ -200,7 +200,7 @@ class OrderService
         }
         foreach ($manufacturer_data as $key => $value)
             array_merge($manufacturer_data[$key], ['total_money' => $mm[$value['id']] ?? 0]);
-        return [$this->manufacturerRepository, Response::HTTP_OK];
+        return [$manufacturer_data, Response::HTTP_OK];
     }
 
     public function create(Request $request)
