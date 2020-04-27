@@ -36,6 +36,15 @@ class BalanceController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
+    public function getTotal(Request $request, $date1, $date2)
+    {
+        $validator = Validator::make([$date1, $date2], ['required|date_format:Y-m-d', 'required|date_format:Y-m-d']);
+        if ($validator->fails())
+            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
+        $mResult = $this->balanceService->getTotal($date1, $date2);
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
     public function topUp(Request $request)
     {
         $mResult = $this->balanceService->topUp($request);
