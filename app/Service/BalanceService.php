@@ -121,7 +121,7 @@ class BalanceService
         $deduct_total = 0;
         $log = $this->money_logRepository->findByCreateDateInterval($date1, $date2);
         foreach ($log as $item) {
-            $date = substr($item['create_at'], 0, 10);
+            $date = substr($item['created_at'], 0, 10);
             if (!isset($data[$date])) {
                 $data[$date]['topUp'] = 0;
                 $data[$date]['deduct'] = 0;
