@@ -16,6 +16,11 @@ class BalanceRepository
         $this->balance = $balance;
     }
 
+    public function findAll()
+    {
+        return $this->balance->all();
+    }
+
     public function findById($id)
     {
         return $this->balance->find($id);
