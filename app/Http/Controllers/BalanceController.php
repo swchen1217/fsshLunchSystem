@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Service\BalanceService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BalanceController extends Controller
 {
