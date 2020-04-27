@@ -49,6 +49,11 @@ class Money_logRepository
         return $this->money_log->where('created_at', '>=', $date . ' 00:00:00')->where('created_at', '<=', $date . ' 23:59:59')->get();
     }
 
+    public function findByCreateDateInterval($date1, $date2)
+    {
+        return $this->money_log->where('created_at', '>=', $date1 . ' 00:00:00')->where('created_at', '<=', $date2 . ' 23:59:59')->get();
+    }
+
     public function caeate($data)
     {
         return $this->money_log->create($data);
