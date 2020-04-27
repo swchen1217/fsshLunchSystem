@@ -114,6 +114,35 @@ class BalanceService
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
 
+    public function getTotal($date1, $date2)
+    {
+        $data = array();
+        $topUp_total = 0;
+        $deduct_total = 0;
+        $log = $this->money_logRepository->findByCreateDateInterval($date1, $date2);
+        foreach ($log as $item) {
+            $date = substr($item['create_at'], 0, 10);
+            if (!isset($data[$date])) {
+                $data[$date]['topUp'] = 0;
+                $data[$date]['deduct'] = 0;
+                $data[$date]['total'] = 0;
+            }
+
+            if ($item['event'] == 'top-up') {
+                $topUp_total += $item['money'];
+                $data[$date]['topUp'] += $item['money'];
+                $data[$date]['total'] += $item['money'];
+            }
+            if ($item['event'] == 'deduct') {
+                $deduct_total += $item['money'];
+                $data[$date]['deduct'] += $item['money'];
+                $data[$date]['total'] -= $item['money'];
+            }
+        }
+        ksort($data);
+        return [['data' => $data, 'topUp' => $topUp_total, 'deduct' => $deduct_total, 'total' => $topUp_total - $deduct_total], Response::HTTP_OK];
+    }
+
     public function getToday()
     {
         $topUp = 0;
