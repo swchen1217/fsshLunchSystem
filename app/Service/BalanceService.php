@@ -3,7 +3,10 @@
 namespace App\Service;
 
 use App\Repositories\BalanceRepository;
+use App\Repositories\DishRepository;
+use App\Repositories\ManufacturerRepository;
 use App\Repositories\Money_logRepository;
+use App\Repositories\SaleRepository;
 use App\Repositories\UserRepository;
 use App\Supports\PermissionSupport;
 use Illuminate\Http\Request;
@@ -27,11 +30,21 @@ class BalanceService
      */
     private $money_logRepository;
 
-    public function __construct(BalanceRepository $balanceRepository, UserRepository $userRepository, Money_logRepository $money_logRepository)
+    public function __construct(
+        BalanceRepository $balanceRepository,
+        UserRepository $userRepository,
+        Money_logRepository $money_logRepository,
+        SaleRepository $saleRepository,
+        DishRepository $dishRepository,
+        ManufacturerRepository $manufacturerRepository
+    )
     {
         $this->balanceRepository = $balanceRepository;
         $this->userRepository = $userRepository;
         $this->money_logRepository = $money_logRepository;
+        $this->saleRepository = $saleRepository;
+        $this->dishRepository = $dishRepository;
+        $this->manufacturerRepository = $manufacturerRepository;
     }
 
     public function getByAccount(Request $request, $account, $detail = false)
@@ -116,31 +129,51 @@ class BalanceService
 
     public function getTotal($date1, $date2)
     {
-        $data = array();
+        //$data = array();
         $topUp_total = 0;
         $deduct_total = 0;
         $log = $this->money_logRepository->findByCreateDateInterval($date1, $date2);
         foreach ($log as $item) {
             $date = substr($item['created_at'], 0, 10);
-            if (!isset($data[$date])) {
+            /*if (!isset($data[$date])) {
                 $data[$date]['topUp'] = 0;
                 $data[$date]['deduct'] = 0;
                 $data[$date]['total'] = 0;
-            }
+            }*/
 
             if ($item['event'] == 'top-up') {
                 $topUp_total += $item['money'];
-                $data[$date]['topUp'] += $item['money'];
-                $data[$date]['total'] += $item['money'];
+                /*$data[$date]['topUp'] += $item['money'];
+                $data[$date]['total'] += $item['money'];*/
             }
             if ($item['event'] == 'deduct') {
                 $deduct_total += $item['money'];
-                $data[$date]['deduct'] += $item['money'];
-                $data[$date]['total'] -= $item['money'];
+                /*$data[$date]['deduct'] += $item['money'];
+                $data[$date]['total'] -= $item['money'];*/
             }
         }
-        ksort($data);
-        return [['data' => $data, 'topUp' => $topUp_total, 'deduct' => $deduct_total, 'total' => $topUp_total - $deduct_total], Response::HTTP_OK];
+        $total_in = $topUp_total - $deduct_total;
+        $manufacturer = $this->manufacturerRepository->all()->sortBy('id')->toArray();
+        $sale = $this->saleRepository->findBySaleDateInterval($date1, $date2);
+        $mm = array();
+        $total_out = 0;
+        foreach ($sale as $ss) {
+            $dish = $this->dishRepository->findById($ss['dish_id']);
+            $order = $this->orderRepository->findBySaleId($ss['id']);
+            $money = $dish['price'] * count($order);
+            if (isset($mm[$dish['manufacturer_id']])) {
+                $mm[$dish['manufacturer_id']] += $money;
+            } else {
+                $mm[$dish['manufacturer_id']] = $money;
+            }
+        }
+        $manufacturer_result = array();
+        foreach ($manufacturer as $key => $value) {
+            $manufacturer_result[] = ['manufacturer_id' => $value['id'], 'manufacturer_name' => $value['name'], 'total' => $mm[$value['id']] ?? 0];
+        }
+        $total_prepare = $total_in - $total_out;
+        //ksort($data);
+        return [['total_in' => $total_in, 'total_total_out' => $total_out, 'out_manufacturer' => $manufacturer_result, 'total_prepare' => $total_prepare], Response::HTTP_OK];
     }
 
     public function getToday()
