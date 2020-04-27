@@ -175,9 +175,14 @@ class BalanceService
             $total_out += $mm[$value['id']] ?? 0;
             $manufacturer_result[] = ['manufacturer_id' => $value['id'], 'manufacturer_name' => $value['name'], 'total' => $mm[$value['id']] ?? 0];
         }
-        $total_prepare = $total_in - $total_out;
+        $total_balance_date = $total_in - $total_out;
+        $total_balance_all = 0;
+        $balance = $this->balanceRepository->findAll();
+        foreach ($balance as $bb) {
+            $total_balance_all = $bb['money'];
+        }
         //ksort($data);
-        return [['total_in' => $total_in, 'total_out' => $total_out, 'out_manufacturer' => $manufacturer_result, 'total_prepare' => $total_prepare], Response::HTTP_OK];
+        return [['total_in' => $total_in, 'total_out' => $total_out, 'out_manufacturer' => $manufacturer_result, 'total_balance_date' => $total_balance_date, 'total_balance_all' => $total_balance_all], Response::HTTP_OK];
     }
 
     public function getToday()
