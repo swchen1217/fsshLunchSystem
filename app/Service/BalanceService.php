@@ -179,7 +179,7 @@ class BalanceService
         $total_balance_all = 0;
         $balance = $this->balanceRepository->findAll();
         foreach ($balance as $bb) {
-            $total_balance_all = $bb['money'];
+            $total_balance_all += $bb['money'];
         }
         //ksort($data);
         return [['total_in' => $total_in, 'total_out' => $total_out, 'out_manufacturer' => $manufacturer_result, 'total_balance_date' => $total_balance_date, 'total_balance_all' => $total_balance_all], Response::HTTP_OK];
