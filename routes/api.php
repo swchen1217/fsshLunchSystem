@@ -63,6 +63,7 @@ Route::group([
 Route::group([
     'prefix' => 'balance'
 ], function ($router) {
+    Route::get('/total/{date1}/{date2}', 'BalanceController@getTotal')->middleware(['permission2:balance.read']);
     Route::get('/today', 'BalanceController@getToday')->middleware(['permission2:balance.read.money']);
     Route::get('/{account}', 'BalanceController@getByAccount')->middleware(['permission2:balance.read.self.money']);
     Route::get('/log/{account}', 'BalanceController@getLogByAccount')->middleware(['permission2:balance.read.self.log']);
