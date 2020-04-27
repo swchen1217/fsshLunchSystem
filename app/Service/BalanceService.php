@@ -6,6 +6,7 @@ use App\Repositories\BalanceRepository;
 use App\Repositories\DishRepository;
 use App\Repositories\ManufacturerRepository;
 use App\Repositories\Money_logRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\SaleRepository;
 use App\Repositories\UserRepository;
 use App\Supports\PermissionSupport;
@@ -36,7 +37,8 @@ class BalanceService
         Money_logRepository $money_logRepository,
         SaleRepository $saleRepository,
         DishRepository $dishRepository,
-        ManufacturerRepository $manufacturerRepository
+        ManufacturerRepository $manufacturerRepository,
+        OrderRepository $orderRepository
     )
     {
         $this->balanceRepository = $balanceRepository;
@@ -45,6 +47,7 @@ class BalanceService
         $this->saleRepository = $saleRepository;
         $this->dishRepository = $dishRepository;
         $this->manufacturerRepository = $manufacturerRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function getByAccount(Request $request, $account, $detail = false)
