@@ -172,11 +172,12 @@ class BalanceService
         }
         $manufacturer_result = array();
         foreach ($manufacturer as $key => $value) {
+            $total_out += $mm[$value['id']] ?? 0;
             $manufacturer_result[] = ['manufacturer_id' => $value['id'], 'manufacturer_name' => $value['name'], 'total' => $mm[$value['id']] ?? 0];
         }
         $total_prepare = $total_in - $total_out;
         //ksort($data);
-        return [['total_in' => $total_in, 'total_total_out' => $total_out, 'out_manufacturer' => $manufacturer_result, 'total_prepare' => $total_prepare], Response::HTTP_OK];
+        return [['total_in' => $total_in, 'total_out' => $total_out, 'out_manufacturer' => $manufacturer_result, 'total_prepare' => $total_prepare], Response::HTTP_OK];
     }
 
     public function getToday()
