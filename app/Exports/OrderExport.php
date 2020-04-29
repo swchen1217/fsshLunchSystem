@@ -66,9 +66,9 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
                 $event->sheet->setCellValue('A1', '國立鳳山高中線上訂餐系統');
                 $event->sheet->setCellValue('I1', date("Y-m-d D", strtotime($this->date)));
-                $event->sheet->setCellValue('B2', '正園');
+                $event->sheet->setCellValue('B2', '彩鶴');
                 $event->sheet->setCellValue('D2', '御饌坊');
-                $event->sheet->setCellValue('F2', '彩鶴');
+                $event->sheet->setCellValue('F2', '正園');
                 $event->sheet->setCellValue('H2', '素食');
                 $event->sheet->setCellValue('B3', 'A');
                 $event->sheet->setCellValue('C3', 'B');
@@ -317,6 +317,11 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
         array_push($tmp_count, $total_count, null);
         array_push($tmp_money, null, $total_money);
         array_push($display_data, $tmp_count, $tmp_money);
+
+        foreach ($display_data as $rowKey => $rowValue) {
+            foreach ($rowValue as $colKey => $colValue)
+                $display_data[$rowKey][$colKey] = $colValue ?? '-';
+        }
 
         return collect($display_data);
     }
