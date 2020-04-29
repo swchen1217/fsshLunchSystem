@@ -320,7 +320,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
         foreach ($display_data as $rowKey => $rowValue) {
             foreach ($rowValue as $colKey => $colValue)
-                $display_data[$rowKey][$colKey] = $colValue != 0 ?? '-';
+                $display_data[$rowKey][$colKey] = ($colValue != 0) ? $colValue : '-';
         }
 
         return collect($display_data);
