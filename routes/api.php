@@ -109,6 +109,12 @@ Route::group([
     Route::delete('/{manufacturer_id}', 'ManufacturerController@remove')->middleware(['permission2:manufacturer.modify.delete']);
 });
 
+Route::group([
+    'prefix' => 'notify'
+], function ($router) {
+    Route::get('/', 'NotifyController@get');
+});
+
 /*Route::group([
     'prefix' => 'rating'
 ], function ($router) {
