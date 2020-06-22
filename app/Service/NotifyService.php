@@ -17,9 +17,9 @@ class NotifyService
     public function get($type)
     {
         try {
-            return [json_decode(Storage::get('notify/' . $type . '.json'), true), Response::HTTP_OK];
+            return [['data' => json_decode(Storage::get('notify/' . $type . '.json'), true)], Response::HTTP_OK];
         } catch (FileNotFoundException $e) {
-            return [['error' => 'The Notify Type Not Found'], Response::HTTP_NOT_FOUND];
+            return [['error' => 'The    Notify Type Not Found'], Response::HTTP_NOT_FOUND];
         }
     }
 
