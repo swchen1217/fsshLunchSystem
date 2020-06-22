@@ -1,3 +1,3 @@
 # Notify Updata
 
-- Format : `[{"title":"","type":"","msg":"","author":"","time":""},]`
+- Format : `[{"title":"","level":"","msg":"","author":"","time":""},]`
