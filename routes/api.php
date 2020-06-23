@@ -112,7 +112,7 @@ Route::group([
 Route::group([
     'prefix' => 'notify'
 ], function ($router) {
-    Route::get('/', 'NotifyController@get');
+    Route::get('/{type}', 'NotifyController@get');
 });
 
 /*Route::group([
