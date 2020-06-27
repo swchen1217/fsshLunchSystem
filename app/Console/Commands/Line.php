@@ -11,7 +11,7 @@ class Line extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'line:send {line_notify_id}';
 
     /**
      * The console command description.
