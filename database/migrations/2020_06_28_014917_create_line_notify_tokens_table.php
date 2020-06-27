@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateLineNotifyTokensTable extends Migration
 {
@@ -15,7 +16,11 @@ class CreateLineNotifyTokensTable extends Migration
     {
         Schema::create('line_notify_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+            $table->unsignedInteger('notify_id');
+            $table->unsignedInteger('user_id');
+            $table->string('token');
+            $table->timestamp('created_at')
+                ->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 
