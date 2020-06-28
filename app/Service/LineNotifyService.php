@@ -22,4 +22,8 @@ class LineNotifyService
 
     }
 
+    private function commit($token,$message,$imageFullsize=null){
+
+    }
+
 }
