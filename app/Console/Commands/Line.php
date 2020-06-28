@@ -57,14 +57,10 @@ class Line extends Command
             $this->table($headers, $line_notifies);
             $line_notify_id = $this->ask('Please input line notify id');
         }
-        $line_notify = $this->line_notifyRepository->findById($line_notify_id);
-        if ($line_notify != null) {
-            $result = $this->lineNotifyService->send($line_notify_id);
-            if ($result[0] == true)
-                $this->info($result[1]);
-            else
-                $this->error($result[1]);
-        } else
-            $this->error('`line_notify_id` not found');
+        $result = $this->lineNotifyService->send($line_notify_id);
+        if ($result[0] == true)
+            $this->info($result[1]);
+        else
+            $this->error($result[1]);
     }
 }
