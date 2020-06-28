@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "28659938969daae2dab864948d8f0f6d",
+    "content-hash": "9aa4375bc80af012d23dbfbdc8f043b7",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -972,6 +972,45 @@
             "description": "Food and Beverage names generate using fzaninotto/Faker",
             "homepage": "https://github.com/jzonta/FakerRestaurant",
             "time": "2020-03-11T22:29:33+00:00"
+        },
+        {
+            "name": "kittinan/php-line-notify",
+            "version": "0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kittinan/php-line-notify.git",
+                "reference": "759af2c6533ec08b9d9900aae55d3c35d0a09e47"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kittinan/php-line-notify/zipball/759af2c6533ec08b9d9900aae55d3c35d0a09e47",
+                "reference": "759af2c6533ec08b9d9900aae55d3c35d0a09e47",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": ">=6.2.2",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.8.12",
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "KS\\Line\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP Line Notify",
+            "keywords": [
+                "line",
+                "line notify"
+            ],
+            "time": "2017-12-17T02:56:32+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -5225,6 +5264,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -5271,6 +5311,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
