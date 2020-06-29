@@ -15,7 +15,7 @@ class CreateLineNotifiesTable extends Migration
     public function up()
     {
         Schema::create('line_notifies', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->string('name');
             $table->string('description');
             $table->string('method');
