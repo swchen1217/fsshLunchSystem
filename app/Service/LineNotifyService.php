@@ -22,9 +22,9 @@ class LineNotifyService
      */
     private $line_notifyRepository;
 
-    public function __construct(LineNotify $lineNotify, Line_notifyRepository $line_notifyRepository)
+    public function __construct(/*LineNotify $lineNotify, */Line_notifyRepository $line_notifyRepository)
     {
-        $this->lineNotify = $lineNotify;
+        //$this->lineNotify = $lineNotify;
         $this->line_notifyRepository = $line_notifyRepository;
     }
 
