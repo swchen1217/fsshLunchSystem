@@ -38,7 +38,7 @@ class LineNotifyService
             return [false, '`line_notify_id` not found'];
 
         if (is_callable(array(LineNotifyMessageHandle::class, $line_notify->method))) {
-            return LineNotifyMessageHandle::class->{$line_notify->method}();
+            return LineNotifyMessageHandle::{$line_notify->method}();
         } else {
             return [false, 'method not found'];
         }
