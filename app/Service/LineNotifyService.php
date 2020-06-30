@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Constant\LineNotifyMessageHandle;
 use App\Repositories\Line_notifyRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -36,8 +37,8 @@ class LineNotifyService
         if ($line_notify == null)
             return [false, '`line_notify_id` not found'];
 
-        if (is_callable(array($this, $line_notify->method))) {
-            return $this->{$line_notify->method}();
+        if (is_callable(array(LineNotifyMessageHandle::class, $line_notify->method))) {
+            return LineNotifyMessageHandle::class->{$line_notify->method}();
         } else {
             return [false, 'method not found'];
         }
@@ -49,14 +50,6 @@ class LineNotifyService
     {
         $this->lineNotify->setToken($token);
         $this->lineNotify->send($text, $imagePath, $sticker);
-    }
-
-    // make message method
-
-    private function ln_1()
-    {
-        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "I Love You.");
-        return [true, 'Success'];
     }
 
 }
