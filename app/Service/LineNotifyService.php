@@ -36,8 +36,7 @@ class LineNotifyService
         if ($line_notify == null)
             return [false, '`line_notify_id` not found'];
 
-        $action = $this->{$line_notify->method};
-        if (is_callable(array($this, $action))) {
+        if (is_callable(array($this, $line_notify->method))) {
             return $this->{$line_notify->method}();
         } else {
             return [false, 'method not found'];
