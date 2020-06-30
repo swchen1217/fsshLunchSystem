@@ -24,7 +24,7 @@ class RBACSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->init();
-        $roles = ['student', 'student_LM', 'clerk', 'store_mgr', 'system_mgr', 'Super Admin','manufacturer'];
+        $roles = ['student', 'student_LM', 'clerk', 'store_mgr', 'system_mgr', 'Super Admin', 'manufacturer'];
         foreach ($roles as $role)
             Role::findByName($role)->syncPermissions([]);
 
@@ -36,6 +36,10 @@ class RBACSeeder extends Seeder
         Role::findByName("student")->givePermissionTo("order.modify.create.self");
         Role::findByName("student")->givePermissionTo("order.modify.update.self");
         Role::findByName("student")->givePermissionTo("order.modify.delete.self");
+
+        Role::findByName("student-readonly")->givePermissionTo("balance.read.self");
+        Role::findByName("student-readonly")->givePermissionTo("order.read.self");
+        Role::findByName("student-readonly")->givePermissionTo("order.read.class");
 
         //student_LM
         Role::findByName("student_LM")->syncPermissions(Role::findByName("student")->getAllPermissions());
@@ -73,6 +77,7 @@ class RBACSeeder extends Seeder
         DB::table('permissions')->delete();
 
         Role::create(['name' => 'student']);
+        Role::create(['name' => 'student-readonly']);
         Role::create(['name' => 'student_LM']);
         Role::create(['name' => 'clerk']);
         Role::create(['name' => 'store_mgr']);
