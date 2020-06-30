@@ -13,12 +13,6 @@ use KS\Line\LineNotify;
 class LineNotifyService
 {
 
-    private function ln_1()
-    {
-        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "I Love You.");
-        return [true, 'Success'];
-    }
-
     /**
      * @var LineNotify
      */
@@ -55,6 +49,10 @@ class LineNotifyService
 
     // make message method
 
-
+    private function ln_1()
+    {
+        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "I Love You.");
+        return [true, 'Success'];
+    }
 
 }
