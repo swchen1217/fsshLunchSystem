@@ -36,9 +36,13 @@ class LineNotifyService
         if ($line_notify == null)
             return [false, '`line_notify_id` not found'];
 
-        $method = $line_notify->method;
+        $method = $this->$line_notify->method;
 
-        return $method();
+        if (is_callable(array($this, $method))) {
+            return $this->$method();
+        } else {
+            return [false, 'call method error'];
+        }
     }
 
     private function commit($token, $text, $imagePath = null, $sticker = null)
