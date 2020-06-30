@@ -55,7 +55,6 @@ class LineNotifyService
 
     private function ln_1()
     {
-        Log::info("A");
         $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "I Love You.");
         return [true, 'Success'];
     }
