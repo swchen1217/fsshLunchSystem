@@ -37,7 +37,7 @@ class LineNotifyService
         if ($line_notify == null)
             return [false, '`line_notify_id` not found'];
 
-        return LineNotifyMessageHandle::{$line_notify->method}();
+        return (new LineNotifyMessageHandle)->{$line_notify->method}();
 
         /*if (is_callable(array(LineNotifyMessageHandle::class, $line_notify->method))) {
             return LineNotifyMessageHandle::{$line_notify->method}();
