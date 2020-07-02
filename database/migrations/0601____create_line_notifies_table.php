@@ -19,6 +19,7 @@ class CreateLineNotifiesTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('method');
+            $table->string('param');
             $table->string('client_id');
             $table->string('client_secret');
             $table->timestamp('created_at')
