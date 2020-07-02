@@ -37,21 +37,23 @@ class LineNotifyService
         if ($line_notify == null)
             return [false, '`line_notify_id` not found'];
 
-        return (new LineNotifyMessageHandle)->{$line_notify->method}();
-
-        /*if (is_callable(array(LineNotifyMessageHandle::class, $line_notify->method))) {
-            return LineNotifyMessageHandle::{$line_notify->method}();
+        if (is_callable(array($this, $line_notify->method))) {
+            return $this->{$line_notify->method}();
         } else {
             return [false, 'method not found'];
-        }*/
-
-        //return $this->{$line_notify->method}();
+        }
     }
 
     private function commit($token, $text, $imagePath = null, $sticker = null)
     {
         $this->lineNotify->setToken($token);
         $this->lineNotify->send($text, $imagePath, $sticker);
+    }
+
+    private function ln_1()
+    {
+        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "I Love You.");
+        return [true, 'Success'];
     }
 
 }
