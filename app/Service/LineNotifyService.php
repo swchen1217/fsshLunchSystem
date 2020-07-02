@@ -23,6 +23,8 @@ class LineNotifyService
      */
     private $line_notifyRepository;
 
+    private $notifyInfo;
+
     public function __construct(Line_notifyRepository $line_notifyRepository)
     {
         $this->lineNotify = new LineNotify("");
@@ -37,9 +39,10 @@ class LineNotifyService
         if ($line_notify == null)
             return [false, '`line_notify_id` not found'];
 
+        $this->notifyInfo = $line_notify;
+
         if (is_callable(array($this, $line_notify->method))) {
-            //return $this->{$line_notify->method}();
-            return call_user_func_array($line_notify->method,[]);
+            return $this->{$line_notify->method}($line_notify->param);
         } else {
             return [false, 'method not found'];
         }
@@ -56,7 +59,9 @@ class LineNotifyService
 
         // test token UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4
 
-        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4","test");
+        //$noify
+
+        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "test");
 
         return [true, 'Success'];
     }
