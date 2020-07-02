@@ -38,7 +38,8 @@ class LineNotifyService
             return [false, '`line_notify_id` not found'];
 
         if (is_callable(array($this, $line_notify->method))) {
-            return $this->{$line_notify->method}();
+            //return $this->{$line_notify->method}();
+            return call_user_func_array($line_notify->method,[]);
         } else {
             return [false, 'method not found'];
         }
@@ -52,7 +53,11 @@ class LineNotifyService
 
     private function ln_1()
     {
-        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "I Love You.");
+
+        // test token UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4
+
+        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4","test");
+
         return [true, 'Success'];
     }
 
