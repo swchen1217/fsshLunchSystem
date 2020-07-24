@@ -3,7 +3,13 @@
 namespace App\Service;
 
 use App\Constant\LineNotifyMessageHandle;
+use App\Repositories\DishRepository;
+use App\Repositories\Line_notify_tokenRepository;
 use App\Repositories\Line_notifyRepository;
+use App\Repositories\ManufacturerRepository;
+use App\Repositories\OrderRepository;
+use App\Repositories\SaleRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -24,11 +30,51 @@ class LineNotifyService
     private $line_notifyRepository;
 
     private $notifyInfo;
+    /**
+     * @var Line_notify_tokenRepository
+     */
+    private $line_notify_tokenRepository;
+    /**
+     * @var OrderRepository
+     */
+    private $orderRepository;
+    /**
+     * @var SaleRepository
+     */
+    private $saleRepository;
 
-    public function __construct(Line_notifyRepository $line_notifyRepository)
+    private $weekChinese = ['日', '一', '二', '三', '四', '五', '六'];
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+    /**
+     * @var DishRepository
+     */
+    private $dishRepository;
+    /**
+     * @var ManufacturerRepository
+     */
+    private $manufacturerRepository;
+
+    public function __construct(
+        Line_notifyRepository $line_notifyRepository,
+        Line_notify_tokenRepository $line_notify_tokenRepository,
+        OrderRepository $orderRepository,
+        SaleRepository $saleRepository,
+        UserRepository $userRepository,
+        DishRepository $dishRepository,
+        ManufacturerRepository $manufacturerRepository
+    )
     {
         $this->lineNotify = new LineNotify("");
         $this->line_notifyRepository = $line_notifyRepository;
+        $this->line_notify_tokenRepository = $line_notify_tokenRepository;
+        $this->orderRepository = $orderRepository;
+        $this->saleRepository = $saleRepository;
+        $this->userRepository = $userRepository;
+        $this->dishRepository = $dishRepository;
+        $this->manufacturerRepository = $manufacturerRepository;
     }
 
     public function send($line_notify_id)
@@ -56,12 +102,30 @@ class LineNotifyService
 
     private function ln_1()
     {
-
         // test token UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4
+        //$this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "test");
 
-        //$noify
+        $sales = $this->saleRepository->findBySaleDate(Carbon::today()->toDateString());
+        $orders = collect();
+        foreach ($sales as $sale)
+            $orders->merge($this->orderRepository->findBySaleId($sale->id));
+        $tokens = $this->line_notify_tokenRepository->findByNotifyId($this->notifyInfo->id);
 
-        $this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "test");
+        foreach ($tokens as $token) {
+            $order = $orders->where('user_id', $token->user_id);
+            $user = $this->userRepository->findById($token->user_id);
+            foreach ($order as $oo) {
+                $dish = $this->dishRepository->findById($oo->sale_id);
+                $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
+                $str =
+                    "【FIOS－今日餐點通知】\n
+                    Hi " . $user->name . "\n
+                    今日" . Carbon::today()->month . "/" . Carbon::today()->day . "（" . $this->weekChinese[Carbon::today()->dayOfWeek] . "）\n
+                    你的餐點是:\n
+                    " . $manufacturer->name . "-" . $dish->name;
+                $this->commit($token->token, $str);
+            }
+        }
 
         return [true, 'Success'];
     }
