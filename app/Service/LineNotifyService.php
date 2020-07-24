@@ -109,7 +109,7 @@ class LineNotifyService
 
         $sales = $this->saleRepository->findBySaleDate($today->toDateString());
         echo $sales;
-        $orders = collect();
+        $orders = collect([]);
         foreach ($sales as $sale){
             $orders->merge($this->orderRepository->findBySaleId($sale->id));
             echo $sale->id;
