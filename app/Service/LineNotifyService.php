@@ -105,7 +105,9 @@ class LineNotifyService
         // test token UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4
         //$this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "test");
 
-        $sales = $this->saleRepository->findBySaleDate(Carbon::today()->toDateString());
+        $today = Carbon::today();
+
+        $sales = $this->saleRepository->findBySaleDate($today->toDateString());
         $orders = collect();
         foreach ($sales as $sale)
             $orders->merge($this->orderRepository->findBySaleId($sale->id));
@@ -120,7 +122,7 @@ class LineNotifyService
                 $str =
                     "【FIOS－今日餐點通知】\n
                     Hi " . $user->name . "\n
-                    今日" . Carbon::today()->month . "/" . Carbon::today()->day . "（" . $this->weekChinese[Carbon::today()->dayOfWeek] . "）\n
+                    今日" . $today->month . "/" . $today->day . "（" . $this->weekChinese[$today->dayOfWeek] . "）\n
                     你的餐點是:\n
                     " . $manufacturer->name . "-" . $dish->name;
                 $this->commit($token->token, $str);
