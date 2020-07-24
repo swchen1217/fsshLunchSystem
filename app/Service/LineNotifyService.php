@@ -120,12 +120,7 @@ class LineNotifyService
                 $sale = $this->saleRepository->findById($oo->sale_id);
                 $dish = $this->dishRepository->findById($sale->dish_id);
                 $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
-                $str =
-                    "【FIOS－今日餐點通知】\n
-                    Hi " . $user->name . "\n
-                    今日" . $today->month . "/" . $today->day . "（" . $this->weekChinese[$today->dayOfWeek] . "）\n
-                    你的餐點是:\n
-                    " . $manufacturer->name . "-" . $dish->name;
+                $str = "Hi " . $user->name . "\n今日" . $today->month . "/" . $today->day . "（" . $this->weekChinese[$today->dayOfWeek] . "）\n你的餐點是:\n" . $manufacturer->name . "-" . $dish->name;
                 $this->commit($token->token, $str);
             }
         }
