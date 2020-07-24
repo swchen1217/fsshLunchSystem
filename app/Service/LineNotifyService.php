@@ -108,6 +108,7 @@ class LineNotifyService
         $today = Carbon::tomorrow();
 
         $sales = $this->saleRepository->findBySaleDate($today->toDateString());
+        var_dump($sales);
         $orders = collect();
         foreach ($sales as $sale)
             $orders->merge($this->orderRepository->findBySaleId($sale->id));
