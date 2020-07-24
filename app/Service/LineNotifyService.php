@@ -113,7 +113,7 @@ class LineNotifyService
         foreach ($sales as $sale){
             $orders->merge($this->orderRepository->findBySaleId($sale->id));
             echo $sale->id;
-            echo $orders;
+            echo $this->orderRepository->findBySaleId($sale->id);
         }
         echo $orders;
         $tokens = $this->line_notify_tokenRepository->findByNotifyId($this->notifyInfo->id);
