@@ -108,22 +108,15 @@ class LineNotifyService
         $today = Carbon::tomorrow();
 
         $sales = $this->saleRepository->findBySaleDate($today->toDateString());
-        echo $sales;
         $orders = collect([]);
-        foreach ($sales as $sale) {
+        foreach ($sales as $sale)
             $orders = $orders->merge($this->orderRepository->findBySaleId($sale->id));
-            echo $sale->id;
-            echo $this->orderRepository->findBySaleId($sale->id);
-        }
-        echo $orders;
         $tokens = $this->line_notify_tokenRepository->findByNotifyId($this->notifyInfo->id);
 
         foreach ($tokens as $token) {
-            echo $tokens;
             $order = $orders->where('user_id', $token->user_id);
             $user = $this->userRepository->findById($token->user_id);
             foreach ($order as $oo) {
-                echo $tokens;
                 $sale = $this->saleRepository->findById($oo->sale_id);
                 $dish = $this->dishRepository->findById($sale->dish_id);
                 $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
@@ -133,7 +126,6 @@ class LineNotifyService
                     今日" . $today->month . "/" . $today->day . "（" . $this->weekChinese[$today->dayOfWeek] . "）\n
                     你的餐點是:\n
                     " . $manufacturer->name . "-" . $dish->name;
-                echo $str;
                 $this->commit($token->token, $str);
             }
         }
