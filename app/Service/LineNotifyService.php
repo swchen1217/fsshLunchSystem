@@ -105,7 +105,7 @@ class LineNotifyService
         // test token UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4
         //$this->commit("UWjYTfSjp4qcDjNmA24TFgIMsyqYFkxRtQIzQXdw3B4", "test");
 
-        $today = Carbon::tomorrow();
+        $today = Carbon::today();
 
         $sales = $this->saleRepository->findBySaleDate($today->toDateString());
         $orders = collect([]);
