@@ -112,6 +112,7 @@ class LineNotifyService
         $orders = collect();
         foreach ($sales as $sale)
             $orders->merge($this->orderRepository->findBySaleId($sale->id));
+        echo $orders;
         $tokens = $this->line_notify_tokenRepository->findByNotifyId($this->notifyInfo->id);
 
         foreach ($tokens as $token) {
