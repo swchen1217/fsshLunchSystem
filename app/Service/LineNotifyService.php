@@ -124,7 +124,8 @@ class LineNotifyService
             $user = $this->userRepository->findById($token->user_id);
             foreach ($order as $oo) {
                 echo $tokens;
-                $dish = $this->dishRepository->findById($oo->sale_id);
+                $sale = $this->saleRepository->findById($oo->sale_id);
+                $dish = $this->dishRepository->findById($sale->dish_id);
                 $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
                 $str =
                     "【FIOS－今日餐點通知】\n
