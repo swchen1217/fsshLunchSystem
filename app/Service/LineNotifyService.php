@@ -115,9 +115,11 @@ class LineNotifyService
         $tokens = $this->line_notify_tokenRepository->findByNotifyId($this->notifyInfo->id);
 
         foreach ($tokens as $token) {
+            echo $tokens;
             $order = $orders->where('user_id', $token->user_id);
             $user = $this->userRepository->findById($token->user_id);
             foreach ($order as $oo) {
+                echo $tokens;
                 $dish = $this->dishRepository->findById($oo->sale_id);
                 $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
                 $str =
@@ -126,6 +128,7 @@ class LineNotifyService
                     今日" . $today->month . "/" . $today->day . "（" . $this->weekChinese[$today->dayOfWeek] . "）\n
                     你的餐點是:\n
                     " . $manufacturer->name . "-" . $dish->name;
+                echo $str;
                 $this->commit($token->token, $str);
             }
         }
