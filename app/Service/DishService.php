@@ -119,9 +119,9 @@ class DishService
             if ($request->hasFile('image')) {
                 $response = $this->guzzleHttpClient->request('POST', 'https://api.imgur.com/3/image', [
                     'headers' => [
-                        //'authorization' => 'Bearer ' . env('IMGUR_ACCESS_TOKEN'),
-			  'authorization' => 'Client-ID 604fafdd7bce440',
-			  'content-type' => 'application/x-www-form-urlencoded',
+                        'authorization' => 'Bearer ' . env('IMGUR_ACCESS_TOKEN'),
+                        //'authorization' => 'Client-ID 604fafdd7bce440',
+                        'content-type' => 'application/x-www-form-urlencoded',
                     ],
                     'form_params' => [
                         'image' => base64_encode(file_get_contents($request->file('image')->path())),
