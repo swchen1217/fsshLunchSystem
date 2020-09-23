@@ -115,6 +115,14 @@ Route::group([
     Route::get('/{type}', 'NotifyController@get');
 });
 
+Route::group([
+    'prefix' => 'line'
+], function ($router) {
+    Route::get('/service', 'LineController@getService');
+    Route::get('/subscribe/{notify_id}', 'LineController@newSubscribe');
+    Route::get('/callback', 'LineController@callback');
+});
+
 /*Route::group([
     'prefix' => 'rating'
 ], function ($router) {

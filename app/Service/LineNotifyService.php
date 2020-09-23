@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Constant\LineNotifyMessageHandle;
 use App\Repositories\DishRepository;
+use App\Repositories\Line_notify_subscribeRepository;
 use App\Repositories\Line_notify_tokenRepository;
 use App\Repositories\Line_notifyRepository;
 use App\Repositories\ManufacturerRepository;
@@ -56,6 +57,10 @@ class LineNotifyService
      * @var ManufacturerRepository
      */
     private $manufacturerRepository;
+    /**
+     * @var Line_notify_subscribeRepository
+     */
+    private $line_notify_subscribeRepository;
 
     public function __construct(
         Line_notifyRepository $line_notifyRepository,
@@ -64,7 +69,8 @@ class LineNotifyService
         SaleRepository $saleRepository,
         UserRepository $userRepository,
         DishRepository $dishRepository,
-        ManufacturerRepository $manufacturerRepository
+        ManufacturerRepository $manufacturerRepository,
+        Line_notify_subscribeRepository $line_notify_subscribeRepository
     )
     {
         $this->lineNotify = new LineNotify("");
@@ -75,6 +81,30 @@ class LineNotifyService
         $this->userRepository = $userRepository;
         $this->dishRepository = $dishRepository;
         $this->manufacturerRepository = $manufacturerRepository;
+        $this->line_notify_subscribeRepository = $line_notify_subscribeRepository;
+    }
+
+    public function getService()
+    {
+        $notify = $this->line_notifyRepository->all()->only(['id', 'name', 'description']);
+        return [$notify, Response::HTTP_OK];
+    }
+
+    public function newSubscribe(Request $request, $notify_id)
+    {
+        $line_notify_server = "https://notify-bot.line.me/oauth/authorize";
+        $redirect_uri = "https://api.fios.fssh.khc.edu.tw/api/line/callback";
+        $user_id = Auth::user()->id;
+        $tokenMd5 = md5(rand());
+        $this->line_notify_subscribeRepository->create(['user_id' => $user_id, 'line_notify_id' => $notify_id, 'token' => $tokenMd5]);
+        $tokenBase64 = base64_encode($user_id . '.' . $notify_id . '.' . $tokenMd5);
+        $line_notify = $this->line_notifyRepository->findById($notify_id);
+        $oAuthURL =
+            $line_notify_server . "?response_type=code&scope=notify&response_mode=form_post" .
+            "&client_id=" . $line_notify->client_id .
+            "&redirect_uri=" . $redirect_uri .
+            "&state=" . $tokenBase64;
+        return [['redirect' => $oAuthURL], Response::HTTP_OK];
     }
 
     public function send($line_notify_id)
