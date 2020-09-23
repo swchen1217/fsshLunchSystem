@@ -107,7 +107,7 @@ class AuthService
                     return [$mResultContent, Response::HTTP_UNAUTHORIZED];
                 } elseif ($mResultContent['error'] == "invalid_grant") {
                     if ($user_id != null) {
-                        $this->login_failRepository->caeate(['ip' => $ip, 'user_id' => $user_id, 'used' => false]);
+                        $this->login_failRepository->create(['ip' => $ip, 'user_id' => $user_id, 'used' => false]);
                         $fail = $this->login_failRepository->findByUserId($user_id);
                         Log::channel('login')->info('Wrong password', ['ip' => $ip, 'user_id' => $user_id, 'fail_count' => count($fail)]);
                     }

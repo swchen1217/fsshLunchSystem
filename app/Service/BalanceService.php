@@ -59,7 +59,7 @@ class BalanceService
                 if ($balance != null)
                     $money = $balance->money;
                 else {
-                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $this->balanceRepository->create(['user_id' => $user->id, 'money' => 0]);
                     $money = 0;
                 }
                 if ($detail)
@@ -70,7 +70,7 @@ class BalanceService
                 if ($balance != null)
                     $money = $balance->money;
                 else {
-                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $this->balanceRepository->create(['user_id' => $user->id, 'money' => 0]);
                     $money = 0;
                 }
                 if ($detail)
@@ -90,7 +90,7 @@ class BalanceService
                 if ($balance != null)
                     $money = $balance->money;
                 else {
-                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $this->balanceRepository->create(['user_id' => $user->id, 'money' => 0]);
                     $money = 0;
                 }
                 $log = $this->money_logRepository->findByUserIdAndOrderByCreated_atDesc($user->id, 20);
@@ -110,7 +110,7 @@ class BalanceService
                 if ($balance != null)
                     $money = $balance->money;
                 else {
-                    $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                    $this->balanceRepository->create(['user_id' => $user->id, 'money' => 0]);
                     $money = 0;
                 }
                 $log = $this->money_logRepository->findByUserIdAndOrderByCreated_atDesc($user->id, 20);
@@ -211,12 +211,12 @@ class BalanceService
             if ($balanceObj != null)
                 $balance = $balanceObj->money;
             else {
-                $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                $this->balanceRepository->create(['user_id' => $user->id, 'money' => 0]);
                 $balance = 0;
             }
             $mm = $balance + $money;
             $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
-            $this->money_logRepository->caeate(['user_id' => $user->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '+' . $money . '=' . $mm]);
+            $this->money_logRepository->create(['user_id' => $user->id, 'event' => 'top-up', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '+' . $money . '=' . $mm]);
             Log::channel('money')->info('Top up Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before top up' => $balance, 'Total top up' => $money, 'Balance after top up' => $mm]);
             return [['before' => $balance, 'total' => $money, 'after' => $mm], Response::HTTP_OK];
         } else
@@ -235,14 +235,14 @@ class BalanceService
             if ($balanceObj != null)
                 $balance = $balanceObj->money;
             else {
-                $this->balanceRepository->caeate(['user_id' => $user->id, 'money' => 0]);
+                $this->balanceRepository->create(['user_id' => $user->id, 'money' => 0]);
                 $balance = 0;
             }
             $mm = $balance - $money;
             if ($mm < 0)
                 return [['error' => 'Balance after deduct must unsigned'], Response::HTTP_BAD_REQUEST];
             $this->balanceRepository->updateByUserId($user->id, ['money' => $mm]);
-            $this->money_logRepository->caeate(['user_id' => $user->id, 'event' => 'deduct', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '-' . $money . '=' . $mm]);
+            $this->money_logRepository->create(['user_id' => $user->id, 'event' => 'deduct', 'money' => $money, 'trigger_id' => Auth::user()->id, 'note' => $balance . '-' . $money . '=' . $mm]);
             Log::channel('money')->info('Deduct Success', ['ip' => $ip, 'trigger_id' => Auth::user()->id, 'user_id' => $user->id, 'Balance before deduct' => $balance, 'Total deduct' => $money, 'Balance after deduct' => $mm]);
             return [['before' => $balance, 'total' => $money, 'after' => $mm], Response::HTTP_OK];
         } else

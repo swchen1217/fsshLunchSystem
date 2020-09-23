@@ -93,12 +93,12 @@ class DishService
             if ($request->input('price') < 0)
                 return [['error' => '`price` must unsigned'], Response::HTTP_BAD_REQUEST];
             $nutrition_data = $request->only(['calories', 'protein', 'fat', 'carbohydrate']);
-            $nutrition = $this->nutritionRepository->caeate($nutrition_data);
+            $nutrition = $this->nutritionRepository->create($nutrition_data);
             $dish_data = array_merge($request->only(['name', 'manufacturer_id', 'price']), ['nutrition_id' => $nutrition->id, 'photo' => Storage::disk('public')->url('image/dish/default.png')]);
-            $dish = $this->dishRepository->caeate($dish_data);
+            $dish = $this->dishRepository->create($dish_data);
             $contents_data = $request->input('contents');
             foreach ($contents_data as $item)
-                $this->dishContentRepository->caeate(['dish_id' => $dish->id, 'name' => $item]);
+                $this->dishContentRepository->create(['dish_id' => $dish->id, 'name' => $item]);
             DB::commit();
             return [$this->getDish($dish->id)[0], Response::HTTP_CREATED];
         } catch (MyException $e) {
@@ -157,7 +157,7 @@ class DishService
                 } elseif ($key == "contents") {
                     $this->dishContentRepository->deleteByDishId($dish_id);
                     foreach ($value as $item)
-                        $this->dishContentRepository->caeate(['dish_id' => $dish_id, 'name' => $item]);
+                        $this->dishContentRepository->create(['dish_id' => $dish_id, 'name' => $item]);
                 } else {
                     throw new MyException(serialize(['error' => 'The attribute cannot be modified']), Response::HTTP_BAD_REQUEST);
                 }

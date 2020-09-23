@@ -26,7 +26,7 @@ class Login_failRepository
         return $this->login_fail->where('user_id', $user_id)->where('ip', $ip)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->login_fail->create($data);
     }

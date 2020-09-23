@@ -37,7 +37,7 @@ class Line_notify_tokenRepository
         return $this->line_notify_token->where('notify_id', $notifyId)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->line_notify_token->create($data);
     }

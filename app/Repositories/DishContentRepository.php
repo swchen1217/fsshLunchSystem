@@ -26,7 +26,7 @@ class DishContentRepository
         return $this->dishContent->where('dish_id', $dish_id)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->dishContent->create($data);
     }

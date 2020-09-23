@@ -27,7 +27,7 @@ class ForgetPswdRepository
         return $this->forgetPswd->where('user_id', $user_id)->where('token', $token)->first();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->forgetPswd->create($data);
     }

@@ -31,7 +31,7 @@ class DishRepository
         return $this->dish->where('manufacturer_id', $manufacturer_id)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->dish->create($data);
     }

@@ -26,7 +26,7 @@ class ManufacturerRepository
         return $this->manufacturer->find($id);
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->manufacturer->create($data);
     }

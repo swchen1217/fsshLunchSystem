@@ -21,7 +21,7 @@ class NutritionRepository
         return $this->nutrition->find($id);
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->nutrition->create($data);
     }

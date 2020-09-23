@@ -39,7 +39,7 @@ class UserRepository
         return $this->user->where('class', $class)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->user->create($data);
     }

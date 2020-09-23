@@ -31,7 +31,7 @@ class BalanceRepository
         return $this->balance->where('user_id', $user_id)->first();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->balance->create($data);
     }

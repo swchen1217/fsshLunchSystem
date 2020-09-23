@@ -21,7 +21,7 @@ class VerifyRepository
         return $this->verify->where('user_id', $user_id)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->verify->create($data);
     }

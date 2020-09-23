@@ -54,14 +54,14 @@ class PswdService
         if ($user != null) {
             $token = md5(rand());
             if ($request->input('redirect') == 'Frontend') {
-                $this->forgetPswdRepository->caeate(['user_id' => $user->id, 'token' => $token]);
+                $this->forgetPswdRepository->create(['user_id' => $user->id, 'token' => $token]);
                 if (env('APP_ENV') == 'local')
                     $url = URLConstant::URL_DEV_FRONTEND_FORGET_PW;
                 else
                     $url = URLConstant::URL_PDC_FRONTEND_FORGET_PW;
                 Mail::to($user)->queue(new ForgetPswd(['url' => $url . '?token=' . $user->account . '.' . $token]));
             } elseif ($request->input('redirect') == 'AdminFrontend') {
-                $this->forgetPswdRepository->caeate(['user_id' => $user->id, 'token' => $token]);
+                $this->forgetPswdRepository->create(['user_id' => $user->id, 'token' => $token]);
                 if (env('APP_ENV') == 'local')
                     $url = URLConstant::URL_DEV_ADMIN_FRONTEND_FORGET_PW;
                 else

@@ -25,7 +25,7 @@ class ManufacturerService
 
     public function create(Request $request)
     {
-        return [$this->manufacturerRepository->caeate($request->only(['name'])), Response::HTTP_CREATED];
+        return [$this->manufacturerRepository->create($request->only(['name'])), Response::HTTP_CREATED];
     }
 
     public function edit(Request $request, $manufacturer_id)

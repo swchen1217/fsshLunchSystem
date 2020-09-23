@@ -36,7 +36,7 @@ class OrderRepository
         return $this->order->where('sale_id', $sale_id)->get();
     }
 
-    public function caeate($data)
+    public function create($data)
     {
         return $this->order->create($data);
     }
