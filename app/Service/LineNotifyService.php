@@ -102,8 +102,8 @@ class LineNotifyService
 
     public function newSubscribe(Request $request, $notify_id)
     {
-        if(Auth::user()==null)
-            return [['message'=>'Unauthenticated'],Response::HTTP_UNAUTHORIZED];
+        if (Auth::user() == null)
+            return [['message' => 'Unauthenticated'], Response::HTTP_UNAUTHORIZED];
         $user_id = Auth::user()->id;
         $tokenMd5 = md5(rand());
         $this->line_notify_subscribeRepository->create(['user_id' => $user_id, 'notify_id' => $notify_id, 'token' => $tokenMd5]);
@@ -121,7 +121,7 @@ class LineNotifyService
     {
         $code = $request->input('code');
         $state = $request->input('state');
-        $state_data[] = explode('.', base64_decode($state));
+        $state_data = explode('.', base64_decode($state));
         $subscribe = $this->line_notify_subscribeRepository->findByUserIdAndLineNotifyIdAndToken($state_data[0], $state_data[1], $state_data[2]);
         if ($subscribe != null) {
             $ct = strtotime($subscribe->created_at);
@@ -141,11 +141,11 @@ class LineNotifyService
                         'client_secret' => $line_notify->client_secret,
                     ],
                 ]);
-                if($response->getStatusCode()==200){
-                    $access_token=json_decode($response->getBody()->getContents())['access_token'];
-                    $this->line_notify_tokenRepository->create(['notify_id'=>$state_data[1],'user_id'=>$state_data[0],'token'=>$access_token]);
-                    return [['success'=>'Success. You Can Close This Windows'],Response::HTTP_OK];
-                }else
+                if ($response->getStatusCode() == 200) {
+                    $access_token = json_decode($response->getBody()->getContents())['access_token'];
+                    $this->line_notify_tokenRepository->create(['notify_id' => $state_data[1], 'user_id' => $state_data[0], 'token' => $access_token]);
+                    return [['success' => 'Success. You Can Close This Windows'], Response::HTTP_OK];
+                } else
                     return [['error' => 'Line Notify Token Issue Error'], Response::HTTP_INTERNAL_SERVER_ERROR];
             } else
                 return [['error' => 'The Token expired,Please Re-apply'], Response::HTTP_BAD_REQUEST];
