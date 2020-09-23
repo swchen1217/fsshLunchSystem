@@ -102,9 +102,9 @@ class LineNotifyService
 
     public function newSubscribe(Request $request, $notify_id)
     {
-        $user_id = Auth::user()->id;
-        if($user_id==null)
+        if(Auth::user()==null)
             return [['message'=>'Unauthenticated'],Response::HTTP_UNAUTHORIZED];
+        $user_id = Auth::user()->id;
         $tokenMd5 = md5(rand());
         $this->line_notify_subscribeRepository->create(['user_id' => $user_id, 'notify_id' => $notify_id, 'token' => $tokenMd5]);
         $tokenBase64 = base64_encode($user_id . '.' . $notify_id . '.' . $tokenMd5);
