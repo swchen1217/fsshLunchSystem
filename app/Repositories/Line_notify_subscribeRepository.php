@@ -19,7 +19,7 @@ class Line_notify_subscribeRepository
 
     public function findByUserIdAndLineNotifyIdAndToken($user_id, $line_notify_id, $token)
     {
-        return $this->line_notify_subscribe->where('user_id', $user_id)->where('line_notify_id', $line_notify_id)->where('token', $token)->first();
+        return $this->line_notify_subscribe->where('user_id', $user_id)->where('notify_id', $line_notify_id)->where('token', $token)->first();
     }
 
     public function create($data)
@@ -29,7 +29,7 @@ class Line_notify_subscribeRepository
 
     public function deleteByUserIdAndLineNotifyId($user_id, $line_notify_id)
     {
-        return $this->line_notify_subscribe->where('user_id', $user_id)->where('line_notify_id', $line_notify_id)->delete();
+        return $this->line_notify_subscribe->where('user_id', $user_id)->where('notify_id', $line_notify_id)->delete();
     }
 
 }
