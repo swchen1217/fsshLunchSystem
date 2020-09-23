@@ -96,7 +96,7 @@ class LineNotifyService
         $redirect_uri = "https://api.fios.fssh.khc.edu.tw/api/line/callback";
         $user_id = Auth::user()->id;
         $tokenMd5 = md5(rand());
-        $this->line_notify_subscribeRepository->create(['user_id' => $user_id, 'line_notify_id' => $notify_id, 'token' => $tokenMd5]);
+        $this->line_notify_subscribeRepository->create(['user_id' => $user_id, 'notify_id' => $notify_id, 'token' => $tokenMd5]);
         $tokenBase64 = base64_encode($user_id . '.' . $notify_id . '.' . $tokenMd5);
         $line_notify = $this->line_notifyRepository->findById($notify_id);
         $oAuthURL =
