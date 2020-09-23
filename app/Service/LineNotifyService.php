@@ -142,7 +142,7 @@ class LineNotifyService
                     ],
                 ]);
                 if ($response->getStatusCode() == 200) {
-                    $access_token = json_decode($response->getBody()->getContents(),true)['access_token'];
+                    $access_token = json_decode($response->getBody()->getContents(), true)['access_token'];
                     $this->line_notify_tokenRepository->create(['notify_id' => $state_data[1], 'user_id' => $state_data[0], 'token' => $access_token]);
                     return [['success' => 'Success. You Can Close This Windows'], Response::HTTP_OK];
                 } else
@@ -196,7 +196,7 @@ class LineNotifyService
                 $sale = $this->saleRepository->findById($oo->sale_id);
                 $dish = $this->dishRepository->findById($sale->dish_id);
                 $manufacturer = $this->manufacturerRepository->findById($dish->manufacturer_id);
-                $str = "Hi " . $user->name . "\n今日" . $today->month . "/" . $today->day . "（" . $this->weekChinese[$today->dayOfWeek] . "）\n你的餐點是:\n" . $manufacturer->name . "-" . $dish->name;
+                $str = "\nHi " . $user->name . "\n今日" . $today->month . "/" . $today->day . "（" . $this->weekChinese[$today->dayOfWeek] . "）\n你的餐點是:\n" . $manufacturer->name . "-" . $dish->name;
                 $this->commit($token->token, $str);
             }
         }
