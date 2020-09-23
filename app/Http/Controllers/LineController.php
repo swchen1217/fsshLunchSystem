@@ -32,7 +32,8 @@ class LineController extends Controller
 
     public function callback(Request $request)
     {
-        return response()->json($request->all(),200);
+        //return response()->json($request->all(),200);
+
         $mResult = $this->lineNotifyService->callback($request);
         return response()->json($mResult[0], $mResult[1]);
     }

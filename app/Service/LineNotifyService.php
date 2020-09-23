@@ -11,6 +11,7 @@ use App\Repositories\ManufacturerRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\SaleRepository;
 use App\Repositories\UserRepository;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,10 @@ use KS\Line\LineNotify;
 
 class LineNotifyService
 {
+
+    private $line_notify_server = "https://notify-bot.line.me/oauth";
+    private $redirect_uri = "https://api.fios.fssh.khc.edu.tw/api/line/callback";
+    private $weekChinese = ['日', '一', '二', '三', '四', '五', '六'];
 
     /**
      * @var LineNotify
@@ -44,7 +49,6 @@ class LineNotifyService
      */
     private $saleRepository;
 
-    private $weekChinese = ['日', '一', '二', '三', '四', '五', '六'];
     /**
      * @var UserRepository
      */
@@ -61,6 +65,10 @@ class LineNotifyService
      * @var Line_notify_subscribeRepository
      */
     private $line_notify_subscribeRepository;
+    /**
+     * @var Client
+     */
+    private $guzzleHttpClient;
 
     public function __construct(
         Line_notifyRepository $line_notifyRepository,
@@ -70,7 +78,8 @@ class LineNotifyService
         UserRepository $userRepository,
         DishRepository $dishRepository,
         ManufacturerRepository $manufacturerRepository,
-        Line_notify_subscribeRepository $line_notify_subscribeRepository
+        Line_notify_subscribeRepository $line_notify_subscribeRepository,
+        Client $client
     )
     {
         $this->lineNotify = new LineNotify("");
@@ -82,6 +91,7 @@ class LineNotifyService
         $this->dishRepository = $dishRepository;
         $this->manufacturerRepository = $manufacturerRepository;
         $this->line_notify_subscribeRepository = $line_notify_subscribeRepository;
+        $this->guzzleHttpClient = $client;
     }
 
     public function getService()
@@ -92,24 +102,53 @@ class LineNotifyService
 
     public function newSubscribe(Request $request, $notify_id)
     {
-        $line_notify_server = "https://notify-bot.line.me/oauth/authorize";
-        $redirect_uri = "https://api.fios.fssh.khc.edu.tw/api/line/callback";
         $user_id = Auth::user()->id;
         $tokenMd5 = md5(rand());
         $this->line_notify_subscribeRepository->create(['user_id' => $user_id, 'notify_id' => $notify_id, 'token' => $tokenMd5]);
         $tokenBase64 = base64_encode($user_id . '.' . $notify_id . '.' . $tokenMd5);
         $line_notify = $this->line_notifyRepository->findById($notify_id);
         $oAuthURL =
-            $line_notify_server . "?response_type=code&scope=notify&response_mode=form_post" .
+            $this->line_notify_server . "/authorize?response_type=code&scope=notify&response_mode=form_post" .
             "&client_id=" . $line_notify->client_id .
-            "&redirect_uri=" . $redirect_uri .
+            "&redirect_uri=" . $this->redirect_uri .
             "&state=" . $tokenBase64;
         return [['redirect' => $oAuthURL], Response::HTTP_OK];
     }
 
     public function callback(Request $request)
     {
-
+        $code = $request->input('code');
+        $state = $request->input('state');
+        $state_data[] = explode('.', base64_decode($state));
+        $subscribe = $this->line_notify_subscribeRepository->findByUserIdAndLineNotifyIdAndToken($state_data[0], $state_data[1], $state_data[2]);
+        if ($subscribe != null) {
+            $ct = strtotime($subscribe->created_at);
+            $now = time();
+            if ($now - $ct <= 1800) {
+                $this->line_notify_subscribeRepository->deleteByUserIdAndLineNotifyId($state_data[0], $state_data[1]);
+                $line_notify = $this->line_notifyRepository->findById($state_data[1]);
+                $response = $this->guzzleHttpClient->request('POST', $this->line_notify_server . '/token', [
+                    'headers' => [
+                        'content-type' => 'application/x-www-form-urlencoded',
+                    ],
+                    'form_params' => [
+                        'grant_type' => 'authorization_code',
+                        'code' => $code,
+                        'redirect_uri' => $this->redirect_uri,
+                        'client_id' => $line_notify->client_id,
+                        'client_secret' => $line_notify->client_secret,
+                    ],
+                ]);
+                if($response->getStatusCode()==200){
+                    $access_token=json_decode($response->getBody()->getContents())['access_token'];
+                    $this->line_notify_tokenRepository->create(['notify_id'=>$state_data[1],'user_id'=>$state_data[0],'token'=>$access_token]);
+                    return [['success'=>'Success. You Can Close This Windows'],Response::HTTP_OK];
+                }else
+                    return [['error' => 'Line Notify Token Issue Error'], Response::HTTP_INTERNAL_SERVER_ERROR];
+            } else
+                return [['error' => 'The Token expired,Please Re-apply'], Response::HTTP_BAD_REQUEST];
+        } else
+            return [['error' => 'The Token Error ,Please Re-apply'], Response::HTTP_BAD_REQUEST];
     }
 
     public function send($line_notify_id)
