@@ -142,7 +142,7 @@ class LineNotifyService
                     ],
                 ]);
                 if ($response->getStatusCode() == 200) {
-                    $access_token = json_decode($response->getBody()->getContents())['access_token'];
+                    $access_token = json_decode($response->getBody()->getContents(),true)['access_token'];
                     $this->line_notify_tokenRepository->create(['notify_id' => $state_data[1], 'user_id' => $state_data[0], 'token' => $access_token]);
                     return [['success' => 'Success. You Can Close This Windows'], Response::HTTP_OK];
                 } else
