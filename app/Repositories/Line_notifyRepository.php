@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\App\Entity\Line_notify;
+use App\Entity\Line_notify;
 
 class Line_notifyRepository
 {
