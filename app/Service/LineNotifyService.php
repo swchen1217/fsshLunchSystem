@@ -107,6 +107,11 @@ class LineNotifyService
         return [['redirect' => $oAuthURL], Response::HTTP_OK];
     }
 
+    public function callback(Request $request)
+    {
+
+    }
+
     public function send($line_notify_id)
     {
         // return [true|flase,msg]

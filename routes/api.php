@@ -119,8 +119,8 @@ Route::group([
     'prefix' => 'line'
 ], function ($router) {
     Route::get('/service', 'LineController@getService');
-    Route::get('/subscribe/{notify_id}', 'LineController@newSubscribe');
-    Route::get('/callback', 'LineController@callback');
+    Route::post('/subscribe/{notify_id}', 'LineController@newSubscribe');
+    Route::post('/callback', 'LineController@callback');
 });
 
 /*Route::group([

@@ -29,4 +29,11 @@ class LineController extends Controller
         $mResult = $this->lineNotifyService->newSubscribe($request, $notify_id);
         return response()->json($mResult[0], $mResult[1]);
     }
+
+    public function callback(Request $request)
+    {
+        return response()->json($request->all(),200);
+        $mResult = $this->lineNotifyService->callback($request);
+        return response()->json($mResult[0], $mResult[1]);
+    }
 }
