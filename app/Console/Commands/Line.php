@@ -52,8 +52,8 @@ class Line extends Command
     {
         $line_notify_id = $this->argument('line_notify_id');
         if ($line_notify_id == null) {
-            $headers = ['Id	', 'Name', 'Description', 'Method'];
-            $line_notifies = $this->line_notifyRepository->all()->only(['id', 'name', 'description', 'method'])->toArray();
+            $headers = ['Id	', 'Name', 'Description', 'Method','Param','Client-id','Client-secret','Created-at'];
+            $line_notifies = $this->line_notifyRepository->all()->toArray();
             $this->table($headers, $line_notifies);
             $line_notify_id = $this->ask('Please input line notify id');
         }
