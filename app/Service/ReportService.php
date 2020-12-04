@@ -9,6 +9,7 @@ use App\Repositories\UserRepository;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -70,22 +71,8 @@ class ReportService
         Storage::put('report/report-dish-tmp.json', json_encode($data));
         Storage::append('report/report-dish.json', json_encode($data) . ',');
 
+        Artisan::call('line:send', ['2']);
 
         return [[], 204];
-
-        /*$user = $this->userRepository->findByAccount($request->input('account'));
-        if ($user != null) {
-            if (Hash::check($request->input('old_pswd'), $user->password)) {
-                if (!$user->pw_changed)
-                    $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd')), 'pw_changed' => 1]);
-                else
-                    $this->userRepository->update($user->id, ['password' => bcrypt($request->input('new_pswd'))]);
-                Log::channel('pswd')->info('Success (Account)', ['ip' => $ip, 'user_id' => $user->id]);
-                Mail::to($user)->queue(new \App\Mail\PswdChanged());
-                return [[], Response::HTTP_NO_CONTENT];
-            } else
-                return [['error' => 'Old password error'], Response::HTTP_FORBIDDEN];
-        } else
-            return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];*/
     }
 }
