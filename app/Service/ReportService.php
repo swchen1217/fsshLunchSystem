@@ -23,18 +23,13 @@ class ReportService
      */
     private $lineNotify;
     /**
-     * @var ReportService
-     */
-    private $reportService;
-    /**
      * @var Client
      */
     private $guzzleHttpClient;
 
-    public function __construct(ReportService $reportService,Client $client)
+    public function __construct(Client $client)
     {
         $this->lineNotify = new LineNotify("");
-        $this->reportService = $reportService;
         $this->guzzleHttpClient = $client;
     }
 
