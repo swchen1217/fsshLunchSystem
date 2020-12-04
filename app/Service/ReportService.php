@@ -71,7 +71,7 @@ class ReportService
         Storage::append('report/report-dish.json', json_encode($data) . ',');
 
 
-        return [[], 200];
+        return [[], 204];
 
         /*$user = $this->userRepository->findByAccount($request->input('account'));
         if ($user != null) {
