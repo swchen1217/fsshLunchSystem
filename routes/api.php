@@ -19,7 +19,7 @@ Route::get('/', 'GeneralController@isOk');
 
 Route::get('/ip', 'GeneralController@ip');
 
-Route::get('/export/order/{date}','ExcelController@exportOrder');
+Route::get('/export/order/{date}', 'ExcelController@exportOrder');
 
 Route::group([
     'prefix' => 'oauth'
@@ -121,6 +121,12 @@ Route::group([
     Route::get('/service', 'LineController@getService');
     Route::post('/subscribe/{notify_id}', 'LineController@newSubscribe');
     Route::post('/callback', 'LineController@callback');
+});
+
+Route::group([
+    'prefix' => 'report'
+], function ($router) {
+    Route::post('/dish', 'ReportController@dish');
 });
 
 /*Route::group([
