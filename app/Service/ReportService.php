@@ -71,7 +71,7 @@ class ReportService
         Storage::put('report/report-dish-tmp.json', json_encode($data));
         Storage::append('report/report-dish.json', json_encode($data) . ',');
 
-        Artisan::call('line:send', ['2' => true]);
+        Artisan::call('line:send 2');
 
         return [[], 204];
     }
