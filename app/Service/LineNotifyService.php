@@ -208,9 +208,11 @@ class LineNotifyService
     private function ln_report_dish()
     {
         $data = json_decode(Storage::get('report/report-dish-tmp.json'), true);
+        if ($data == null)
+            return [false, 'Data Empty'];
         $tokens = $this->line_notify_tokenRepository->findByNotifyId($this->notifyInfo->id);
         foreach ($tokens as $token) {
-            $str = "\n新通報！！\n於{$data['date']}\n廠商{$data['manufacturer']}餐點{$data['dishNum']}\n發現異物\n通報者：{$data['class']}班{$data['number']}號{$data['name']}\n情況如附圖\n通報時間：{$data['timestamp']}";
+            $str = "\n新通報！！\n通報者：{$data['class']}班{$data['number']}號{$data['name']}\n於{$data['date']} {$data['manufacturer']}-{$data['dishNum']}\n發現異物，情況如附圖\n通報時間：{$data['timestamp']}";
             $this->commit($token->token, $str, $data['image']);
         }
         Storage::put('report/report-dish-tmp.json', '');
