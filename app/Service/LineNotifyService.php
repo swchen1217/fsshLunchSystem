@@ -17,6 +17,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use KS\Line\LineNotify;
 
 class LineNotifyService
@@ -201,6 +202,18 @@ class LineNotifyService
             }
         }
 
+        return [true, 'Success'];
+    }
+
+    private function ln_report_dish()
+    {
+        $data = json_decode(Storage::get('report/report-dish-tmp.json'), true);
+        $tokens = $this->line_notify_tokenRepository->findByNotifyId($this->notifyInfo->id);
+        foreach ($tokens as $token) {
+            $str = "\n新通報！！\n於{$data['date']}\n廠商{$data['manufacturer']}餐點{$data['dishNum']}\n發現異物\n通報者：{$data['class']}班{$data['nubmer']}號{$data['name']}\n情況如附圖\n通報時間：{$data['timestamp']}";
+            $this->commit($token->token, $str, $data['image']);
+        }
+        Storage::put('report/report-dish-tmp.json', '');
         return [true, 'Success'];
     }
 

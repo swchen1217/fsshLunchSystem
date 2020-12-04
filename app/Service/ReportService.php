@@ -55,21 +55,23 @@ class ReportService
         ]);
         $photo_url = json_decode($response->getBody()->getContents(), true)['data']['link'];
 
-        $data=[
-            'timestamp'=>date("Y-m-d-G-i-s",time()),
-            'class'=>$request->input('class'),
-            'number'=>$request->input('number'),
-            'name'=>$request->input('name'),
-            'date'=>$request->input('date'),
-            'manufacturer'=>$request->input('manufacturer'),
-            'dishNum'=>$request->input('dishNum'),
-            'image'=>$photo_url
-            ];
+        $data = [
+            'timestamp' => date("Y-m-d-G-i-s", time()),
+            'ip' => $ip,
+            'class' => $request->input('class'),
+            'number' => $request->input('number'),
+            'name' => $request->input('name'),
+            'date' => $request->input('date'),
+            'manufacturer' => $request->input('manufacturer'),
+            'dishNum' => $request->input('dishNum'),
+            'image' => $photo_url
+        ];
 
-        Storage::put('report/report-dish-tmp.json',json_encode($data));
-        Storage::append('report/report-dish.json',json_encode($data).',');
+        Storage::put('report/report-dish-tmp.json', json_encode($data));
+        Storage::append('report/report-dish.json', json_encode($data) . ',');
 
-        return [[],200];
+
+        return [[], 200];
 
         /*$user = $this->userRepository->findByAccount($request->input('account'));
         if ($user != null) {
