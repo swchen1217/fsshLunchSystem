@@ -91,6 +91,7 @@ Route::group([
     Route::get('/sale/{sale_id}', 'OrderController@getBySale');
     Route::get('/date/{date_id}', 'OrderController@getByDate');
     Route::get('/manufacturer/{manufacturer_id}', 'OrderController@getByManufacturer');
+    Route::get('/date/{date_id}/manufacturer/{manufacturer_id}', 'OrderController@getByDateManufacturer');
     Route::get('/class/{class}', 'OrderController@getByClass');
     Route::get('/class/{class}/today', 'OrderController@getTodayByClass');
     Route::get('/info/{date}', 'OrderController@getInfoToday')->middleware(['permission2:order.read']);

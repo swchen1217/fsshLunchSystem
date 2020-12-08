@@ -60,6 +60,15 @@ class OrderController extends Controller
         return response()->json($mResult[0], $mResult[1]);
     }
 
+    public function getByDateManufacturer(Request $request, $saleDate,$manufacturer_id)
+    {
+        $validator = Validator::make([$saleDate], ['required|date_format:Y-m-d']);
+        if ($validator->fails())
+            return response()->json(['error' => 'Date format error'], Response::HTTP_BAD_REQUEST);
+        $mResult = $this->orderService->get('saleDate_manufacturerId', array('saleDate'=>$saleDate,'manufacturerId'=>$manufacturer_id));
+        return response()->json($mResult[0], $mResult[1]);
+    }
+
     public function getByClass(Request $request, $class)
     {
         $mResult = $this->orderService->get('class', $class);

@@ -71,7 +71,33 @@ class OrderService
 
     public function get($type = 'all', $data = null, Request $request = null)
     {
-        if ($type != 'order_id') {
+        if($type=='order_id'){
+            $order = $this->orderRepository->findById($data);
+            if ($order != null && $this->userIdCheckWithAllAndSelfAndClass($order->user_id, 'order.read')) {
+                $user = $this->userRepository->findById($order->user_id)->only(['id', 'account', 'class', 'number']);
+                $sale = $this->saleRepository->findById($order->sale_id)->only(['id', 'sale_at', 'dish_id']);
+                $dish_id = $sale['dish_id'];
+                array_splice($sale, 2, 1);
+                $dish = $this->dishRepository->findById($dish_id)->only(['id', 'name', 'manufacturer_id', 'price']);
+                $manufacturer = $this->manufacturerRepository->findById($dish['manufacturer_id']);
+                $result = array_merge(['order_id' => $order->id, 'user' => $user, 'sale' => array_merge($sale, ['dish' => array_merge($dish, ['manufacturer_name' => $manufacturer->name])])]);
+                return [$result, Response::HTTP_OK];
+            } else
+                return [['error' => 'The Order Not Found'], Response::HTTP_NOT_FOUND];
+        } else if($type=='saleDate_manufacturerId' && PermissionSupport::check('order.read', null, true)){
+            $sale = $this->saleRepository->findBySaleDate($data['saleDate']);
+            $result = array();
+            foreach ($sale as $ss) {
+                $dish = $this->dishRepository->findById($ss->dish_id);
+                if($dish->manufacturer_id==$data['manufacturerId']){
+                    $order=$this->orderRepository->findBySaleId($ss->id);
+                    $manufacturer = $this->manufacturerRepository->findById($dish['manufacturer_id']);
+                    $result[]=array('sale_id'=>$ss->id,'dish_name'=>$dish->name,'manufacturer_name'=>$manufacturer->name,'order_qty'=>count($order));
+                }
+            }
+            return [$result,Response::HTTP_OK];
+            
+        } else{
             if ($type == 'all' && PermissionSupport::check('order.read', null, true)) //order.read
                 $order = $this->orderRepository->all();
             elseif ($type == 'user_id') { //order.read.self
@@ -132,19 +158,6 @@ class OrderService
             }
 
             return [$result, Response::HTTP_OK];
-        } else {
-            $order = $this->orderRepository->findById($data);
-            if ($order != null && $this->userIdCheckWithAllAndSelfAndClass($order->user_id, 'order.read')) {
-                $user = $this->userRepository->findById($order->user_id)->only(['id', 'account', 'class', 'number']);
-                $sale = $this->saleRepository->findById($order->sale_id)->only(['id', 'sale_at', 'dish_id']);
-                $dish_id = $sale['dish_id'];
-                array_splice($sale, 2, 1);
-                $dish = $this->dishRepository->findById($dish_id)->only(['id', 'name', 'manufacturer_id', 'price']);
-                $manufacturer = $this->manufacturerRepository->findById($dish['manufacturer_id']);
-                $result = array_merge(['order_id' => $order->id, 'user' => $user, 'sale' => array_merge($sale, ['dish' => array_merge($dish, ['manufacturer_name' => $manufacturer->name])])]);
-                return [$result, Response::HTTP_OK];
-            } else
-                return [['error' => 'The Order Not Found'], Response::HTTP_NOT_FOUND];
         }
     }
 
