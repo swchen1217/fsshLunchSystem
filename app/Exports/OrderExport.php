@@ -66,9 +66,9 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
                 $event->sheet->setCellValue('A1', '國立鳳山高中線上訂餐系統');
                 $event->sheet->setCellValue('I1', date("Y-m-d D", strtotime($this->date)));
-                $event->sheet->setCellValue('B2', '彩鶴');
-                $event->sheet->setCellValue('D2', '御饌坊');
-                $event->sheet->setCellValue('F2', '正園');
+                $event->sheet->setCellValue('B2', '御饌坊');
+                $event->sheet->setCellValue('D2', '快樂餐飲');
+                $event->sheet->setCellValue('F2', '旺春豐');
                 $event->sheet->setCellValue('H2', '素食');
                 $event->sheet->setCellValue('B3', 'A');
                 $event->sheet->setCellValue('C3', 'B');
@@ -264,7 +264,9 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 return strcmp($a['dish_alias'], $b['dish_alias']);
             }
             return $a['dish_manufacturer_id'] - $b['dish_manufacturer_id'];
-        });
+		});
+
+		//echo json_encode($sale_data);
 
         foreach ($sale_data as $ss) {
             $order = Order::where('sale_id', $ss['sale_id'])->get();
