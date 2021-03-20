@@ -40,14 +40,14 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                     $event->sheet->getDelegate()->getColumnDimension($col[$i])->setWidth(8.11);
                 }
                 //設定行高，$i為資料行數
-                for ($i = 1; $i <= 59; $i++) {
+                for ($i = 1; $i <= 60; $i++) {
                     $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(13.8);
                 }
                 //設定區域單元格垂直居中
-                $event->sheet->getDelegate()->getStyle('A1:K59')->getAlignment()->setVertical('center');
-                $event->sheet->getDelegate()->getStyle('A1:K59')->getAlignment()->setHorizontal('center');
+                $event->sheet->getDelegate()->getStyle('A1:K60')->getAlignment()->setVertical('center');
+                $event->sheet->getDelegate()->getStyle('A1:K60')->getAlignment()->setHorizontal('center');
                 //設定區域單元格字型、顏色、背景等，其他設定請檢視 applyFromArray 方法，提供了註釋
-                $event->sheet->getStyle('A1:K59')->applyFromArray([
+                $event->sheet->getStyle('A1:K60')->applyFromArray([
                     'font' => [
                         'name' => 'Noto Sans CJK TC Regular',
                         'size' => 12,
@@ -86,10 +86,11 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                         $event->sheet->setCellValue('A' . ($r + $c + 3), $g . str_pad($c, 2, "0", STR_PAD_LEFT));
                     }
                 }
-                $event->sheet->setCellValue('A58', '總數量');
-                $event->sheet->setCellValue('A59', '總金額');
+                $event->sheet->setCellValue('A58', '教師');
+                $event->sheet->setCellValue('A59', '總數量');
+                $event->sheet->setCellValue('A60', '總金額');
 
-                $event->sheet->getStyle('A1:K59')->applyFromArray([
+                $event->sheet->getStyle('A1:K60')->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => 'medium',
@@ -109,7 +110,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                         ],
                     ],
                 ]);
-                $event->sheet->getStyle('B2:C59')->applyFromArray([
+                $event->sheet->getStyle('B2:C60')->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => 'medium',
@@ -117,7 +118,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                         ],
                     ],
                 ]);
-                $event->sheet->getStyle('D2:E59')->applyFromArray([
+                $event->sheet->getStyle('D2:E60')->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => 'medium',
@@ -125,7 +126,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                         ],
                     ],
                 ]);
-                $event->sheet->getStyle('F2:G59')->applyFromArray([
+                $event->sheet->getStyle('F2:G60')->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => 'medium',
@@ -133,7 +134,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                         ],
                     ],
                 ]);
-                $event->sheet->getStyle('H2:I59')->applyFromArray([
+                $event->sheet->getStyle('H2:I60')->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => 'medium',
@@ -149,7 +150,7 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                         ],
                     ],
                 ]);
-                $event->sheet->getStyle('A9:K13')->applyFromArray([
+                $event->sheet->getStyle('A9:K60')->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => 'medium',
@@ -237,6 +238,14 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                         ],
                     ],
                 ]);
+                $event->sheet->getStyle('A58:K58')->applyFromArray([
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => 'medium',
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
             }
         ];
     }
@@ -299,6 +308,20 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
                 $display_data[] = array_merge($tmp, [$total_count_class, $total_money_class]);
             }
         }
+
+        $tmp = array();
+        $total_count_class = 0;
+        $total_money_class = 0;
+        $cc = '555';
+        foreach ($sale_data as $ss) {
+            $count = $order_data[$ss['sale_id']]['class'][$cc] ?? 0;
+            $total_count_class += $count;
+            $total_money_class += $count * $ss['dish_price'];
+            $tmp[] = $count;
+        }
+        while (count($tmp) < 8)
+            array_push($tmp, 0);
+        $display_data[] = array_merge($tmp, [$total_count_class, $total_money_class]);
 
         $tmp_count = array();
         $tmp_money = array();
