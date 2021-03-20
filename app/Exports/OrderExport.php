@@ -66,9 +66,9 @@ class OrderExport implements FromCollection, WithTitle, WithEvents, WithCustomSt
 
                 $event->sheet->setCellValue('A1', '國立鳳山高中線上訂餐系統');
                 $event->sheet->setCellValue('I1', date("Y-m-d D", strtotime($this->date)));
-                $event->sheet->setCellValue('B2', '御饌坊');
+                $event->sheet->setCellValue('B2', '旺春豐');
                 $event->sheet->setCellValue('D2', '快樂餐飲');
-                $event->sheet->setCellValue('F2', '旺春豐');
+                $event->sheet->setCellValue('F2', '御饌坊');
                 $event->sheet->setCellValue('H2', '素食');
                 $event->sheet->setCellValue('B3', 'A');
                 $event->sheet->setCellValue('C3', 'B');
