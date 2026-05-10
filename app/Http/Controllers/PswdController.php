@@ -39,4 +39,10 @@ class PswdController extends Controller
         $mResult = $this->pswdService->token($request);
         return response()->json($mResult[0], $mResult[1]);
     }
+
+    public function forgetAccount(Request $request)
+    {
+        $mResult = $this->pswdService->forgetAccount($request);
+        return response()->json($mResult[0], $mResult[1]);
+    }
 }

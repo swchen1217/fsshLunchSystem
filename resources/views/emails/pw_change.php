@@ -231,10 +231,10 @@
                             style="display:block;color:white;letter-spacing:1px;border-left:2px solid #eb691c;margin-bottom:10px;padding-left:15px;margin-left:30px;font-weight:400">IG客服 : fssh_fios</span>
                         <span
                             style="display:block;color:white;letter-spacing:1px;border-left:2px solid #eb691c;margin-bottom:10px;padding-left:15px;margin-left:30px;font-weight:400">
-                            <wbr>Line小助手 : 尚未開放</span>
+                            <wbr>客服信箱：lunch.fios@gmail.com</span>
                         <span
                             style=" display:block;color:white;letter-spacing:1px;margin-top:35px;font-weight:400;line-height:1.4;text-align:center">
-                            © 2020 FIOS All Rights Reserved
+                            © <?php echo date('Y'); ?> FIOS All Rights Reserved
                             <br>
                             鳳山高中線上訂餐系統製作團隊版權所有
                         </span></div>

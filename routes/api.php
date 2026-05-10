@@ -58,6 +58,7 @@ Route::group([
     Route::post('/account', 'PswdController@account');
     Route::post('/forget', 'PswdController@forget');
     Route::post('/token', 'PswdController@token');
+    Route::post('/email', 'PswdController@forgetAccount');
 });
 
 Route::group([

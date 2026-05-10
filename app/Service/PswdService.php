@@ -98,4 +98,14 @@ class PswdService
         } else
             return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
     }
+
+    public function forgetAccount(Request $request)
+    {
+        $ip = $request->ip();
+        $user = $this->userRepository->findByEmail($request->input('email'));
+        if ($user != null) {
+            return [['account'=>$user['account']], Response::HTTP_ok];
+        } else
+            return [['error' => 'The User Not Found'], Response::HTTP_NOT_FOUND];
+    }
 }
